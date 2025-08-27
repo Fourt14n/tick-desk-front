@@ -15,10 +15,10 @@ export default function Login() {
 
     return (
         <main className="flex flex-1 bg-(--bg-default)">
-            <div className="logoContainer hidden lg:flex flex-1 justify-center items-center h-screen bg-gradient-to-r from-[#00ff629f] to-(--bg-default)">
+            <div className="logoContainer hidden xl:flex flex-1 justify-center items-center h-screen bg-gradient-to-r from-[#00ff629f] to-(--bg-default)">
                 <img className="w-2/5" src={loginLogo} alt="" />
             </div>
-            <div className="loginContainer h-screen flex flex-2 justify-center items-center md:flex-2">
+            <div className="loginContainer h-screen flex flex-2 justify-center items-center md:flex-2 lg:flex-1 xl:flex-2">
                 <Card className="flex justify-around md:w-2/3 md:py-20 lg:w-2/3 lg:py-24">
                     <CardHeader>
                         <CardTitle className="font-display font-weight-regular text-lg lg:text-3xl flex justify-center">
