@@ -10,6 +10,7 @@
     --btn-default: rgba(35, 212, 0, 0.45);
     --btn-default-strong: rgba(35, 212, 0, 0.63);
     --text-strongGreen: #135C04;
+    --bg-default: #E4EEE4;
 }
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
