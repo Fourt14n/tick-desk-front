@@ -5,16 +5,41 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useState, type ChangeEvent } from "react";
+import useAuth from "@/hooks/useAuth";
+import { Toaster } from "@/components/ui/sonner";
+
+export interface LoginCredentials {
+    email: string,
+    password: string
+}
+
+const handleInputChange = (event : ChangeEvent<HTMLInputElement>, setInput : React.Dispatch<React.SetStateAction<string>>) => {
+    setInput(event.target.value);
+}
 
 export default function Login() {
+    const [email, setEmail] = useState("");
+    const [isValidEmail, setIsValidEmail] = useState(true);
+    const [password, setPassword] = useState("");
+    const [isValidPassword, setIsValidPassword] = useState(true);
     const navigate = useNavigate();
 
     function handleLogin() {
-        navigate("/Home");
+        if(email.trim() == "")
+            setIsValidEmail(false);
+
+        if(password.trim() == "")
+            setIsValidPassword(false);
+
+
+        let auth = useAuth({email, password});
+        // navigate("/Home");
     }
 
     return (
         <main className="flex flex-1 bg-(--bg-default)">
+            <Toaster position="top-right" richColors />
             <div className="logoContainer hidden xl:flex flex-1 justify-center items-center h-screen bg-gradient-to-r from-[#00ff629f] to-(--bg-default)">
                 <img className="w-2/5" src={loginLogo} alt="" />
             </div>
@@ -34,7 +59,12 @@ export default function Login() {
                                         id="email"
                                         type="email"
                                         placeholder="Digite aqui o seu e-mail"
-                                        className="text-sm lg:text-base"
+                                        className={`text-sm lg:text-base ${!isValidEmail && "user-invalid:border-red-500"}`}
+                                        value={email}
+                                        onChange={(event) => {
+                                            handleInputChange(event, setEmail);
+                                            setIsValidEmail(true);
+                                        }}
                                         required
                                     />
                                 </div>
@@ -42,7 +72,17 @@ export default function Login() {
                                     <div className="flex items-center">
                                         <Label className="font-display font-weight-regular text-lg lg:text-xl" htmlFor="password">Senha</Label>
                                     </div>
-                                    <Input className="text-sm lg:text-base" placeholder="**********" id="password" type="password" required />
+                                    <Input 
+                                    className={`text-sm lg:text-base ${!isValidPassword && "user-invalid:border-red-500"}`} 
+                                    placeholder="**********" 
+                                    id="password" 
+                                    type="password"
+                                    value={password}
+                                    onChange={(event) => {
+                                        handleInputChange(event, setPassword);
+                                        setIsValidPassword(true);
+                                    }}
+                                    required />
                                     <a
                                         href="#"
                                         className="ml-auto inline-block text-sm underline-offset-4 underline hover:text-(--text-grey)"
@@ -53,7 +93,7 @@ export default function Login() {
                             </div>
                             <div className="flex flex-col gap-6">
                                 <div className="grid gap-2">
-                                    <Button className="bg-(--btn-default) text-(--text-strongGreen) hover:bg-(--btn-default-strong) cursor-pointer lg:text-base">Entrar</Button>
+                                    <Button onClick={handleLogin} className="bg-(--btn-default) text-(--text-strongGreen) hover:bg-(--btn-default-strong) cursor-pointer lg:text-base">Entrar</Button>
                                 </div>
                                 <div className="flex gap-2">
                                     <Checkbox id="rememberPassword" />
