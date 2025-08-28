@@ -36,13 +36,16 @@ export default function Login() {
         if(!validateEmail(email)){
             setIsValidEmail(false);
             toast.error("Digite um e-mail válido!");
-            return;
+            event?.preventDefault();
+            return false;
         }
         
         if(password.trim() == ""){
             setIsValidPassword(false);
+            console.log(isValidPassword)
             toast.error("Digite uma senha válida!");
-            return;
+            event?.preventDefault();
+            return false;
         }
 
         let auth = useAuth({email, password});
@@ -74,7 +77,7 @@ export default function Login() {
                                         id="email"
                                         type="email"
                                         placeholder="Digite aqui o seu e-mail"
-                                        className={`text-sm lg:text-base ${!isValidEmail && "user-invalid:border-red-500"}`}
+                                        className={`text-sm lg:text-base ${!isValidEmail && "border-red-500"}`}
                                         value={email}
                                         onChange={(event) => {
                                             handleInputChange(event, setEmail);
@@ -88,7 +91,7 @@ export default function Login() {
                                         <Label className="font-display font-weight-regular text-lg lg:text-xl" htmlFor="password">Senha</Label>
                                     </div>
                                     <Input 
-                                    className={`text-sm lg:text-base ${!isValidPassword && "user-invalid:border-red-500"}`} 
+                                    className={`text-sm lg:text-base ${!isValidPassword && "border-red-500"}`} 
                                     placeholder="**********" 
                                     id="password" 
                                     type="password"
