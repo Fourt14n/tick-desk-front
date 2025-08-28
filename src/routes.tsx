@@ -6,7 +6,7 @@ export default function Router(){
     return (
         <Routes>
             <Route element={<Login/>} path="" />
-            <Route element={<Home/>} path="/teste"/>
+            <Route element={<Home/>} path="/Home"/>
         </Routes>
     )
 }

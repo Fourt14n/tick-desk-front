@@ -62,7 +62,7 @@ export default function Login() {
                 <img className="w-2/5 lg:w-3/4" src={loginLogo} alt="" />
             </div>
             <div className="loginContainer h-screen flex flex-2 justify-center items-center md:flex-2 lg:flex-1 xl:flex-2">
-                <Card className="flex justify-around md:w-2/3 md:py-20 lg:w-2/3 lg:py-24">
+                <Card className="flex justify-around md:w-2/3 md:py-20 lg:w-2/3 lg:py-16">
                     <CardHeader>
                         <CardTitle className="font-display font-weight-regular text-lg xl:text-2xl md:text-xl flex justify-center">
                             Faça seu login.
