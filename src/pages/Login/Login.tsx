@@ -18,6 +18,12 @@ export interface LoginCredentials {
 const handleInputChange = (event : ChangeEvent<HTMLInputElement>, setInput : React.Dispatch<React.SetStateAction<string>>) => {
     setInput(event.target.value);
 }
+// Regex que eu peguei na net pra validar email
+const emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+function validateEmail(email : string){
+    return emailRegex.test(email);
+}
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -27,7 +33,7 @@ export default function Login() {
     const navigate = useNavigate();
 
     function handleLogin() {
-        if(email.trim() == ""){
+        if(!validateEmail(email)){
             setIsValidEmail(false);
             toast.error("Digite um e-mail válido!");
             return;
