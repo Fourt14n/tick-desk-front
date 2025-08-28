@@ -55,7 +55,7 @@ export default function Login() {
             <div className="loginContainer h-screen flex flex-2 justify-center items-center md:flex-2 lg:flex-1 xl:flex-2">
                 <Card className="flex justify-around md:w-2/3 md:py-20 lg:w-2/3 lg:py-24">
                     <CardHeader>
-                        <CardTitle className="font-display font-weight-regular text-lg lg:text-3xl flex justify-center">
+                        <CardTitle className="font-display font-weight-regular text-lg xl:text-2xl md:text-xl flex justify-center">
                             Faça seu login.
                         </CardTitle>
                     </CardHeader>
