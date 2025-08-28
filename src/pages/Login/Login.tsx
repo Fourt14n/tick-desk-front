@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useState, type ChangeEvent } from "react";
 import useAuth from "@/hooks/useAuth";
 import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 export interface LoginCredentials {
     email: string,
@@ -26,22 +27,30 @@ export default function Login() {
     const navigate = useNavigate();
 
     function handleLogin() {
-        if(email.trim() == "")
+        if(email.trim() == ""){
             setIsValidEmail(false);
-
-        if(password.trim() == "")
+            toast.error("Digite um e-mail válido!");
+            return;
+        }
+        
+        if(password.trim() == ""){
             setIsValidPassword(false);
-
+            toast.error("Digite uma senha válida!");
+            return;
+        }
 
         let auth = useAuth({email, password});
-        // navigate("/Home");
+
+        if(auth)
+            navigate("/Home");
     }
+
 
     return (
         <main className="flex flex-1 bg-(--bg-default)">
-            <Toaster position="top-right" richColors />
+            <Toaster position="top-right" richColors={true} />
             <div className="logoContainer hidden xl:flex flex-1 justify-center items-center h-screen bg-gradient-to-r from-[#00ff629f] to-(--bg-default)">
-                <img className="w-2/5" src={loginLogo} alt="" />
+                <img className="w-2/5 lg:w-3/4" src={loginLogo} alt="" />
             </div>
             <div className="loginContainer h-screen flex flex-2 justify-center items-center md:flex-2 lg:flex-1 xl:flex-2">
                 <Card className="flex justify-around md:w-2/3 md:py-20 lg:w-2/3 lg:py-24">
