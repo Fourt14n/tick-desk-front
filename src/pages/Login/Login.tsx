@@ -30,6 +30,7 @@ export default function Login() {
     const [isValidEmail, setIsValidEmail] = useState(true);
     const [password, setPassword] = useState("");
     const [isValidPassword, setIsValidPassword] = useState(true);
+    const [rememberMe, setRememberMe] = useState(false);
     const navigate = useNavigate();
 
     function handleLogin() {
@@ -48,7 +49,7 @@ export default function Login() {
             return false;
         }
 
-        let auth = useAuth({email, password});
+        let auth = useAuth({email, password}, rememberMe);
 
         if(auth)
             navigate("/Home");
@@ -114,7 +115,7 @@ export default function Login() {
                                     <Button onClick={handleLogin} className="bg-(--btn-default) text-(--text-strongGreen) hover:bg-(--btn-default-strong) cursor-pointer lg:text-base">Entrar</Button>
                                 </div>
                                 <div className="flex gap-2">
-                                    <Checkbox id="rememberPassword" />
+                                    <Checkbox checked={rememberMe} onCheckedChange={() => setRememberMe} id="rememberPassword" />
                                     <Label htmlFor="rememberPassword" className="lg:text-sm">Lembrar de mim</Label>
                                 </div>
                             </div>
