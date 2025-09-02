@@ -53,7 +53,7 @@ export default function useAuth({email, password} : LoginCredentials, rememberMe
     // if(rememberMe)
     //     Cookies.set("RefreshToken", tokenResposta.refresh_token, {expires: 7, path: "/"});
 
-    return validateAuth();
+    // return validateAuth();
 
     // Por enquanto vou sempre retornar true pra fazer com que seja possível ir pra Home
     return true;
