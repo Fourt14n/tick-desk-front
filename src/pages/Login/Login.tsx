@@ -34,6 +34,9 @@ export default function Login() {
     const navigate = useNavigate();
 
     function handleLogin() {
+
+        console.log(rememberMe)
+
         if(!validateEmail(email)){
             setIsValidEmail(false);
             toast.error("Digite um e-mail válido!");
@@ -115,7 +118,7 @@ export default function Login() {
                                     <Button onClick={handleLogin} className="bg-(--btn-default) text-(--text-strongGreen) hover:bg-(--btn-default-strong) cursor-pointer lg:text-base">Entrar</Button>
                                 </div>
                                 <div className="flex gap-2">
-                                    <Checkbox checked={rememberMe} onCheckedChange={() => setRememberMe} id="rememberPassword" />
+                                    <Checkbox checked={rememberMe} onCheckedChange={() => setRememberMe(!rememberMe)} id="rememberPassword" />
                                     <Label htmlFor="rememberPassword" className="lg:text-sm">Lembrar de mim</Label>
                                 </div>
                             </div>
