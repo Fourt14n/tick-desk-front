@@ -1,31 +1,41 @@
 import { ChartNoAxesCombined, Home, Plus, Search, Users, WalletCards } from "lucide-react";
-import { useState, type JSX } from "react"
+import { type JSX } from "react"
 import { Input } from "../ui/input";
 import { useTabs } from "@/store/TabsStore";
 import HeaderCardTab from "../HeaderCardTab/HeaderCardTab";
+import { showError } from "@/hooks/useToast";
+import { useNavigate } from "react-router";
 
+const API_URL = "";
 
+function returnNextTicketNum() {
+    try {
+        fetch(API_URL)
+            .then(res => res.json())
+            .then((data) => data)
+    } catch (error) {
+        showError(error);
+    }
+}
 
-export default function FixedLayout( {TelaAtual} : {TelaAtual: JSX.Element}) {
-
+export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
+    const navigate = useNavigate();
     const tabs = useTabs((state) => state.tabs);
-    const addTab = useTabs((state) => state.addTab)
-
 
     return (
         <div>
             <div className="flex">
                 <div className="w-12 h-dvh bg-[#9AFFC0] flex flex-col gap-4">
-                    <div className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                    <div onClick={() => navigate("/Home")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
                         <Home />
                     </div>
-                    <div className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                    <div onClick={() => navigate("/Tickets/")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
                         <WalletCards />
                     </div>
-                    <div className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                    <div onClick={() => navigate("/Users/")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
                         <Users />
                     </div>
-                    <div className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                    <div onClick={() => navigate("/Dashboards/")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
                         <ChartNoAxesCombined />
                     </div>
                 </div>
@@ -35,7 +45,7 @@ export default function FixedLayout( {TelaAtual} : {TelaAtual: JSX.Element}) {
                     <header className="flex flex-1 w-full bg-(--bg-default) h-12">
                         <div className="flex justify-between items-center w-full">
                             <div className="flex h-full">
-                                <div onClick={() => addTab("/Teste")} className="bg-[#D0E2D0] flex justify-center items-center h-full w-12 cursor-pointer">
+                                <div onClick={() => navigate("/Ticket/Criar")} className="bg-[#D0E2D0] flex justify-center items-center h-full w-12 cursor-pointer">
                                     <Plus />
                                 </div>
                                 <div className="flex overflow-x-scroll lg:overflow-auto max-w-10/12 lg:max-w-full">
