@@ -1,6 +1,6 @@
 import type { LoginCredentials } from "@/pages/Login/Login";
-import { toast } from "sonner"
 import Cookies from "js-cookie";
+import { showError } from "./useToast";
 
 const API_URL = "";
 
@@ -8,12 +8,6 @@ interface TokenAnswer{
     access_token: string,
     refresh_token: string,
     expires_in: number
-}
-
-function showError(message : any){
-    toast.error(message, {
-        closeButton: false
-    });
 }
 
 function Authenticate({email, password} : LoginCredentials){
@@ -53,7 +47,7 @@ export default function useAuth({email, password} : LoginCredentials, rememberMe
     // if(rememberMe)
     //     Cookies.set("RefreshToken", tokenResposta.refresh_token, {expires: 7, path: "/"});
 
-    return validateAuth();
+    // return validateAuth();
 
     // Por enquanto vou sempre retornar true pra fazer com que seja possível ir pra Home
     return true;

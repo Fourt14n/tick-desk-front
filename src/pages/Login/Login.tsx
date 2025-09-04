@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router";
 import loginLogo from "@/assets/loginLogo.png";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,9 @@ export default function Login() {
     const navigate = useNavigate();
 
     function handleLogin() {
+
+        console.log(rememberMe)
+
         if(!validateEmail(email)){
             setIsValidEmail(false);
             toast.error("Digite um e-mail válido!");
@@ -115,7 +118,7 @@ export default function Login() {
                                     <Button onClick={handleLogin} className="bg-(--btn-default) text-(--text-strongGreen) hover:bg-(--btn-default-strong) cursor-pointer lg:text-base">Entrar</Button>
                                 </div>
                                 <div className="flex gap-2">
-                                    <Checkbox checked={rememberMe} onCheckedChange={() => setRememberMe} id="rememberPassword" />
+                                    <Checkbox checked={rememberMe} onCheckedChange={() => setRememberMe(!rememberMe)} id="rememberPassword" />
                                     <Label htmlFor="rememberPassword" className="lg:text-sm">Lembrar de mim</Label>
                                 </div>
                             </div>
