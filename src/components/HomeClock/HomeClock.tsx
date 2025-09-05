@@ -18,5 +18,5 @@ export const Clock: React.FC = () => {
     hour12: false
   });
 
-  return <p className="text-(--grey) font-bold text-2xl">{formatter.format(now)}</p>;
+  return <p className="text-(--grey) font-bold text-sm md:text-xl lg:text-2xl">{formatter.format(now)}</p>;
 };
