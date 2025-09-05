@@ -107,7 +107,7 @@ export default function Login() {
                                     required />
                                     <a
                                         href="#"
-                                        className="ml-auto inline-block text-sm underline-offset-4 underline hover:text-(--text-grey)"
+                                        className="ml-auto inline-block text-sm underline-offset-4 underline hover:text-(--grey)"
                                     >
                                         Esqueceu a senha?
                                     </a>

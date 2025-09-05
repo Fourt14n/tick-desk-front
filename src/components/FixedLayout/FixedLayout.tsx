@@ -68,7 +68,7 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
                     </header>
 
 
-                    <div className="w-full h-[calc(h-12 - h-full)]">
+                    <div className="w-full h-(--height-default)">
                         {TelaAtual}
                     </div>
 
