@@ -1,5 +1,4 @@
 import type { LoginCredentials } from "@/pages/Login/Login";
-import Cookies from "js-cookie";
 import { showError } from "./useToast";
 
 const API_URL = "";
@@ -12,7 +11,7 @@ interface TokenAnswer{
 
 function Authenticate({email, password} : LoginCredentials){
     // Objeto padrão nulo
-    var result : TokenAnswer = {access_token: "", expires_in: 1, refresh_token: ""};
+    var result : TokenAnswer = {access_token: "", expires_in: 0, refresh_token: ""};
     try{
         fetch(API_URL, {
         method: "POST",
@@ -21,7 +20,16 @@ function Authenticate({email, password} : LoginCredentials){
             "Content-Type": "application/json"
         }
     })
-    .then(res => res.json())
+    .then(async (res) => {
+        // Se der errado o fetch eu puxo a mensagem de erro
+        // Pra então poder mostrar essa mensagem pro usuário
+        if(!res.ok){
+            var erro = await res.text();
+            throw new Error(erro);
+        }
+
+        return res.json();
+    })
     .then((data : TokenAnswer) => data)
     }catch(error){
         showError(error);
@@ -32,8 +40,8 @@ function Authenticate({email, password} : LoginCredentials){
 
 // Essa função vai ser exportada e vai ser usada pra validar a autenticação
 export function validateAuth(){
-    let tokenCookies = Cookies.get("Token");
-    return tokenCookies == "" || tokenCookies == undefined ? false : true;
+    let token = sessionStorage.get("Token");
+    return token == "" || token == undefined ? false : true;
 }
 
 export default function useAuth({email, password} : LoginCredentials, rememberMe : boolean){
@@ -42,10 +50,10 @@ export default function useAuth({email, password} : LoginCredentials, rememberMe
 
     // Lógica que vai fazer uma requisição pra conseguir puxar e validar o token
     // var tokenResposta = Authenticate({email, password});
-    // Cookies.set("Token", tokenResposta.access_token, {expires: tokenResposta.expires_in, path: "/"});
+    // sessionStorage.set("Token", tokenResposta.access_token, {expires: tokenResposta.expires_in, path: "/"});
 
     // if(rememberMe)
-    //     Cookies.set("RefreshToken", tokenResposta.refresh_token, {expires: 7, path: "/"});
+    //     localStorage.set("RefreshToken", tokenResposta.refresh_token, {expires: 7, path: "/"});
 
     // return validateAuth();
 
