@@ -68,7 +68,7 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
                     </header>
 
 
-                    <div className="w-full h-(--height-default)">
+                    <div className="w-full max-h-(--height-default) overflow-scroll">
                         {TelaAtual}
                     </div>
 

@@ -1,3 +1,4 @@
+import HomeCard from "@/components/HomeCard/HomeCard";
 import { Clock } from "@/components/HomeClock/HomeClock";
 
 export default function Home(){
@@ -8,8 +9,10 @@ export default function Home(){
 
                 <Clock/>
             </div>
-            <div className="flex">
-                
+            <div className="flex flex-col gap-10">
+                <HomeCard/>
+                <HomeCard/>
+                <HomeCard/>
             </div>
         </div>
     )
