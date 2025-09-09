@@ -14,12 +14,12 @@ interface ReceivingData {
     group: TicketGroup
 }
 
-export default function HomeCard() {
+export default function HomeCard({group} : ReceivingData) {
     return (
         <Card className="lg:flex-1">
             <CardHeader>
                 <CardTitle className="text-center flex justify-center items-center flex-col">
-                    <p className="cardTitle">Desenvolvimento</p>
+                    <p className="cardTitle">{group.GroupName}</p>
                     <Separator className="bg-[#BAB9B9] h-[1px] w-2/3 md:w-1/3 lg:w-2/10 mt-1" orientation="horizontal" />
                 </CardTitle>
             </CardHeader>
@@ -30,7 +30,7 @@ export default function HomeCard() {
                             <div className="flex w-full gap-3 flex-col justify-center items-center">
                                 <p className="text-center">Total</p>
                                 <div className="quantityTextContainer bg-[#1eff003b]">
-                                    <p className="font-bold">19</p>
+                                    <p className="font-bold">{group.Total.toString()}</p>
                                 </div>
                             </div>
                         </div>
@@ -38,7 +38,7 @@ export default function HomeCard() {
                             <div className="flex w-full gap-3 flex-col justify-center items-center">
                                 <p className="text-center">Abertos hoje</p>
                                 <div className="quantityTextContainer bg-[#f6ff0065] text-center">
-                                    <p className="font-bold">19</p>
+                                    <p className="font-bold">{group.OpenedToday.toString()}</p>
                                 </div>
                             </div>
                         </div>
@@ -50,7 +50,7 @@ export default function HomeCard() {
                             </div>
                             <div className="flex w-2/5 gap-3 justify-center items-center">
                                 <div className="quantityTextContainer bg-[#ff80006b]">
-                                    <p className="font-bold">19</p>
+                                    <p className="font-bold">{group.ExpiresToday.toString()}</p>
                                 </div>
                             </div>
                         </div>
@@ -60,7 +60,7 @@ export default function HomeCard() {
                             </div>
                             <div className="flex w-2/5 gap-3 justify-center items-center">
                                 <div className="quantityTextContainer bg-[#ff08008a]">
-                                    <p className="font-bold">19</p>
+                                    <p className="font-bold">{group.Expired.toString()}</p>
                                 </div>
                             </div>
                         </div>
