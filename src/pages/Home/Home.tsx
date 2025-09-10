@@ -1,5 +1,8 @@
 import HomeCard from "@/components/HomeCard/HomeCard";
 import { Clock } from "@/components/HomeClock/HomeClock";
+import { validateAuth } from "@/hooks/useAuth";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 
 // Para fins educativos eu vou criar aqui um array do bagulho pra nós ver funcionando
 var equipes = [{
@@ -30,6 +33,12 @@ var equipes = [{
 ]
 
 export default function Home(){
+    // const navigate = useNavigate();
+    // useEffect(() => {
+    //     if(!validateAuth())
+    //         navigate("/Login");
+    // }, []);
+
     return (
         <div className="w-full h-full px-5 md:px-20">
             <div className="flex justify-center items-center md:justify-between w-full flex-col md:flex-row py-5 lg:py-10 gap-2 md:gap-0">
@@ -37,7 +46,7 @@ export default function Home(){
 
                 <Clock/>
             </div>
-            <div className="flex flex-col gap-5 pb-10 lg:flex-row lg:pb:0 md-pb-5 lg:justify-center lg:items-center">
+            <div className="flex flex-col gap-5 pb-10 lg:flex-row lg:pb:0 md-pb-5 lg:justify-center lg:items-center xl:justify-between">
                 {equipes.map(item => <HomeCard group={item}/>)}
             </div>
         </div>

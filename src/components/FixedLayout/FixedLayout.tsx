@@ -5,6 +5,7 @@ import { useTabs } from "@/store/TabsStore";
 import HeaderCardTab from "../HeaderCardTab/HeaderCardTab";
 import { showError } from "@/hooks/useToast";
 import { useNavigate } from "react-router";
+import { ScrollArea } from "../ui/scroll-area";
 
 const API_URL = "";
 
@@ -44,11 +45,11 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
 
                     <header className="flex flex-1 w-full bg-(--bg-default) h-12">
                         <div className="flex justify-between items-center w-full">
-                            <div className="flex h-full">
-                                <div onClick={() => navigate("/Ticket/Criar")} className="bg-[#D0E2D0] flex justify-center items-center h-full w-12 cursor-pointer">
+                            <div className="flex h-full max-w-3/5">
+                                <div onClick={() => navigate("/Ticket/Criar")} className="bg-[#D0E2D0] flex justify-center items-center h-full w-12 cursor-pointer aspect-square">
                                     <Plus />
                                 </div>
-                                <div className="flex overflow-x-scroll lg:overflow-auto max-w-10/12 lg:max-w-full">
+                                <div className="flex overflow-x-auto overflow-y-hidden scrollbar-none">
                                     {
                                         tabs.map((tab) => {
                                             console.log(tab);
@@ -60,7 +61,7 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
                                 </div>
                             </div>
 
-                            <div className="relative w-3/4 md:w-2/5 mr-2 lg:w-1/3">
+                            <div className="relative w-3/4 md:w-2/5 mr-2 lg:w-1/3 xl:w-2/6">
                                 <Input placeholder="Localize seu ticket" className="bg-white pr-8 w-full" />
                                 <Search size={20} className="absolute top-2 right-2 cursor-pointer" />
                             </div>
@@ -68,9 +69,9 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
                     </header>
 
 
-                    <div className="w-full max-h-(--height-default) overflow-scroll">
+                    <ScrollArea className="w-full max-h-(--height-default) overflow-auto">
                         {TelaAtual}
-                    </div>
+                    </ScrollArea>
 
                 </div>
 

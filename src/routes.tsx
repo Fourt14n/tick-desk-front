@@ -2,14 +2,16 @@ import { Route, Routes } from "react-router";
 import Login from "./pages/Login/Login";
 import Home from "./pages/Home/Home";
 import Layout from "./components/Layout/Layout";
+import Ticket from "./pages/Ticket/Ticket";
 
 export default function Router(){
     return (
         <Routes>
-            <Route element={<Login/>} path="" />
+            <Route element={<Login/>} path="/Login" />
             
-            <Route path="/home" element={<Layout/>}>
-                <Route index element={<Home/>}/>
+            <Route path="/" element={<Layout/>}>
+                <Route path="Home/" index element={<Home/>}/>
+                <Route path="Ticket/*" element={<Ticket/>}/>
             </Route>
         </Routes>
     )

@@ -40,7 +40,7 @@ function Authenticate({email, password} : LoginCredentials){
 
 // Essa função vai ser exportada e vai ser usada pra validar a autenticação
 export function validateAuth(){
-    let token = sessionStorage.get("Token");
+    let token = sessionStorage.getItem("Token");
     return token == "" || token == undefined ? false : true;
 }
 
@@ -50,10 +50,10 @@ export default function useAuth({email, password} : LoginCredentials, rememberMe
 
     // Lógica que vai fazer uma requisição pra conseguir puxar e validar o token
     // var tokenResposta = Authenticate({email, password});
-    // sessionStorage.set("Token", tokenResposta.access_token, {expires: tokenResposta.expires_in, path: "/"});
+    // sessionStorage.setItem("Token", tokenResposta.access_token, {expires: tokenResposta.expires_in, path: "/"});
 
     // if(rememberMe)
-    //     localStorage.set("RefreshToken", tokenResposta.refresh_token, {expires: 7, path: "/"});
+    //     localStorage.setItem("RefreshToken", tokenResposta.refresh_token, {expires: 7, path: "/"});
 
     // return validateAuth();
 
