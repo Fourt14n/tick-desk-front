@@ -11,7 +11,7 @@ export default function Router(){
             
             <Route path="/" element={<Layout/>}>
                 <Route path="Home/" index element={<Home/>}/>
-                <Route path="Ticket/*" element={<Ticket/>}/>
+                <Route path="Ticket/:id" element={<Ticket/>}/>
             </Route>
         </Routes>
     )
