@@ -1,69 +1,123 @@
-import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { showError } from "@/hooks/useToast";
-import { ArrowLeft } from "lucide-react";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { ArrowLeft, Paperclip } from "lucide-react";
+import { useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import "@/index.css";
+import useConfirmation from "@/hooks/useConfirmation";
+
+function handlePrivacyChange(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    // Selecino o elemento anterior e removo a classe de selecionado
+    var prevOption = document.querySelector(".selectedPrivacy");
+    prevOption?.classList.remove("selectedPrivacy");
+
+    // Seleciono o elemento clicado e adiciono a classe de selecionado
+    var actualOption = event.target as HTMLButtonElement;
+    actualOption.classList.add("selectedPrivacy");
+}
 
 export default function Ticket() {
     const navigate = useNavigate();
     let { id = '' } = useParams();
+    const [actionValue, setActionValue] = useState("");
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const confirmDialog = useConfirmation();
 
     if (!id) {
         showError("Caminho inválido de ticket!");
         navigate("/Home");
     }
 
+    function handleIconClick() {
+        fileInputRef.current?.click();
+    }
+
+    function handleSendAction(){
+        console.log(actionValue.trim())
+        console.log(actionValue.trim() === "");
+        if(actionValue.trim() === ""){
+            showError("Não é possível enviar uma ação sem interação!");
+            return;
+        }
+        
+        if(actionValue.toUpperCase().includes("ANEXO") && fileInputRef.current?.files?.length === 0){
+            confirmDialog.open({
+                title: "Confirma envio sem anexo?",
+                description: "Você escreveu anexo na ação, mas não anexou nenhum arquivo, deseja enviar a ação assim mesmo?",
+                onConfirm: () => console.log("Confirmado"),
+                cancelText: "Não",
+                confirmText: "Sim",
+            });
+        };
+    }
+
     const ticket = Number.isInteger(parseInt(id)) ? parseInt(id) : 0;
 
     return (
-        <div className="grid grid-cols-15 grid-rows-5 h-full bg-(--bg-default)">
-            <div className="grid col-span-14 row-span-10 h-full p-5 w-full">
-                <div className="flex flex-col justify-center row-span-1">
-                    <p className="text-(--text-strongGreen) font-bold">{ticket > 0 ? `Editar ticket ${ticket}` : `Criar um ticket`}</p>
-                    <Separator className="bg-[#BAB9B9]" orientation="horizontal" />
-                </div>
-                <div className="flex min-h-full w-full row-span-5 relative border border-gray-300 rounded-lg bg-white">
-                    {/* Textarea com scroll */}
-                    <textarea
-                        placeholder="Toca aqui e sua solicitação..."
-                        className="w-full p-3 pb-15 border-none outline-none resize-none placeholder-gray-400 rounded-lg overflow-y-auto"
-                        style={{
-                            scrollbarWidth: 'thin',
-                            scrollbarColor: '#cbd5e1 transparent'
-                        }}
-                    />
+        <div className="grid grid-rows-7 w-full bg-(--bg-default) grid-cols-[1fr_25px] md:grid-cols-[1fr_2rem]">
+            <div className="row-span-7 h-full p-3 w-full">
+                <ScrollArea className="w-full h-full">
+                    <div className="grid col-span-14 row-span-3 h-screen p-3 w-full">
+                        <div className="flex flex-col justify-center row-span-1">
+                            <p className="text-(--text-strongGreen) font-bold">{ticket > 0 ? `Editar Ticket` : `Criar um Ticket`}</p>
+                            <Separator className="bg-[#BAB9B9]" orientation="horizontal" />
+                        </div>
+                        <div className="flex min-h-full w-full row-span-5 border border-gray-300 rounded-lg bg-white">
+                            {/* Textarea com scroll */}
+                            <div className="relative w-full">
+                                <textarea
+                                    value={actionValue}
+                                    onChange={(event) => {
+                                        setActionValue(event.target.value);
+                                    }}
+                                    placeholder="Faça aqui e sua solicitação..."
+                                    className="w-full p-3 pb-15 border-none outline-none resize-none placeholder-gray-400 rounded-lg overflow-y-auto"
+                                    style={{
+                                        scrollbarWidth: 'thin',
+                                        scrollbarColor: '#cbd5e1 transparent'
+                                    }} />
+                                {/* Container dos botões - fixo na parte inferior */}
+                                <div className="absolute bottom-0 left-0 right-0 flex justify-between items-center p-1 md:p-3 bg-white border-t border-gray-100 rounded-b-lg">
+                                    {/* Botões à esquerda */}
+                                    <div className="flex min-[380px]:gap-3 items-center">
+                                        <div className="flex items-center space-x-2 max-[360px]:space-x-1">
+                                            <button onClick={(event) => handlePrivacyChange(event)} className="px-3 py-1.5 text-xs md:text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors cursor-pointer selectedPrivacy">
+                                                Público
+                                            </button>
+                                            <button onClick={(event) => handlePrivacyChange(event)} className="px-3 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) border border-gray-300 rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer">
+                                                Interno
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <Input ref={fileInputRef} type="file" accept=".jpg, .png, .zip, .rar, .pdf, .docx, .xls, .xlxs" style={{ display: "none" }} />
+                                            <Paperclip size={20} color={"var(--grey)"} className="cursor-pointer" onClick={handleIconClick} />
+                                        </div>
+                                    </div>
 
-                    {/* Container dos botões - fixo na parte inferior */}
-                    <div className="absolute bottom-0 left-0 right-0 flex justify-between items-center p-3 bg-white border-t border-gray-100 rounded-b-lg">
-                        {/* Botões à esquerda */}
-                        <div className="flex items-center space-x-2">
-                            <button className="px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
-                                Público
-                            </button>
-                            <button className="px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
-                                Interno
-                            </button>
+                                    {/* Botão à direita */}
+                                    <button
+                                        className="px-4 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer" onClick={handleSendAction}>
+                                        Enviar
+                                    </button>
+                                </div>
+                            </div>
+
                         </div>
 
-                        {/* Botão à direita */}
-                        <button
-                            className="px-4 py-1.5 text-sm text-white bg-green-500 rounded-md hover:bg-green-600 transition-colors"
-                        >
-                            Enviar
-                        </button>
+                        <div className="grid row-span-3">
+                            {ticket > 0 ? <p>Teste</p> : <div></div>}
+                        </div>
                     </div>
-                </div>
-
-                <div className="grid row-span-4">
-                    <p>Minecraft</p>
-                </div>
+                </ScrollArea>
             </div>
 
-            <div className="grid col-span-1 row-span-5 h-full">
+            <div className="flex row-span-7 h-full">
                 <Sheet modal={false}>
                     <SheetTrigger className="flex justify-end items-end h-(--height-mobile) bg-(--bg-divs)">
-                        <div className="flex h-full justify-center cursor-pointer">
+                        <div className="flex h-full w-full justify-center cursor-pointer">
                             <ArrowLeft />
                         </div>
                     </SheetTrigger>
@@ -74,6 +128,7 @@ export default function Ticket() {
                     </SheetContent>
                 </Sheet>
             </div>
+            {confirmDialog.DialogComponent}
         </div>
     )
 }

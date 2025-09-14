@@ -6,6 +6,10 @@
   @apply flex items-center justify-between p-4 bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-shadow cursor-pointer;
 }
 
+.selectedPrivacy{
+  @apply border-1 border-black;
+}
+
 .quantityTextContainer{
   @apply flex p-2 rounded-md border-(--grey) border-1
 }
@@ -37,7 +41,9 @@
     --bg-default: #E4EEE4;
     --bg-divs: #D7EDD7;
     --height-default: calc(100% - 3rem);
-    --height-mobile: calc(100dvh - 3rem)
+    --height-mobile: calc(100dvh - 3rem);
+    --weakGreen: #1eff004b;
+    --mediumGreen: #1eff006f;
 }
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
