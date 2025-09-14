@@ -9,6 +9,7 @@ import { useNavigate, useParams } from "react-router";
 import "@/index.css";
 import useConfirmation from "@/hooks/useConfirmation";
 import ActionHistory from "@/components/ActionHistory/ActionHistory";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 function handlePrivacyChange(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     // Selecino o elemento anterior e removo a classe de selecionado
@@ -36,15 +37,15 @@ export default function Ticket() {
         fileInputRef.current?.click();
     }
 
-    function handleSendAction(){
+    function handleSendAction() {
         console.log(actionValue.trim())
         console.log(actionValue.trim() === "");
-        if(actionValue.trim() === ""){
+        if (actionValue.trim() === "") {
             showError("Não é possível enviar uma ação sem interação!");
             return;
         }
 
-        if(actionValue.toUpperCase().includes("ANEXO") && fileInputRef.current?.files?.length === 0){
+        if (actionValue.toUpperCase().includes("ANEXO") && fileInputRef.current?.files?.length === 0) {
             confirmDialog.open({
                 title: "Confirma envio sem anexo?",
                 description: "Você escreveu anexo na ação, mas não anexou nenhum arquivo, deseja enviar a ação assim mesmo?",
@@ -61,12 +62,15 @@ export default function Ticket() {
         <div className="grid grid-rows-7 w-full bg-(--bg-default) grid-cols-[1fr_25px] md:grid-cols-[1fr_2rem]">
             <div className="row-span-7 h-full p-3 w-full">
                 <ScrollArea className="w-full h-full">
-                    <div className="grid col-span-14 row-span-3 h-screen p-3 w-full">
-                        <div className="flex flex-col justify-center row-span-1">
+                    <div className="flex flex-col min-h-full p-3 w-full space-y-3">
+                        {/* Header */}
+                        <div className="flex flex-col justify-center">
                             <p className="text-(--text-strongGreen) font-bold">{ticket > 0 ? `Editar Ticket` : `Criar um Ticket`}</p>
                             <Separator className="bg-[#BAB9B9]" orientation="horizontal" />
                         </div>
-                        <div className="flex min-h-full w-full row-span-5 border border-gray-300 rounded-lg bg-white">
+
+                        {/* Textarea container */}
+                        <div className="flex min-h-[300px] w-full border border-gray-300 rounded-lg bg-white">
                             {/* Textarea com scroll */}
                             <div className="relative w-full">
                                 <textarea
@@ -94,7 +98,14 @@ export default function Ticket() {
                                         </div>
                                         <div>
                                             <Input ref={fileInputRef} type="file" accept=".jpg, .png, .zip, .rar, .pdf, .docx, .xls, .xlxs" style={{ display: "none" }} />
-                                            <Paperclip size={20} color={"var(--grey)"} className="cursor-pointer" onClick={handleIconClick} />
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Paperclip size={20} color={"var(--grey)"} className="cursor-pointer" onClick={handleIconClick} />
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Anexar arquivos</p>
+                                                </TooltipContent>
+                                            </Tooltip>
                                         </div>
                                     </div>
 
@@ -105,10 +116,9 @@ export default function Ticket() {
                                     </button>
                                 </div>
                             </div>
-
                         </div>
 
-                        <div className="grid row-span-3">
+                        <div className="w-full">
                             {ticket > 0 ? <ActionHistory /> : <div></div>}
                         </div>
                     </div>
@@ -119,7 +129,14 @@ export default function Ticket() {
                 <Sheet modal={false}>
                     <SheetTrigger className="flex justify-end items-end h-(--height-mobile) bg-(--bg-divs)">
                         <div className="flex h-full w-full justify-center cursor-pointer">
-                            <ArrowLeft />
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <ArrowLeft />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Exibir detalhes do ticket</p>
+                                </TooltipContent>
+                            </Tooltip>
                         </div>
                     </SheetTrigger>
                     <SheetContent className="h-(--height-default) mt-[3rem]">
