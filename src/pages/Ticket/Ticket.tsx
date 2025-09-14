@@ -42,7 +42,7 @@ export default function Ticket() {
             showError("Não é possível enviar uma ação sem interação!");
             return;
         }
-        
+
         if(actionValue.toUpperCase().includes("ANEXO") && fileInputRef.current?.files?.length === 0){
             confirmDialog.open({
                 title: "Confirma envio sem anexo?",
