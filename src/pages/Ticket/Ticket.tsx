@@ -8,6 +8,7 @@ import { useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import "@/index.css";
 import useConfirmation from "@/hooks/useConfirmation";
+import ActionHistory from "@/components/ActionHistory/ActionHistory";
 
 function handlePrivacyChange(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     // Selecino o elemento anterior e removo a classe de selecionado
@@ -108,7 +109,7 @@ export default function Ticket() {
                         </div>
 
                         <div className="grid row-span-3">
-                            {ticket > 0 ? <p>Teste</p> : <div></div>}
+                            {ticket > 0 ? <ActionHistory /> : <div></div>}
                         </div>
                     </div>
                 </ScrollArea>
