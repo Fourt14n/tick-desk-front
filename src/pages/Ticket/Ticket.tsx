@@ -14,9 +14,9 @@ import { Dropdown } from "@/components/Dropdown/Dropdown";
 import { Label } from "@/components/ui/label";
 import DatePicker from "@/components/DatePicker/DatePicker";
 
-function handlePrivacyChange(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+function handleSelectedChange(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, parentElement : string) {
     // Selecino o elemento anterior e removo a classe de selecionado
-    var prevOption = document.querySelector(".selected");
+    var prevOption = document.querySelector(`#${parentElement} .selected`);
     prevOption?.classList.remove("selected");
 
     // Seleciono o elemento clicado e adiciono a classe de selecionado
@@ -103,11 +103,11 @@ export default function Ticket() {
                                 <div className="absolute bottom-0 left-0 right-0 flex justify-between items-center p-1 md:p-3 bg-white border-t border-gray-100 rounded-b-lg">
                                     {/* Botões à esquerda */}
                                     <div className="flex min-[380px]:gap-3 items-center">
-                                        <div className="flex items-center space-x-2 max-[360px]:space-x-1">
-                                            <button onClick={(event) => handlePrivacyChange(event)} className="px-3 py-1.5 text-xs md:text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors cursor-pointer selected">
+                                        <div id="privacyOptContainer" className="flex items-center space-x-2 max-[360px]:space-x-1">
+                                            <button onClick={(event) => handleSelectedChange(event, "privacyOptContainer")} className="px-3 py-1.5 text-xs md:text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors cursor-pointer selected">
                                                 Público
                                             </button>
-                                            <button onClick={(event) => handlePrivacyChange(event)} className="px-3 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) border border-gray-300 rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer">
+                                            <button onClick={(event) => handleSelectedChange(event, "privacyOptContainer")} className="px-3 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) border border-gray-300 rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer">
                                                 Interno
                                             </button>
                                         </div>
@@ -158,16 +158,19 @@ export default function Ticket() {
                                 <Dropdown dados={{ keyDropdown: "exemplo2", values: valoresDropdown, label: "Equipe Responsável" }} />
                                 <Dropdown dados={{ keyDropdown: "exemplo3", values: valoresDropdown, label: "Requisitante" }} />
                                 <DatePicker dados={{ label: "Previsão de Solução", disabledPastDays: true }} />
-                                <div className="flex justify-between">
-                                    <button onClick={(event) => handleUrgencyChange(event)} className="px-3 py-1.5 text-xs md:text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors cursor-pointer">
+                                <div id="urgencyOpts" className="flex flex-col gap-2">
+                                    <Label>Urgência</Label>
+                                    <div className="flex justify-evenly">
+                                        <button onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="px-6 sm:px-5 py-1.5 text-xs md:text-sm text-gray-600 rounded-md bg-(--weakGreen) hover:bg-(--mediumGreen) transition-colors cursor-pointer">
                                         Baixa
                                     </button>
-                                    <button onClick={(event) => handleUrgencyChange(event)} className="px-3 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) border border-gray-300 rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer selected">
+                                    <button onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="px-6 sm:px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#f6ff0092] rounded-md hover:bg-[#f6ff00dc] transition-colors cursor-pointer selected">
                                         Média
                                     </button>
-                                    <button onClick={(event) => handleUrgencyChange(event)} className="px-3 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) border border-gray-300 rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer">
+                                    <button onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="px-6 sm:px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#ff080094] rounded-md hover:bg-[#ff0800b1] transition-colors cursor-pointer">
                                         Alta
                                     </button>
+                                    </div>
                                 </div>
                             </div>
 
