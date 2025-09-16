@@ -16,21 +16,21 @@ import DatePicker from "@/components/DatePicker/DatePicker";
 
 function handlePrivacyChange(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     // Selecino o elemento anterior e removo a classe de selecionado
-    var prevOption = document.querySelector(".selectedPrivacy");
-    prevOption?.classList.remove("selectedPrivacy");
+    var prevOption = document.querySelector(".selected");
+    prevOption?.classList.remove("selected");
 
     // Seleciono o elemento clicado e adiciono a classe de selecionado
     var actualOption = event.target as HTMLButtonElement;
-    actualOption.classList.add("selectedPrivacy");
+    actualOption.classList.add("selected");
 }
 
 const valoresDropdown = [{
     label: "Teste1",
     value: "1"
-},{
+}, {
     label: "Teste2",
     value: "2"
-},{
+}, {
     label: "Teste3",
     value: "3"
 },]
@@ -104,7 +104,7 @@ export default function Ticket() {
                                     {/* Botões à esquerda */}
                                     <div className="flex min-[380px]:gap-3 items-center">
                                         <div className="flex items-center space-x-2 max-[360px]:space-x-1">
-                                            <button onClick={(event) => handlePrivacyChange(event)} className="px-3 py-1.5 text-xs md:text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors cursor-pointer selectedPrivacy">
+                                            <button onClick={(event) => handlePrivacyChange(event)} className="px-3 py-1.5 text-xs md:text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors cursor-pointer selected">
                                                 Público
                                             </button>
                                             <button onClick={(event) => handlePrivacyChange(event)} className="px-3 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) border border-gray-300 rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer">
@@ -152,12 +152,23 @@ export default function Ticket() {
                             <div className="p-4">
                                 <ArrowRight cursor={"pointer"} onClick={() => setIsDialogOpen(false)} />
                             </div>
-                            
+
                             <div className="flex flex-col w-full p-2 gap-4">
-                                <Dropdown dados={{keyDropdown: "exemplo", values: valoresDropdown, label: "Usuário Responsável"}}/>
-                                <Dropdown dados={{keyDropdown: "exemplo2", values: valoresDropdown, label: "Equipe Responsável"}}/>
-                                <Dropdown dados={{keyDropdown: "exemplo3", values: valoresDropdown, label: "Requisitante"}}/>
-                                <DatePicker dados={{label:"Previsão de Solução", disabledPastDays: true}}/>
+                                <Dropdown dados={{ keyDropdown: "exemplo", values: valoresDropdown, label: "Usuário Responsável" }} />
+                                <Dropdown dados={{ keyDropdown: "exemplo2", values: valoresDropdown, label: "Equipe Responsável" }} />
+                                <Dropdown dados={{ keyDropdown: "exemplo3", values: valoresDropdown, label: "Requisitante" }} />
+                                <DatePicker dados={{ label: "Previsão de Solução", disabledPastDays: true }} />
+                                <div className="flex justify-between">
+                                    <button onClick={(event) => handleUrgencyChange(event)} className="px-3 py-1.5 text-xs md:text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors cursor-pointer">
+                                        Baixa
+                                    </button>
+                                    <button onClick={(event) => handleUrgencyChange(event)} className="px-3 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) border border-gray-300 rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer selected">
+                                        Média
+                                    </button>
+                                    <button onClick={(event) => handleUrgencyChange(event)} className="px-3 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) border border-gray-300 rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer">
+                                        Alta
+                                    </button>
+                                </div>
                             </div>
 
                         </div>
