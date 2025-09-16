@@ -12,6 +12,7 @@ import ActionHistory from "@/components/ActionHistory/ActionHistory";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dropdown } from "@/components/Dropdown/Dropdown";
 import { Label } from "@/components/ui/label";
+import DatePicker from "@/components/DatePicker/DatePicker";
 
 function handlePrivacyChange(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     // Selecino o elemento anterior e removo a classe de selecionado
@@ -152,10 +153,11 @@ export default function Ticket() {
                                 <ArrowRight cursor={"pointer"} onClick={() => setIsDialogOpen(false)} />
                             </div>
                             
-                            <div className="flex flex-col w-full">
+                            <div className="flex flex-col w-full p-2 gap-4">
                                 <Dropdown dados={{keyDropdown: "exemplo", values: valoresDropdown, label: "Usuário Responsável"}}/>
                                 <Dropdown dados={{keyDropdown: "exemplo2", values: valoresDropdown, label: "Equipe Responsável"}}/>
                                 <Dropdown dados={{keyDropdown: "exemplo3", values: valoresDropdown, label: "Requisitante"}}/>
+                                <DatePicker dados={{label:"Previsão de Solução", disabledPastDays: true}}/>
                             </div>
 
                         </div>

@@ -25,7 +25,7 @@ export interface DropDownValues{
 
 export function Dropdown({dados} : Data) {
   return (
-    <div className="flex flex-col gap-1.5 p-2">
+    <div className="flex flex-col gap-1.5">
       <Label className="font-semibold" htmlFor={dados.keyDropdown}>{dados.label}</Label>
       <Select>
         <SelectTrigger id={dados.keyDropdown} className={`${dados.classes} cursor-pointer bg-white w-full`}>
