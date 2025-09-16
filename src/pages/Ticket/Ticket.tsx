@@ -3,13 +3,14 @@ import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { showError } from "@/hooks/useToast";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { ArrowLeft, Paperclip } from "lucide-react";
+import { ArrowLeft, ArrowRight, Paperclip } from "lucide-react";
 import { useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import "@/index.css";
 import useConfirmation from "@/hooks/useConfirmation";
 import ActionHistory from "@/components/ActionHistory/ActionHistory";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Dropdown } from "@/components/Dropdown/Dropdown";
 
 function handlePrivacyChange(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     // Selecino o elemento anterior e removo a classe de selecionado
@@ -21,12 +22,24 @@ function handlePrivacyChange(event: React.MouseEvent<HTMLButtonElement, MouseEve
     actualOption.classList.add("selectedPrivacy");
 }
 
+const valoresDropdown = [{
+    label: "Teste1",
+    value: "1"
+},{
+    label: "Teste2",
+    value: "2"
+},{
+    label: "Teste3",
+    value: "3"
+},]
+
 export default function Ticket() {
     const navigate = useNavigate();
     let { id = '' } = useParams();
     const [actionValue, setActionValue] = useState("");
     const fileInputRef = useRef<HTMLInputElement>(null);
     const confirmDialog = useConfirmation();
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     if (!id) {
         showError("Caminho inválido de ticket!");
@@ -97,7 +110,7 @@ export default function Ticket() {
                                             </button>
                                         </div>
                                         <div>
-                                            <Input ref={fileInputRef} type="file" accept=".jpg, .png, .zip, .rar, .pdf, .docx, .xls, .xlxs" style={{ display: "none" }} />
+                                            <Input ref={fileInputRef} type="file" multiple accept=".jpg, .png, .zip, .rar, .pdf, .docx, .xls, .xlxs" style={{ display: "none" }} />
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
                                                     <Paperclip size={20} color={"var(--grey)"} className="cursor-pointer" onClick={handleIconClick} />
@@ -126,22 +139,22 @@ export default function Ticket() {
             </div>
 
             <div className="flex row-span-7 h-full">
-                <Sheet modal={false}>
+                <Sheet open={isDialogOpen} onOpenChange={setIsDialogOpen} modal={false}>
                     <SheetTrigger className="flex justify-end items-end h-(--height-mobile) bg-(--bg-divs)">
-                        <div className="flex h-full w-full justify-center cursor-pointer">
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <ArrowLeft />
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>Exibir detalhes do ticket</p>
-                                </TooltipContent>
-                            </Tooltip>
+                        <div className="flex h-full w-full justify-center cursor-pointer pt-4">
+                            <ArrowLeft />
                         </div>
                     </SheetTrigger>
-                    <SheetContent className="h-(--height-default) mt-[3rem]">
+                    <SheetContent className="h-(--height-default) mt-[3rem] [&>button]:hidden">
                         <div className="bg-(--bg-divs) h-(--height-mobile)">
-                            teste
+                            <div className="p-4">
+                                <ArrowRight cursor={"pointer"} onClick={() => setIsDialogOpen(false)} />
+                            </div>
+                            
+                            <div className="flex">
+                                <Dropdown dados={{classes: "w-full bg-red-50", placeholder: "Teste", values: valoresDropdown}}/>
+                            </div>
+
                         </div>
                     </SheetContent>
                 </Sheet>

@@ -70,9 +70,7 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
 
 
                     <ScrollArea className="w-full max-h-(--height-default) md:h-svh h-full overflow-auto scrollbar-none">
-                       
                          {TelaAtual}
-                       
                     </ScrollArea>
 
                 </div>
