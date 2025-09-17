@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState, type ChangeEvent } from "react";
 import useAuth from "@/hooks/useAuth";
-import { toast } from "sonner";
+import { useForm } from "react-hook-form";
 
 export interface LoginCredentials {
     email: string,
@@ -25,33 +25,17 @@ function validateEmail(email : string){
 }
 
 export default function Login() {
-    const [email, setEmail] = useState("");
-    const [isValidEmail, setIsValidEmail] = useState(true);
-    const [password, setPassword] = useState("");
-    const [isValidPassword, setIsValidPassword] = useState(true);
     const [rememberMe, setRememberMe] = useState(false);
+    const {register, handleSubmit, watch } = useForm();
     const navigate = useNavigate();
+
+    console.log(watch("email"));
 
     function handleLogin() {
 
         console.log(rememberMe)
 
-        if(!validateEmail(email)){
-            setIsValidEmail(false);
-            toast.error("Digite um e-mail válido!");
-            event?.preventDefault();
-            return false;
-        }
-        
-        if(password.trim() == ""){
-            setIsValidPassword(false);
-            console.log(isValidPassword)
-            toast.error("Digite uma senha válida!");
-            event?.preventDefault();
-            return false;
-        }
-
-        let auth = useAuth({email, password}, rememberMe);
+        let auth = useAuth({email: watch("email"), password: watch("password")}, rememberMe);
 
         if(auth)
             navigate("/Home");
@@ -76,15 +60,11 @@ export default function Login() {
                                 <div className="grid gap-2">
                                     <Label className="font-display font-weight-regular text-lg lg:text-xl" htmlFor="email">E-mail</Label>
                                     <Input
+                                        {...register("email"), {required: "O e-mail é obrigatório!"}}
                                         id="email"
                                         type="email"
                                         placeholder="Digite aqui o seu e-mail"
                                         className={`text-sm lg:text-base ${!isValidEmail && "border-red-500"}`}
-                                        value={email}
-                                        onChange={(event) => {
-                                            handleInputChange(event, setEmail);
-                                            setIsValidEmail(true);
-                                        }}
                                         required
                                     />
                                 </div>
@@ -93,15 +73,11 @@ export default function Login() {
                                         <Label className="font-display font-weight-regular text-lg lg:text-xl" htmlFor="password">Senha</Label>
                                     </div>
                                     <Input 
+                                    {...register("password"), {required: "A senha é obrigatória!", minLength: 8}}
                                     className={`text-sm lg:text-base ${!isValidPassword && "border-red-500"}`} 
                                     placeholder="**********" 
                                     id="password" 
                                     type="password"
-                                    value={password}
-                                    onChange={(event) => {
-                                        handleInputChange(event, setPassword);
-                                        setIsValidPassword(true);
-                                    }}
                                     required />
                                     <a
                                         href="#"
