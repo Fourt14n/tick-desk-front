@@ -141,7 +141,7 @@ export default function Ticket() {
                 </ScrollArea>
             </div>
 
-            <div className="flex row-span-7 h-full">
+            <form className="flex row-span-7 h-full">
                 <Sheet open={isDialogOpen} onOpenChange={setIsDialogOpen} modal={false}>
                     <SheetTrigger className="flex justify-end items-end h-(--height-mobile) bg-(--bg-divs)">
                         <div className="flex h-full w-full justify-center cursor-pointer pt-4">
@@ -182,13 +182,13 @@ export default function Ticket() {
                                     <Input className="bg-white" type="text" disabled></Input>
                                 </div>
 
-                                <Button className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">Finalizar Ticket</Button>
+                                {ticket > 0 && <Button className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">Finalizar Ticket</Button>}
                             </div>
 
                         </div>
                     </SheetContent>
                 </Sheet>
-            </div>
+            </form>
             {confirmDialog.DialogComponent}
         </div>
     )
