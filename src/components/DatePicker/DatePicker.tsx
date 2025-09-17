@@ -4,6 +4,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { Calendar } from "../ui/calendar"
 import React from "react"
 import { Label } from "../ui/label"
+import { ptBR } from "date-fns/locale"
 
 interface Data{
     dados: DatePickerProperties
@@ -12,6 +13,8 @@ interface Data{
 interface DatePickerProperties{
     label: string,
     disabledPastDays?: boolean,
+    disabledButton?: boolean
+    noPlaceholder?: boolean
 }
 export default function DatePicker({dados} : Data) {
     const [open, setOpen] = React.useState(false)
@@ -25,10 +28,11 @@ export default function DatePicker({dados} : Data) {
                 <Button
                     variant="outline"
                     id="date"
+                    disabled={dados.disabledButton}
                     className="w-full justify-between cursor-pointer font-normal text-muted-foreground hover:text-muted-foreground hover:bg-white"
                 >
-                    {date ? date.toLocaleDateString() : "Selecione"}
-                    <ChevronDownIcon color="#A6B0BF"/>
+                    {date ? date.toLocaleDateString() : dados.noPlaceholder ? "" : "Selecione"}
+                    {!dados.noPlaceholder && <ChevronDownIcon color="#A6B0BF"/>}
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto overflow-hidden p-0" align="start">
@@ -36,6 +40,7 @@ export default function DatePicker({dados} : Data) {
                     mode="single"
                     selected={date}
                     captionLayout="dropdown"
+                    locale={ptBR}
                     disabled = {
                         dados.disabledPastDays 
                         && ((date) => date < new Date())

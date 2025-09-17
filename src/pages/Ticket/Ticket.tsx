@@ -13,6 +13,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { Dropdown } from "@/components/Dropdown/Dropdown";
 import { Label } from "@/components/ui/label";
 import DatePicker from "@/components/DatePicker/DatePicker";
+import { Button } from "@/components/ui/button";
 
 function handleSelectedChange(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, parentElement : string) {
     // Selecino o elemento anterior e removo a classe de selecionado
@@ -104,10 +105,10 @@ export default function Ticket() {
                                     {/* Botões à esquerda */}
                                     <div className="flex min-[380px]:gap-3 items-center">
                                         <div id="privacyOptContainer" className="flex items-center space-x-2 max-[360px]:space-x-1">
-                                            <button onClick={(event) => handleSelectedChange(event, "privacyOptContainer")} className="px-3 py-1.5 text-xs md:text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors cursor-pointer selected">
+                                            <button onClick={(event) => handleSelectedChange(event, "privacyOptContainer")} className="px-3 max-[360px]:px-1 py-1.5 text-xs md:text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors cursor-pointer selected">
                                                 Público
                                             </button>
-                                            <button onClick={(event) => handleSelectedChange(event, "privacyOptContainer")} className="px-3 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) border border-gray-300 rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer">
+                                            <button onClick={(event) => handleSelectedChange(event, "privacyOptContainer")} className="px-3 max-[360px]:px-1 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) border border-gray-300 rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer">
                                                 Interno
                                             </button>
                                         </div>
@@ -126,7 +127,7 @@ export default function Ticket() {
 
                                     {/* Botão à direita */}
                                     <button
-                                        className="px-4 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer" onClick={handleSendAction}>
+                                        className="px-4 max-[360px]:px-2 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer" onClick={handleSendAction}>
                                         Enviar
                                     </button>
                                 </div>
@@ -157,21 +158,31 @@ export default function Ticket() {
                                 <Dropdown dados={{ keyDropdown: "exemplo", values: valoresDropdown, label: "Usuário Responsável" }} />
                                 <Dropdown dados={{ keyDropdown: "exemplo2", values: valoresDropdown, label: "Equipe Responsável" }} />
                                 <Dropdown dados={{ keyDropdown: "exemplo3", values: valoresDropdown, label: "Requisitante" }} />
-                                <DatePicker dados={{ label: "Previsão de Solução", disabledPastDays: true }} />
                                 <div id="urgencyOpts" className="flex flex-col gap-2">
                                     <Label>Urgência</Label>
                                     <div className="flex justify-evenly">
-                                        <button onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="px-6 sm:px-5 py-1.5 text-xs md:text-sm text-gray-600 rounded-md bg-(--weakGreen) hover:bg-(--mediumGreen) transition-colors cursor-pointer">
+                                        <button onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 rounded-md bg-(--weakGreen) hover:bg-(--mediumGreen) transition-colors cursor-pointer">
                                         Baixa
                                     </button>
-                                    <button onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="px-6 sm:px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#f6ff0092] rounded-md hover:bg-[#f6ff00dc] transition-colors cursor-pointer selected">
+                                    <button onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#f6ff0092] rounded-md hover:bg-[#f6ff00dc] transition-colors cursor-pointer selected">
                                         Média
                                     </button>
-                                    <button onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="px-6 sm:px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#ff080094] rounded-md hover:bg-[#ff0800b1] transition-colors cursor-pointer">
+                                    <button onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#ff080094] rounded-md hover:bg-[#ff0800b1] transition-colors cursor-pointer">
                                         Alta
                                     </button>
                                     </div>
                                 </div>
+                                <DatePicker dados={{ label: "Previsão de Solução", disabledPastDays: true }} />
+                                <div className="flex flex-col gap-1.5 cursor-not-allowed">
+                                    <Label>Fechamento do Chamado</Label>
+                                    <Input className="bg-white" type="text" disabled></Input>
+                                </div>
+                                <div className="flex flex-col gap-1.5 cursor-not-allowed">
+                                    <Label>Usuário do Fechamento</Label>
+                                    <Input className="bg-white" type="text" disabled></Input>
+                                </div>
+
+                                <Button className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">Finalizar Ticket</Button>
                             </div>
 
                         </div>
