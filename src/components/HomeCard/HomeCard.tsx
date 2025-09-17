@@ -16,7 +16,7 @@ interface ReceivingData {
 
 export default function HomeCard({group} : ReceivingData) {
     return (
-        <Card className="lg:flex-1 xl:max-w-[31rem]">
+        <Card className="lg:flex-1 xl:max-w-[31rem] shadow-xl/20">
             <CardHeader>
                 <CardTitle className="text-center flex justify-center items-center flex-col">
                     <p className="cardTitle">{group.GroupName}</p>
@@ -29,7 +29,7 @@ export default function HomeCard({group} : ReceivingData) {
                         <div className="ticketQtdContainer h-full aspect-[2-1] lg:aspect-square">
                             <div className="flex w-full gap-3 flex-col justify-center items-center">
                                 <p className="text-center">Total</p>
-                                <div className="quantityTextContainer bg-[#1eff003b]">
+                                <div className="quantityTextContainer bg-[#1eff004b]">
                                     <p className="font-bold">{group.Total.toString()}</p>
                                 </div>
                             </div>

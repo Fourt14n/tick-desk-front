@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState, type ChangeEvent } from "react";
 import useAuth from "@/hooks/useAuth";
-import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 
 export interface LoginCredentials {
@@ -61,7 +60,6 @@ export default function Login() {
 
     return (
         <main className="flex flex-1 bg-(--bg-default)">
-            <Toaster position="top-right" richColors={true} />
             <div className="logoContainer hidden xl:flex flex-1 justify-center items-center h-screen bg-gradient-to-r from-[#00ff629f] to-(--bg-default)">
                 <img className="w-2/5 lg:w-3/4" src={loginLogo} alt="" />
             </div>

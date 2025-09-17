@@ -7,11 +7,11 @@ import Ticket from "./pages/Ticket/Ticket";
 export default function Router(){
     return (
         <Routes>
-            <Route element={<Login/>} path="/Login" />
+            <Route index element={<Login/>} path="/Login" />
             
             <Route path="/" element={<Layout/>}>
                 <Route path="Home/" index element={<Home/>}/>
-                <Route path="Ticket/*" element={<Ticket/>}/>
+                <Route path="Ticket/:id" element={<Ticket/>}/>
             </Route>
         </Routes>
     )
