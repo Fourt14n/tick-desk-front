@@ -6,15 +6,20 @@ export const ticketValidation = z.object({
     .nonempty("Nome para envio não pode ser vazio!")
     .nonoptional("Nome de envio é obrigatório"),
 
-    emailEnvio: z.string()
-    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, "E-mail inválido de envio")
+    emailEnvio: z.email("E-mail inválido de envio")
     .nonempty("E-mail de envio não pode ser vazio!")
     .nonoptional("E-mail de envio é obrigatório!"),
 
     idEquipe: z.uuid()
+    .refine((valor) => valor === "0", {
+            message: "Selecione uma equipe!"
+        })
     .nonoptional("A equipe é obrigatória!"),
 
     idUsuarioResponsavel: z.uuid()
+    .refine((valor) => valor === "0", {
+            message: "Selecione um usuário responsável"
+        })
     .nonoptional("Usuário responsável é obrigatório!"),
 
     urgencia: z.int32()

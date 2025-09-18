@@ -1,8 +1,7 @@
 import { nonoptional, z  } from "zod";
 
 export const loginSchema = z.object({
-    email: z.string("E-mail é obrigatório!")
-            .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, "E-mail inválido!")
+    email: z.email("E-mail inválido!")
             .nonoptional("E-mail é obrigatório!"),
     password: z.string()
             .nonempty("A senha é obrigatória!")
