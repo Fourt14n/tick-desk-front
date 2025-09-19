@@ -68,16 +68,16 @@ export default function Ticket() {
     function handleSendAction() {
         console.log("Teste")
         if (watch("descricaoAcao").toUpperCase().includes("ANEXO") && fileInputRef.current?.files?.length === 0) {
-                confirmDialog.open({
-                    title: "Confirma envio sem anexo?",
-                    description: "Você escreveu anexo na ação, mas não anexou nenhum arquivo, deseja enviar a ação assim mesmo?",
-                    onConfirm: () => console.log("Confirmado"),
-                    cancelText: "Não",
-                    confirmText: "Sim",
-                });
-            };
+            confirmDialog.open({
+                title: "Confirma envio sem anexo?",
+                description: "Você escreveu anexo na ação, mas não anexou nenhum arquivo, deseja enviar a ação assim mesmo?",
+                onConfirm: () => console.log("Confirmado"),
+                cancelText: "Não",
+                confirmText: "Sim",
+            });
+        };
         if (isValid) {
-            
+
         }
     }
 
@@ -164,59 +164,61 @@ export default function Ticket() {
                             <ArrowLeft />
                         </div>
                     </SheetTrigger>
-                    <SheetContent className="h-(--height-default) mt-[3rem] [&>button]:hidden">
+                    <SheetContent className="h-(--height-default) mt-[3rem] [&>button]:hidden flex flex-col overflow-scroll">
                         <div className="bg-(--bg-divs) h-(--height-mobile)">
                             <div className="p-4">
                                 <ArrowRight cursor={"pointer"} onClick={() => setIsDialogOpen(false)} />
                             </div>
 
-                            <div className="flex flex-col w-full p-2 gap-4">
-                                <Dropdown {...register("idUsuarioResponsavel")} dados={{ keyDropdown: "exemplo", values: valoresDropdown, label: "Usuário Responsável" }} />
-                                <Dropdown {...register("idEquipe")} dados={{ keyDropdown: "exemplo2", values: valoresDropdown, label: "Equipe Responsável" }} />
-                                <Dropdown dados={{ keyDropdown: "exemplo3", values: valoresDropdown, label: "Requisitante" }} />
-                                <div id="urgencyOpts" className="flex flex-col gap-2">
-                                    <Label htmlFor="urgencies">Urgência</Label>
-                                    <RadioGroup defaultValue="1" {...register("urgencia")} id="urgencies" className="flex justify-evenly">
-                                        <RadioGroupItem
-                                            value="0"
-                                            id="baixa"
-                                            className="sr-only peer"
-                                        />
-                                        <Label htmlFor="baixa" onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 rounded-md bg-(--weakGreen) hover:bg-(--mediumGreen) transition-colors cursor-pointer">
-                                            Baixa
-                                        </Label>
-                                        <RadioGroupItem
-                                            value="1"
-                                            id="media"
-                                            className="sr-only peer"
-                                        />
-                                        <Label htmlFor="media" onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#f6ff0092] rounded-md hover:bg-[#f6ff00dc] transition-colors cursor-pointer selected">
-                                            Média
-                                        </Label>
-                                        <RadioGroupItem
-                                            value="3"
-                                            id="alta"
-                                            className="sr-only peer"
-                                        />
-                                        <Label htmlFor="alta" onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#ff080094] rounded-md hover:bg-[#ff0800b1] transition-colors cursor-pointer">
-                                            Alta
-                                        </Label>
-                                    </RadioGroup>
-                                </div>
-                                <DatePicker {...register("previsaoSolucao")} dados={{ label: "Previsão de Solução", disabledPastDays: true }} />
-                                <div className="flex flex-col gap-1.5 cursor-not-allowed">
-                                    <Label>Fechamento do Chamado</Label>
-                                    <Input className="bg-white" type="text" disabled></Input>
-                                </div>
-                                <div className="flex flex-col gap-1.5 cursor-not-allowed">
-                                    <Label>Usuário do Fechamento</Label>
-                                    <Input className="bg-white" type="text" disabled></Input>
-                                </div>
+                            <ScrollArea className="bg-(--bg-divs) pb-3">
+                                <div className="flex flex-col w-full p-2 gap-4">
+                                    <Dropdown {...register("idUsuarioResponsavel")} dados={{ keyDropdown: "exemplo", values: valoresDropdown, label: "Usuário Responsável" }} />
+                                    <Dropdown {...register("idEquipe")} dados={{ keyDropdown: "exemplo2", values: valoresDropdown, label: "Equipe Responsável" }} />
+                                    <Dropdown dados={{ keyDropdown: "exemplo3", values: valoresDropdown, label: "Requisitante" }} />
+                                    <div id="urgencyOpts" className="flex flex-col gap-2">
+                                        <Label htmlFor="urgencies">Urgência</Label>
+                                        <RadioGroup defaultValue="1" {...register("urgencia")} id="urgencies" className="flex justify-evenly">
+                                            <RadioGroupItem
+                                                value="0"
+                                                id="baixa"
+                                                className="sr-only peer"
+                                            />
+                                            <Label htmlFor="baixa" onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 rounded-md bg-(--weakGreen) hover:bg-(--mediumGreen) transition-colors cursor-pointer">
+                                                Baixa
+                                            </Label>
+                                            <RadioGroupItem
+                                                value="1"
+                                                id="media"
+                                                className="sr-only peer"
+                                            />
+                                            <Label htmlFor="media" onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#f6ff0092] rounded-md hover:bg-[#f6ff00dc] transition-colors cursor-pointer selected">
+                                                Média
+                                            </Label>
+                                            <RadioGroupItem
+                                                value="3"
+                                                id="alta"
+                                                className="sr-only peer"
+                                            />
+                                            <Label htmlFor="alta" onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#ff080094] rounded-md hover:bg-[#ff0800b1] transition-colors cursor-pointer">
+                                                Alta
+                                            </Label>
+                                        </RadioGroup>
+                                    </div>
+                                    <DatePicker {...register("previsaoSolucao")} dados={{ label: "Previsão de Solução", disabledPastDays: true }} />
+                                    <div className="flex flex-col gap-1.5 cursor-not-allowed">
+                                        <Label>Fechamento do Chamado</Label>
+                                        <Input className="bg-white" type="text" disabled></Input>
+                                    </div>
+                                    <div className="flex flex-col gap-1.5 cursor-not-allowed">
+                                        <Label>Usuário do Fechamento</Label>
+                                        <Input className="bg-white" type="text" disabled></Input>
+                                    </div>
 
-                                {ticket > 0 && <Button className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">Finalizar Ticket</Button>}
-                            </div>
-
+                                    {ticket > 0 && <Button className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">Finalizar Ticket</Button>}
+                                </div>
+                            </ScrollArea>
                         </div>
+
                     </SheetContent>
                 </Sheet>
             </form>
