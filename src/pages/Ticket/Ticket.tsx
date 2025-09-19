@@ -97,7 +97,7 @@ export default function Ticket() {
                         {/* Textarea container */}
                         <div className="flex min-h-[300px] w-full border border-gray-300 rounded-lg bg-white">
                             {/* Textarea com scroll */}
-                            <form className="relative w-full">
+                            <form onSubmit={handleSubmit(handleSendAction, onError)} className="relative w-full">
                                 <textarea
                                     {...register("descricaoAcao")}
                                     placeholder="Faça aqui e sua solicitação..."
@@ -142,10 +142,10 @@ export default function Ticket() {
                                     </div>
 
                                     {/* Botão à direita */}
-                                    <button onSubmit={handleSubmit(handleSendAction, onError)}
+                                    <Button
                                         className="px-4 max-[360px]:px-2 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer" onClick={handleSendAction}>
                                         Enviar
-                                    </button>
+                                    </Button>
                                 </div>
                             </form>
                         </div>

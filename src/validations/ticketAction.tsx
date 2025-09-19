@@ -40,18 +40,18 @@ const fileSchema = z
     });
 
 export const ticketActionValidation = z.object({
-    idChamado: z.uuid()
-        .nonoptional(),
+    idChamado: z.uuid("Tipo inválido do chamado!")
+        .nonoptional("O chamado é obrigatório para o envio!"),
 
-    idUsuario: z.uuid()
-        .nonoptional(),
+    idUsuario: z.uuid("Tipo inválido pro usuário!")
+        .nonoptional("É obrigatório um usuário a ação!"),
 
-    descricaoAcao: z.string()
+    descricaoAcao: z.string("Tipo inválido pra ação!")
         .max(2500, "A ação não pode ultrapassar 2500 caracteres!")
         .nonempty("A ação não pode ser vazia!")
         .nonoptional("A ação é obrigatória!"),
 
-    publica: z.boolean()
+    publica: z.boolean("Tipo inválido pra definição de privacidade da ação!")
         .default(true)
         .nonoptional("A ação deve ser pública ou interna!"),
 
