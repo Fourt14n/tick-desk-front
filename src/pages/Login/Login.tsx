@@ -7,54 +7,33 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState, type ChangeEvent } from "react";
 import useAuth from "@/hooks/useAuth";
-import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { loginSchema } from "@/validations/login";
+import type z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { showError } from "@/hooks/useToast";
+import { onError } from "@/hooks/onError";
 
-export interface LoginCredentials {
-    email: string,
-    password: string
-}
+type LoginCredentials = z.infer<typeof loginSchema>;
 
-const handleInputChange = (event : ChangeEvent<HTMLInputElement>, setInput : React.Dispatch<React.SetStateAction<string>>) => {
+const handleInputChange = (event: ChangeEvent<HTMLInputElement>, setInput: React.Dispatch<React.SetStateAction<string>>) => {
     setInput(event.target.value);
-}
-// Regex que eu peguei na net pra validar email
-const emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-function validateEmail(email : string){
-    return emailRegex.test(email);
 }
 
 export default function Login() {
-    const [email, setEmail] = useState("");
-    const [isValidEmail, setIsValidEmail] = useState(true);
-    const [password, setPassword] = useState("");
-    const [isValidPassword, setIsValidPassword] = useState(true);
     const [rememberMe, setRememberMe] = useState(false);
+    const { register, handleSubmit, watch, formState: { errors, isValid } } = useForm<LoginCredentials>({
+        resolver: zodResolver(loginSchema)
+    });
     const navigate = useNavigate();
 
     function handleLogin() {
+        if (isValid) {
+            let auth = useAuth({ email: watch("email"), password: watch("password") }, rememberMe);
 
-        console.log(rememberMe)
-
-        if(!validateEmail(email)){
-            setIsValidEmail(false);
-            toast.error("Digite um e-mail válido!");
-            event?.preventDefault();
-            return false;
+            if (auth)
+                navigate("/Home");
         }
-        
-        if(password.trim() == ""){
-            setIsValidPassword(false);
-            console.log(isValidPassword)
-            toast.error("Digite uma senha válida!");
-            event?.preventDefault();
-            return false;
-        }
-
-        let auth = useAuth({email, password}, rememberMe);
-
-        if(auth)
-            navigate("/Home");
     }
 
 
@@ -71,38 +50,28 @@ export default function Login() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="flex justify-items-start items-center w-full lg:justify-center">
-                        <form className="w-full grid gap-6 lg:w-4/5" >
+                        <form onSubmit={handleSubmit(handleLogin, onError)} className="w-full grid gap-6 lg:w-4/5" >
                             <div className="flex flex-col gap-6">
                                 <div className="grid gap-2">
                                     <Label className="font-display font-weight-regular text-lg lg:text-xl" htmlFor="email">E-mail</Label>
                                     <Input
+                                        {...register("email")}
                                         id="email"
                                         type="email"
                                         placeholder="Digite aqui o seu e-mail"
-                                        className={`text-sm lg:text-base ${!isValidEmail && "border-red-500"}`}
-                                        value={email}
-                                        onChange={(event) => {
-                                            handleInputChange(event, setEmail);
-                                            setIsValidEmail(true);
-                                        }}
-                                        required
+                                        className={`text-sm lg:text-base ${errors.email && "border-red-500"}`}
                                     />
                                 </div>
                                 <div className="grid gap-2">
                                     <div className="flex items-center">
                                         <Label className="font-display font-weight-regular text-lg lg:text-xl" htmlFor="password">Senha</Label>
                                     </div>
-                                    <Input 
-                                    className={`text-sm lg:text-base ${!isValidPassword && "border-red-500"}`} 
-                                    placeholder="**********" 
-                                    id="password" 
-                                    type="password"
-                                    value={password}
-                                    onChange={(event) => {
-                                        handleInputChange(event, setPassword);
-                                        setIsValidPassword(true);
-                                    }}
-                                    required />
+                                    <Input
+                                        {...register("password")}
+                                        className={`text-sm lg:text-base ${errors.password && "border-red-500"}`}
+                                        placeholder="**********"
+                                        id="password"
+                                        type="password" />
                                     <a
                                         href="#"
                                         className="ml-auto inline-block text-sm underline-offset-4 underline hover:text-(--grey)"
