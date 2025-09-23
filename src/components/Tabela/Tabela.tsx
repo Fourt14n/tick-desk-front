@@ -68,7 +68,9 @@ export function DataTable<TData, TValue>({
                     className="max-w-2/5"
                 />
             </div>
-            <Table className="overflow-hidden max-w-full" align="center">
+            {/* Mano isso aqui tá dando problema com relatividade de porcentagem, definindo na mão ele funciona */}
+            <div className="flex flex-col overflow-scroll w-52">
+                <Table align="center">
                 <TableHeader className="bg-[#F3F0F0]">
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow className="border-1 border-[--grey]" key={headerGroup.id}>
@@ -112,6 +114,7 @@ export function DataTable<TData, TValue>({
                     )}
                 </TableBody>
             </Table>
+            </div>
             <div className="flex items-center justify-between space-x-2 py-4">
                 <div>
                     <p>Exibindo um total de {table.getRowCount()} registros</p>
