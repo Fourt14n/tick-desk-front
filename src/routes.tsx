@@ -8,9 +8,9 @@ import Listagem from "./pages/Listagem/Listagem";
 export default function Router(){
     return (
         <Routes>
-            <Route index element={<Login/>} path="*"/>
             <Route index element={<Login/>} path="/Login" />
             <Route path="/" element={<Layout/>}>
+                <Route path="*" index element={<Home/>}/>
                 <Route path="Home/" index element={<Home/>}/>
                 <Route path="Ticket/:id" element={<Ticket/>}/>
                 <Route path="Listagem/:tipo" element={<Listagem/>}/>
