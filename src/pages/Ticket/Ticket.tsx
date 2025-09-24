@@ -87,11 +87,16 @@ export default function Ticket() {
         <div className="grid grid-rows-7 w-full bg-(--bg-default) grid-cols-[1fr_25px] md:grid-cols-[1fr_2rem]">
             <div className="row-span-7 h-full p-3 w-full">
                 <ScrollArea className="w-full h-full">
-                    <div className="flex flex-col min-h-full p-3 w-full space-y-3">
+                    <div className="flex flex-col min-h-full p-3 w-full space-y-6">
                         {/* Header */}
                         <div className="flex flex-col justify-center">
                             <p className="text-(--text-strongGreen) font-bold">{ticket > 0 ? `Editar Ticket` : `Criar um Ticket`}</p>
                             <Separator className="bg-[#BAB9B9]" orientation="horizontal" />
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                            <Label htmlFor="tituloTicket">Título do Ticket</Label>
+                            <Input {...register("tituloTicket")} type="text" placeholder="Título do ticket" maxLength={255} className="bg-white w-full"/>
                         </div>
 
                         {/* Textarea container */}
