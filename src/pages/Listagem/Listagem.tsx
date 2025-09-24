@@ -85,8 +85,8 @@ export default function Listagem() {
             case "Tickets":
                 return (
                     <DataTable
-                        columns={TicketColumns} // Corrigido: era UsersColumns
-                        data={dadosTesteTicket}  // Corrigido: era dadosTesteUser
+                        columns={TicketColumns}
+                        data={dadosTesteTicket}
                         placeholder="Busque por título do ticket"
                         caminho="/Ticket/"
                         colunaPesquisa="TituloTicket"
