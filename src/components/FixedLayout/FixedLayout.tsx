@@ -30,10 +30,10 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
                     <div onClick={() => navigate("/Home")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
                         <Home />
                     </div>
-                    <div onClick={() => navigate("/Tickets/")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                    <div onClick={() => navigate("/Listagem/Tickets")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
                         <WalletCards />
                     </div>
-                    <div onClick={() => navigate("/Users/")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                    <div onClick={() => navigate("/Listagem/Users")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
                         <Users />
                     </div>
                     <div onClick={() => navigate("/Dashboards/")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">

@@ -2,9 +2,14 @@ import z from "zod";
 
 export const ticketValidation = z.object({
     nomeEnvio: z.string("Tipo inválido do nome!")
-    .max(255, "Nome muito longo para envio!")
+    .max(255, "Nome muito longo para envio, máximo de 255 caracteres")
     .nonempty("Nome para envio não pode ser vazio!")
     .nonoptional("Nome de envio é obrigatório"),
+
+    tituloTicket: z.string("Tipo inválido do título")
+    .max(255, "Nome muito longo do título, máximo de 255 caracteres!")
+    .nonempty("Título do ticket não pode ser vazio!")
+    .nonoptional("Título do ticket é obrigatório"),
 
     emailEnvio: z.email("E-mail inválido de envio")
     .nonempty("E-mail de envio não pode ser vazio!")
