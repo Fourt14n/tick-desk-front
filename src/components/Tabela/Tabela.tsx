@@ -57,7 +57,8 @@ export function DataTable<TData, TValue>({
     });
 
     return (
-        <div className="w-full overflow-hidden max-1/2">
+        <div className="grid grid-rows-[auto_1fr_auto] h-full w-full">
+            {/* Header fixo com input de busca */}
             <div className="flex items-center py-4">
                 <Input
                     placeholder="Buscar por nome"
@@ -65,79 +66,80 @@ export function DataTable<TData, TValue>({
                     onChange={(event) =>
                         table.getColumn("TituloTicket")?.setFilterValue(event.target.value)
                     }
-                    className="max-w-2/5"
+                    className="max-w-sm"
                 />
             </div>
-            {/* Mano isso aqui tá dando problema com relatividade de porcentagem, definindo na mão ele funciona */}
-            <div className="flex flex-col overflow-scroll w-52">
-                <Table align="center">
-                <TableHeader className="bg-[#F3F0F0]">
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow className="border-1 border-[--grey]" key={headerGroup.id}>
-                            {headerGroup.headers.map((header) => {
-                                return (
-                                    <TableHead key={header.id}>
-                                        {header.isPlaceholder
-                                            ? null
-                                            : flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext()
-                                            )}
-                                    </TableHead>
-                                )
-                            })}
-                        </TableRow>
-                    ))}
-                </TableHeader>
-                <TableBody>
-                    {table.getRowModel().rows?.length ? (
-                        table.getRowModel().rows.map((row) => (
-                            <TableRow
-                                key={row.id}
-                                data-state={row.getIsSelected() && "selected"}
-                                onClick={() => navigate(`/Ticket/${(row.original as Ticket).Id}`)}
-                                className="cursor-pointer border-1 border-[--grey]"
-                            >
-                                {row.getVisibleCells().map((cell) => (
-                                    <TableCell key={cell.id}>
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                    </TableCell>
-                                ))}
+
+            {/* Container da tabela com scroll */}
+            <div className="overflow-auto rounded-md border">
+                <Table>
+                    <TableHeader className="bg-muted/50 sticky top-0">
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => {
+                                    return (
+                                        <TableHead key={header.id}>
+                                            {header.isPlaceholder
+                                                ? null
+                                                : flexRender(
+                                                    header.column.columnDef.header,
+                                                    header.getContext()
+                                                )}
+                                        </TableHead>
+                                    )
+                                })}
                             </TableRow>
-                        ))
-                    ) : (
-                        <TableRow>
-                            <TableCell colSpan={columns.length}>
-                                Listagem vazia.
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
+                        ))}
+                    </TableHeader>
+                    <TableBody>
+                        {table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map((row) => (
+                                <TableRow
+                                    key={row.id}
+                                    data-state={row.getIsSelected() && "selected"}
+                                    onClick={() => navigate(`/Ticket/${(row.original as Ticket).Id}`)}
+                                    className="cursor-pointer hover:bg-muted/50 transition-colors"
+                                >
+                                    {row.getVisibleCells().map((cell) => (
+                                        <TableCell key={cell.id}>
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={columns.length} className="text-center text-muted-foreground">
+                                    Listagem vazia.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
             </div>
+
+            {/* Footer fixo com paginação */}
             <div className="flex items-center justify-between space-x-2 py-4">
-                <div>
-                    <p>Exibindo um total de {table.getRowCount()} registros</p>
+                <div className="text-sm text-muted-foreground">
+                    Exibindo um total de {table.getRowCount()} registros
                 </div>
-                <div>
+                <div className="flex space-x-2">
                     <Button
-                    className="cursor-pointer"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                >
-                    Anterior
-                </Button>
-                <Button
-                    className="cursor-pointer"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                >
-                    Próximo
-                </Button>
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                    >
+                        Anterior
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                    >
+                        Próximo
+                    </Button>
                 </div>
             </div>
         </div>

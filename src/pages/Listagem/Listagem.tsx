@@ -2,14 +2,15 @@ import { DataTable } from "@/components/Tabela/Tabela";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { TicketColumns, type Ticket } from "@/tableObjects/TicketsTable";
+import type { User } from "@/tableObjects/UsersTable";
 import { useParams } from "react-router";
 
 export default function Listagem() {
     let { tipo = '' } = useParams();
 
-    const dadosTeste: Ticket[] = [
+    const dadosTesteTicket: Ticket[] = [
         {
-            Id: "teste",
+            Id: "1",
             NumeroTicket: 21,
             NomeCriador: "Hebert",
             PrevisaoSolucao: new Date(),
@@ -17,116 +18,55 @@ export default function Listagem() {
             Urgencia: 1
         },
         {
-            Id: "teste2",
+            Id: "2",
             NumeroTicket: 22,
-            NomeCriador: "Teste Hebert 2",
+            NomeCriador: "Jean",
             PrevisaoSolucao: new Date(),
-            TituloTicket: "Teste Tabela 2",
-            Urgencia: 3
+            TituloTicket: "Erro de criação do chamado",
+            Urgencia: 2
         },
         {
-            Id: "teste2",
-            NumeroTicket: 22,
-            NomeCriador: "Teste Hebert 2",
+            Id: "3",
+            NumeroTicket: 23,
+            NomeCriador: "João",
             PrevisaoSolucao: new Date(),
-            TituloTicket: "Teste Tabela 2",
-            Urgencia: 3
+            TituloTicket: "Melhoria na tela de Pedidos",
+            Urgencia: 1
         },
         {
-            Id: "teste2",
-            NumeroTicket: 22,
-            NomeCriador: "Teste Hebert 2",
+            Id: "4",
+            NumeroTicket: 23,
+            NomeCriador: "Cliente Não Identificado",
             PrevisaoSolucao: new Date(),
-            TituloTicket: "Teste Tabela 2",
+            TituloTicket: "Emissão de nota de serviço",
             Urgencia: 3
         },
+    ]
+
+    const dadosTesteUser: User[] = [
         {
-            Id: "teste2",
-            NumeroTicket: 22,
-            NomeCriador: "Teste Hebert 2",
-            PrevisaoSolucao: new Date(),
-            TituloTicket: "Teste Tabela 2",
-            Urgencia: 3
+            Id: "1",
+            Nome: "Hebert Lopes",
+            Email: "hebertsep1914@gmail.com",
+            Equipe: "Desenvolvimento",
+            TipoUsuario: "ADMIN",
+            DataHoraUltimaEntrada: new Date()
         },
         {
-            Id: "teste2",
-            NumeroTicket: 22,
-            NomeCriador: "Teste Hebert 2",
-            PrevisaoSolucao: new Date(),
-            TituloTicket: "Teste Tabela 2",
-            Urgencia: 3
+            Id: "2",
+            Nome: "João Ferdinando",
+            Email: "joazeta@outlook.com",
+            Equipe: "Administrativo",
+            TipoUsuario: "GERENTE",
+            DataHoraUltimaEntrada: new Date()
         },
         {
-            Id: "teste2",
-            NumeroTicket: 22,
-            NomeCriador: "Teste Hebert 2",
-            PrevisaoSolucao: new Date(),
-            TituloTicket: "Teste Tabela 2",
-            Urgencia: 3
-        },
-        {
-            Id: "teste2",
-            NumeroTicket: 22,
-            NomeCriador: "Teste Hebert 2",
-            PrevisaoSolucao: new Date(),
-            TituloTicket: "Teste Tabela 2",
-            Urgencia: 3
-        },
-        {
-            Id: "teste2",
-            NumeroTicket: 22,
-            NomeCriador: "Teste Hebert 2",
-            PrevisaoSolucao: new Date(),
-            TituloTicket: "Teste Tabela 2",
-            Urgencia: 3
-        },
-        {
-            Id: "teste2",
-            NumeroTicket: 22,
-            NomeCriador: "Teste Hebert 2",
-            PrevisaoSolucao: new Date(),
-            TituloTicket: "Teste Tabela 2",
-            Urgencia: 3
-        },
-        {
-            Id: "teste2",
-            NumeroTicket: 22,
-            NomeCriador: "Teste Hebert 2",
-            PrevisaoSolucao: new Date(),
-            TituloTicket: "Teste Tabela 2",
-            Urgencia: 3
-        },
-        {
-            Id: "teste2",
-            NumeroTicket: 22,
-            NomeCriador: "Teste Hebert 2",
-            PrevisaoSolucao: new Date(),
-            TituloTicket: "Teste Tabela 2",
-            Urgencia: 3
-        },
-        {
-            Id: "teste2",
-            NumeroTicket: 22,
-            NomeCriador: "Teste Hebert 2",
-            PrevisaoSolucao: new Date(),
-            TituloTicket: "Teste Tabela 2",
-            Urgencia: 3
-        },
-        {
-            Id: "teste2",
-            NumeroTicket: 22,
-            NomeCriador: "Teste Hebert 2",
-            PrevisaoSolucao: new Date(),
-            TituloTicket: "Teste Tabela 2",
-            Urgencia: 3
-        },
-        {
-            Id: "teste2",
-            NumeroTicket: 22,
-            NomeCriador: "Teste Hebert 2",
-            PrevisaoSolucao: new Date(),
-            TituloTicket: "Teste Tabela 2",
-            Urgencia: 3
+            Id: "1",
+            Nome: "Jean Carletos",
+            Email: "jeanzinho2007@gmail.com",
+            Equipe: "Suporte",
+            TipoUsuario: "SUPORTE",
+            DataHoraUltimaEntrada: new Date()
         },
     ]
 
@@ -140,7 +80,7 @@ export default function Listagem() {
                     </div>
                 </div>
                 <div className="flex w-full overflow-hidden">
-                    <DataTable columns={TicketColumns} data={dadosTeste} />
+                    <DataTable columns={TicketColumns} data={dadosTesteTicket} />
                 </div>
             </ScrollArea>
         </div>
