@@ -2,7 +2,7 @@ import { DataTable } from "@/components/Tabela/Tabela";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { TicketColumns, type Ticket } from "@/tableObjects/TicketsTable";
-import type { User } from "@/tableObjects/UsersTable";
+import { UsersColumns, type User } from "@/tableObjects/UsersTable";
 import { useParams } from "react-router";
 
 export default function Listagem() {
@@ -70,6 +70,33 @@ export default function Listagem() {
         },
     ]
 
+    const renderDataTable = () => {
+        switch (tipo) {
+            case "Users":
+                return (
+                    <DataTable
+                        columns={UsersColumns}
+                        data={dadosTesteUser}
+                        placeholder="Busque por nome do usuário"
+                        caminho="/User/"
+                        colunaPesquisa="Nome"
+                    />
+                );
+            case "Tickets":
+                return (
+                    <DataTable
+                        columns={TicketColumns} // Corrigido: era UsersColumns
+                        data={dadosTesteTicket}  // Corrigido: era dadosTesteUser
+                        placeholder="Busque por título do ticket"
+                        caminho="/Ticket/"
+                        colunaPesquisa="TituloTicket"
+                    />
+                );
+            default:
+                return <div>Tipo não encontrado</div>;
+        }
+    };
+
     return (
         <div className="flex w-full h-full p-3 overflow-hidden">
             <ScrollArea className="w-full h-full">
@@ -80,7 +107,9 @@ export default function Listagem() {
                     </div>
                 </div>
                 <div className="flex w-full overflow-hidden">
-                    <DataTable columns={TicketColumns} data={dadosTesteTicket} />
+                    {
+                        renderDataTable()
+                    }
                 </div>
             </ScrollArea>
         </div>

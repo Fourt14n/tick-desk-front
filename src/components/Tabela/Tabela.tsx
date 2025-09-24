@@ -26,7 +26,10 @@ import type { Ticket } from "@/tableObjects/TicketsTable"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
-    data: TData[]
+    data: TData[],
+    placeholder: string,
+    caminho: string,
+    colunaPesquisa: string
 }
 
 // Aqui é um código puxado dos componentes do ShadCN
@@ -36,6 +39,9 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
     columns,
     data,
+    placeholder,
+    caminho,
+    colunaPesquisa
 }: DataTableProps<TData, TValue>) {
     const navigate = useNavigate();
     const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -61,10 +67,10 @@ export function DataTable<TData, TValue>({
             {/* Header fixo com input de busca */}
             <div className="flex items-center py-4">
                 <Input
-                    placeholder="Buscar por nome"
-                    value={(table.getColumn("TituloTicket")?.getFilterValue() as string) ?? ""}
+                    placeholder={placeholder}
+                    value={(table.getColumn(colunaPesquisa)?.getFilterValue() as string) ?? ""}
                     onChange={(event) =>
-                        table.getColumn("TituloTicket")?.setFilterValue(event.target.value)
+                        table.getColumn(colunaPesquisa)?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm"
                 />
@@ -97,7 +103,7 @@ export function DataTable<TData, TValue>({
                                 <TableRow
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
-                                    onClick={() => navigate(`/Ticket/${(row.original as Ticket).Id}`)}
+                                    onClick={() => navigate(`${caminho}${(row.original as Ticket).Id}`)}
                                     className="cursor-pointer hover:bg-muted/50 transition-colors"
                                 >
                                     {row.getVisibleCells().map((cell) => (
