@@ -72,7 +72,7 @@ export function DataTable<TData, TValue>({
                     onChange={(event) =>
                         table.getColumn(colunaPesquisa)?.setFilterValue(event.target.value)
                     }
-                    className="max-w-sm"
+                    className="max-w-sm sm:max-w-full"
                 />
             </div>
 
@@ -125,8 +125,9 @@ export function DataTable<TData, TValue>({
             </div>
 
             {/* Footer fixo com paginação */}
-            <div className="flex items-center justify-between space-x-2 py-4">
-                <div className="text-sm text-muted-foreground">
+            <div className="absolute bottom-0 flex items-center justify-between space-x-2 py-4 w-full">
+                <div className="flex justify-between items-center w-full">
+                    <div className="text-sm text-muted-foreground">
                     Exibindo um total de {table.getRowCount()} registros
                 </div>
                 <div className="flex space-x-2">
@@ -146,6 +147,7 @@ export function DataTable<TData, TValue>({
                     >
                         Próximo
                     </Button>
+                </div>
                 </div>
             </div>
         </div>

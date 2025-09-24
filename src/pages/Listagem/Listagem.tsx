@@ -97,12 +97,21 @@ export default function Listagem() {
         }
     };
 
+    const renderTitleListagem = () => {
+        switch(tipo){
+            case "Users":
+                return "Usuários"
+            case "Tickets":
+                return "Tickets"
+        }
+    }
+
     return (
         <div className="flex w-full h-full p-3 overflow-hidden">
             <ScrollArea className="w-full h-full">
                 <div className="flex flex-col p-3 w-full">
                     <div className="flex flex-col justify-center">
-                        <p className="text-(--text-strongGreen) font-bold">{tipo}</p>
+                        <p className="text-(--text-strongGreen) font-bold">{renderTitleListagem()}</p>
                         <Separator className="bg-[#BAB9B9]" orientation="horizontal" />
                     </div>
                 </div>
