@@ -14,7 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { showError } from "@/hooks/useToast";
 import { onError } from "@/hooks/onError";
 
-type LoginCredentials = z.infer<typeof loginSchema>;
+export type LoginCredentials = z.infer<typeof loginSchema>;
 
 const handleInputChange = (event: ChangeEvent<HTMLInputElement>, setInput: React.Dispatch<React.SetStateAction<string>>) => {
     setInput(event.target.value);
@@ -27,9 +27,9 @@ export default function Login() {
     });
     const navigate = useNavigate();
 
-    function handleLogin() {
+    async function handleLogin() {
         if (isValid) {
-            let auth = useAuth({ email: watch("email"), password: watch("password") }, rememberMe);
+            let auth = await useAuth({ email: watch("email"), password: watch("password") }, rememberMe);
 
             if (auth)
                 navigate("/Home");
