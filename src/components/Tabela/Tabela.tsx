@@ -125,7 +125,7 @@ export function DataTable<TData, TValue>({
             </div>
 
             {/* Footer fixo com paginação */}
-            <div className="absolute bottom-0 flex items-center justify-between space-x-2 py-4 w-full">
+            <div className="relative bottom-0 flex items-center justify-between space-x-2 py-4 w-full">
                 <div className="flex justify-between items-center w-full">
                     <div className="text-sm text-muted-foreground">
                     Exibindo um total de {table.getRowCount()} registros

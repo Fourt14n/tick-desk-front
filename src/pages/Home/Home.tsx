@@ -34,6 +34,9 @@ var equipes = [{
 
 ]
 
+function PopularHome(){
+
+}
 
 export default function Home() {
     const navigate = useNavigate();
@@ -42,6 +45,8 @@ export default function Home() {
     useEffect(() => {
         if (!validateAuth())
             navigate("/Login");
+
+        PopularHome();
     }, []);
 
     return (
