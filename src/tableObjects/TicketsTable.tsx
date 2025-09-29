@@ -13,7 +13,7 @@ export interface Ticket {
 
 export const TicketColumns: ColumnDef<Ticket>[] = [
   {
-    accessorKey: "NumeroTicket",
+    accessorKey: "callNumber",
     header: ({ column }) => {
       return (
         <Button
