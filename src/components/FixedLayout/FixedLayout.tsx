@@ -4,7 +4,7 @@ import { Input } from "../ui/input";
 import { useTabs } from "@/store/TabsStore";
 import HeaderCardTab from "../HeaderCardTab/HeaderCardTab";
 import { showError } from "@/hooks/useToast";
-import { useNavigate } from "react-router";
+import { Link } from "react-router";
 import { ScrollArea } from "../ui/scroll-area";
 
 const API_URL = "";
@@ -20,25 +20,24 @@ function returnNextTicketNum() {
 }
 
 export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
-    const navigate = useNavigate();
     const tabs = useTabs((state) => state.tabs);
 
     return (
         <div>
             <div className="flex">
                 <div className="w-12 h-dvh bg-[#9AFFC0] flex flex-col gap-4">
-                    <div onClick={() => navigate("/Home")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                    <Link to="/Home" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
                         <Home />
-                    </div>
-                    <div onClick={() => navigate("/Listagem/Tickets")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                    </Link>
+                    <Link to="/Listagem/Tickets" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
                         <WalletCards />
-                    </div>
-                    <div onClick={() => navigate("/Listagem/Users")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                    </Link>
+                    <Link to="/Listagem/Users" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
                         <Users />
-                    </div>
-                    <div onClick={() => navigate("/Dashboards/")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                    </Link>
+                    <Link to="/Dashboards/" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
                         <ChartNoAxesCombined />
-                    </div>
+                    </Link>
                 </div>
 
                 <div className="w-full h-dvh">
@@ -46,9 +45,9 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
                     <header className="flex flex-1 w-full bg-(--bg-default) h-12">
                         <div className="flex justify-between items-center w-full">
                             <div className="flex h-full max-w-3/5">
-                                <div onClick={() => navigate("/Ticket/Criar")} className="bg-[#D0E2D0] flex justify-center items-center h-full w-12 cursor-pointer aspect-square">
+                                <Link to="/Ticket/Criar" className="bg-[#D0E2D0] flex justify-center items-center h-full w-12 cursor-pointer aspect-square">
                                     <Plus />
-                                </div>
+                                </Link>
                                 <div className="flex overflow-x-auto overflow-y-hidden scrollbar-none">
                                     {
                                         tabs.map((tab) => {
