@@ -35,8 +35,8 @@ async function Authenticate({ email, password }: LoginCredentials) {
 }
 
 // Essa função vai ser exportada e vai ser usada pra validar a autenticação
-export function validateAuth() {
-    let token = sessionStorage.getItem("Token");
+function validateAuth() {
+    let token = sessionStorage.getItem("Token_TickDesk");
     return token == "" || token == undefined ? false : true;
 }
 
@@ -47,7 +47,7 @@ export default async function useAuth({ email, password }: LoginCredentials, rem
     // Lógica que vai fazer uma requisição pra conseguir puxar e validar o token
     var tokenResposta = await Authenticate({ email, password });
     console.log(tokenResposta)
-    sessionStorage.setItem("Token", tokenResposta.access_token);
+    sessionStorage.setItem("Token_TickDesk", tokenResposta.access_token);
 
     if (rememberMe)
         localStorage.setItem("RefreshToken", tokenResposta.access_token);

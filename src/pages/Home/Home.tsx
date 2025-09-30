@@ -1,10 +1,8 @@
 import HomeCard from "@/components/HomeCard/HomeCard";
 import { Clock } from "@/components/HomeClock/HomeClock";
-import { validateAuth } from "@/hooks/useAuth";
 import useUser, {type TokenReturn } from "@/hooks/useUser";
 import { capitalizeFirstWord } from "@/lib/utils";
 import { useEffect } from "react";
-import { useNavigate } from "react-router";
 
 // Para fins educativos eu vou criar aqui um array do bagulho pra nós ver funcionando
 var equipes = [{
@@ -39,13 +37,9 @@ function PopularHome(){
 }
 
 export default function Home() {
-    const navigate = useNavigate();
-    const user = useUser(sessionStorage.getItem("Token") || "");
+    const user = useUser(sessionStorage.getItem("Token_TickDesk") || "");
 
     useEffect(() => {
-        if (!validateAuth())
-            navigate("/Login");
-
         PopularHome();
     }, []);
 

@@ -1,5 +1,6 @@
 import { Separator } from "@radix-ui/react-separator";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Link } from "react-router";
 
 interface TicketGroup {
     GroupName: string,
@@ -26,25 +27,25 @@ export default function HomeCard({group} : ReceivingData) {
             <CardContent className="px-3">
                 <div className="w-full max-w-full grid gap-2">
                     <div className="topCards grid grid-cols-2 justify-between gap-3">
-                        <div className="ticketQtdContainer h-full aspect-[2-1] lg:aspect-square">
+                        <Link to="/Ticket/21" className="ticketQtdContainer h-full aspect-[2-1] lg:aspect-square">
                             <div className="flex w-full gap-3 flex-col justify-center items-center">
                                 <p className="text-center">Total</p>
                                 <div className="quantityTextContainer bg-[#1eff004b]">
                                     <p className="font-bold">{group.Total.toString()}</p>
                                 </div>
                             </div>
-                        </div>
-                        <div className="ticketQtdContainer h-full aspect-[2-1] lg:aspect-square">
+                        </Link>
+                        <Link to="/Ticket/21" className="ticketQtdContainer h-full aspect-[2-1] lg:aspect-square">
                             <div className="flex w-full gap-3 flex-col justify-center items-center">
                                 <p className="text-center">Abertos hoje</p>
                                 <div className="quantityTextContainer bg-[#f6ff0065] text-center">
                                     <p className="font-bold">{group.OpenedToday.toString()}</p>
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     </div>
                     <div className="bottomCards flex flex-col gap-2">
-                        <div className="ticketQtdContainer">
+                        <Link to="/Ticket/21" className="ticketQtdContainer">
                             <div className="flex w-3/5 gap-3 justify-center items-center">
                                 <p className="w-full">Vencem hoje</p>
                             </div>
@@ -53,8 +54,8 @@ export default function HomeCard({group} : ReceivingData) {
                                     <p className="font-bold">{group.ExpiresToday.toString()}</p>
                                 </div>
                             </div>
-                        </div>
-                        <div className="ticketQtdContainer">
+                        </Link>
+                        <Link to="/Ticket/21" className="ticketQtdContainer">
                             <div className="flex w-3/5 gap-3 justify-center items-center">
                                 <p className="w-full">Vencidos</p>
                             </div>
@@ -63,7 +64,7 @@ export default function HomeCard({group} : ReceivingData) {
                                     <p className="font-bold">{group.Expired.toString()}</p>
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     </div>
                 </div>
             </CardContent>
