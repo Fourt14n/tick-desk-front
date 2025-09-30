@@ -1,6 +1,6 @@
 import HomeCard from "@/components/HomeCard/HomeCard";
 import { Clock } from "@/components/HomeClock/HomeClock";
-import useUser, {type TokenReturn } from "@/hooks/useUser";
+import useUser from "@/hooks/useUser";
 import { capitalizeFirstWord } from "@/lib/utils";
 import { useEffect } from "react";
 
@@ -37,7 +37,7 @@ function PopularHome(){
 }
 
 export default function Home() {
-    const user = useUser(sessionStorage.getItem("Token_TickDesk") || "");
+    const user = useUser(sessionStorage.getItem("Token_TickDesk")!);
 
     useEffect(() => {
         PopularHome();
