@@ -3,21 +3,8 @@ import { type JSX } from "react"
 import { Input } from "../ui/input";
 import { useTabs } from "@/store/TabsStore";
 import HeaderCardTab from "../HeaderCardTab/HeaderCardTab";
-import { showError } from "@/hooks/useToast";
 import { useNavigate } from "react-router";
 import { ScrollArea } from "../ui/scroll-area";
-
-const API_URL = "";
-
-function returnNextTicketNum() {
-    try {
-        fetch(API_URL)
-            .then(res => res.json())
-            .then((data) => data)
-    } catch (error) {
-        showError(error);
-    }
-}
 
 export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
     const navigate = useNavigate();
