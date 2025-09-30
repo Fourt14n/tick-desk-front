@@ -29,7 +29,7 @@ interface DataTableProps<TData, TValue> {
     data: TData[],
     placeholder: string,
     caminho: string,
-    colunaPesquisa: string
+    colunaPesquisa: string,
 }
 
 // Aqui é um código puxado dos componentes do ShadCN
