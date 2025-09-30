@@ -11,35 +11,35 @@ export default function Listagem() {
     const dadosTesteTicket: Ticket[] = [
         {
             Id: "1",
-            NumeroTicket: 21,
-            NomeCriador: "Hebert",
-            PrevisaoSolucao: new Date(),
-            TituloTicket: "Teste Tabela",
-            Urgencia: 1
+            callNumber: 21,
+            usernameEnvio: "Hebert",
+            previsaoSolucao: new Date(),
+            title: "Teste Tabela",
+            urgencia: 1
         },
         {
             Id: "2",
-            NumeroTicket: 22,
-            NomeCriador: "Jean",
-            PrevisaoSolucao: new Date(),
-            TituloTicket: "Erro de criação do chamado",
-            Urgencia: 2
+            callNumber: 22,
+            usernameEnvio: "Jean",
+            previsaoSolucao: new Date(),
+            title: "Erro de criação do chamado",
+            urgencia: 2
         },
         {
             Id: "3",
-            NumeroTicket: 23,
-            NomeCriador: "João",
-            PrevisaoSolucao: new Date(),
-            TituloTicket: "Melhoria na tela de Pedidos",
-            Urgencia: 1
+            callNumber: 23,
+            usernameEnvio: "João",
+            previsaoSolucao: new Date(),
+            title: "Melhoria na tela de Pedidos",
+            urgencia: 1
         },
         {
             Id: "4",
-            NumeroTicket: 23,
-            NomeCriador: "Cliente Não Identificado",
-            PrevisaoSolucao: new Date(),
-            TituloTicket: "Emissão de nota de serviço",
-            Urgencia: 3
+            callNumber: 23,
+            usernameEnvio: "Cliente Não Identificado",
+            previsaoSolucao: new Date(),
+            title: "Emissão de nota de serviço",
+            urgencia: 3
         },
     ]
 
