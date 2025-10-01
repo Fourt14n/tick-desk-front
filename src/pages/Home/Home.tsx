@@ -46,7 +46,7 @@ export default function Home() {
     return (
         <div className="w-full h-full px-5 md:px-20 bg-(--bg-default)">
             <div className="flex justify-center items-center md:justify-between w-full flex-col md:flex-row py-5 lg:py-10 gap-2 md:gap-0">
-                <p className="text-(--grey) font-bold text-xl md:text-xl lg:text-2xl text-center">{`Seja bem-vindo(a), ${capitalizeFirstWord(user.name)}`}</p>
+                <p className="text-(--grey) font-bold text-xl md:text-xl lg:text-2xl text-center">{`Seja bem-vindo(a), ${capitalizeFirstWord(user.name.split(" ").at(0)!)}`}</p>
 
                 <Clock />
             </div>
