@@ -3,7 +3,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 
 export interface User {
-    Id: string,
+    id: string,
     Nome: string,
     Email: string,
     Equipe: string,
@@ -13,7 +13,7 @@ export interface User {
 
 export const UsersColumns: ColumnDef<User>[] = [
   {
-    accessorKey: "Nome",
+    accessorKey: "name",
     header: ({ column }) => {
       return (
         <Button
@@ -27,19 +27,19 @@ export const UsersColumns: ColumnDef<User>[] = [
     },
   },
   {
-    accessorKey: "Email",
+    accessorKey: "email",
     header: "E-mail",
   },
+  // {
+  //   accessorKey: "Equipe",
+  //   header: "Equipe",
+  // },
   {
-    accessorKey: "Equipe",
-    header: "Equipe",
-  },
-  {
-    accessorKey: "TipoUsuario",
+    accessorKey: "role",
     header: "Tipo de Usuário",
   },
-  {
-    accessorKey: "DataHoraUltimaEntrada",
-    header: "Ultima Entrada",
-  },
+  // {
+  //   accessorKey: "DataHoraUltimaEntrada",
+  //   header: "Ultima Entrada",
+  // },
 ]

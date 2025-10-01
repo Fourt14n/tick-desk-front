@@ -1,74 +1,64 @@
 import { DataTable } from "@/components/Tabela/Tabela";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { showError } from "@/hooks/useToast";
+import { api } from "@/lib/axios";
 import { TicketColumns, type Ticket } from "@/tableObjects/TicketsTable";
 import { UsersColumns, type User } from "@/tableObjects/UsersTable";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
 export default function Listagem() {
     let { tipo = '' } = useParams();
+    const [dataUsers, setDataUsers] = useState<User[]>([]);
+    const [dataTickets, setDataTickets] = useState<Ticket[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const dadosTesteTicket: Ticket[] = [
-        {
-            Id: "1",
-            callNumber: 21,
-            usernameEnvio: "Hebert",
-            previsaoSolucao: new Date(),
-            title: "Teste Tabela",
-            urgencia: 1
-        },
-        {
-            Id: "2",
-            callNumber: 22,
-            usernameEnvio: "Jean",
-            previsaoSolucao: new Date(),
-            title: "Erro de criação do chamado",
-            urgencia: 2
-        },
-        {
-            Id: "3",
-            callNumber: 23,
-            usernameEnvio: "João",
-            previsaoSolucao: new Date(),
-            title: "Melhoria na tela de Pedidos",
-            urgencia: 1
-        },
-        {
-            Id: "4",
-            callNumber: 23,
-            usernameEnvio: "Cliente Não Identificado",
-            previsaoSolucao: new Date(),
-            title: "Emissão de nota de serviço",
-            urgencia: 3
-        },
-    ]
+    useEffect(() => {
+        setLoading(true);
+        let endpoint = "";
 
-    const dadosTesteUser: User[] = [
-        {
-            Id: "1",
-            Nome: "Hebert Lopes",
-            Email: "hebertsep1914@gmail.com",
-            Equipe: "Desenvolvimento",
-            TipoUsuario: "ADMIN",
-            DataHoraUltimaEntrada: new Date()
-        },
-        {
-            Id: "2",
-            Nome: "João Ferdinando",
-            Email: "joazeta@outlook.com",
-            Equipe: "Administrativo",
-            TipoUsuario: "GERENTE",
-            DataHoraUltimaEntrada: new Date()
-        },
-        {
-            Id: "1",
-            Nome: "Jean Carletos",
-            Email: "jeanzinho2007@gmail.com",
-            Equipe: "Suporte",
-            TipoUsuario: "SUPORTE",
-            DataHoraUltimaEntrada: new Date()
-        },
-    ]
+        switch (tipo) {
+            case "Users": {
+                endpoint = "api/user/get";
+                getData<User[]>(endpoint)
+                    .then(result => {
+                        setDataUsers(result);
+                        setLoading(false);
+                    })
+                    .catch(erro => {
+                        showError(erro);
+                        setLoading(false);
+                    });
+                break;
+            }
+            case "Tickets": {
+                endpoint = "api/calls"; 
+                getData<Ticket[]>(endpoint)
+                    .then(result => {
+                        setDataTickets(result);
+                        setLoading(false);
+                    })
+                    .catch(erro => {
+                        showError(erro);
+                        setLoading(false);
+                    });
+                break;
+            };
+        }
+
+    }, [tipo]);
+
+
+    async function getData<T>(endpoint: string) {
+        var resultado = await api.get<T>(endpoint)
+            .then(res => res.data)
+            .catch(erro => {
+                throw new Error(erro.response.data.error);
+            });
+        console.log(resultado)
+        return resultado;
+    }
 
     const renderDataTable = () => {
         switch (tipo) {
@@ -76,7 +66,7 @@ export default function Listagem() {
                 return (
                     <DataTable
                         columns={UsersColumns}
-                        data={dadosTesteUser}
+                        data={dataUsers}
                         placeholder="Busque por nome do usuário"
                         caminho="/User/"
                         colunaPesquisa="Nome"
@@ -86,10 +76,10 @@ export default function Listagem() {
                 return (
                     <DataTable
                         columns={TicketColumns}
-                        data={dadosTesteTicket}
+                        data={dataTickets}
                         placeholder="Busque por título do ticket"
                         caminho="/Ticket/"
-                        colunaPesquisa="TituloTicket"
+                        colunaPesquisa="title"
                     />
                 );
             default:
@@ -98,7 +88,7 @@ export default function Listagem() {
     };
 
     const renderTitleListagem = () => {
-        switch(tipo){
+        switch (tipo) {
             case "Users":
                 return "Usuários"
             case "Tickets":
