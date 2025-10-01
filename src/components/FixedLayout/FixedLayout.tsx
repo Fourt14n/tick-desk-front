@@ -5,14 +5,15 @@ import { useTabs } from "@/store/TabsStore";
 import HeaderCardTab from "../HeaderCardTab/HeaderCardTab";
 import { useNavigate } from "react-router";
 import { ScrollArea } from "../ui/scroll-area";
+import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 
 export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
     const navigate = useNavigate();
     const tabs = useTabs((state) => state.tabs);
 
-    function DisconnectUser(){
-    sessionStorage.removeItem("Token_TickDesk");
-    navigate("/Login");
+    function DisconnectUser() {
+        sessionStorage.removeItem("Token_TickDesk");
+        navigate("/Login");
     }
 
 
@@ -24,15 +25,24 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
                         <div onClick={() => navigate("/Home")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
                             <Home />
                         </div>
-                        <div onClick={() => navigate("/Listagem/Tickets")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
-                            <WalletCards />
-                        </div>
-                        <div onClick={() => navigate("/Listagem/Users")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
-                            <Users />
-                        </div>
-                        <div onClick={() => navigate("/Dashboards/")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
-                            <ChartNoAxesCombined />
-                        </div>
+                        {
+                            usePermission({ minPermission: PermissionsRoles.SUPORT }) &&
+                            <div onClick={() => navigate("/Listagem/Tickets")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                                <WalletCards />
+                            </div>
+                        }
+                        {
+                            usePermission({ minPermission: PermissionsRoles.GERENT }) &&
+                            <div onClick={() => navigate("/Listagem/Users")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                                <Users />
+                            </div>
+                        }
+                        {
+                            usePermission({minPermission: PermissionsRoles.GERENT}) &&
+                            <div onClick={() => navigate("/Dashboards/")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                                <ChartNoAxesCombined />
+                            </div>
+                        }
                     </div>
                     <div className="flex flex-col w-full">
                         <div onClick={DisconnectUser} className="flex justify-center items-center h-12 cursor-pointer hover:bg-red-200 hover:rounded-full">
