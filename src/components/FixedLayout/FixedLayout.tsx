@@ -1,4 +1,4 @@
-import { ChartNoAxesCombined, Home, Plus, Search, Users, WalletCards } from "lucide-react";
+import { ChartNoAxesCombined, Home, LogOut, Plus, Search, Users, WalletCards } from "lucide-react";
 import { type JSX } from "react"
 import { Input } from "../ui/input";
 import { useTabs } from "@/store/TabsStore";
@@ -10,21 +10,34 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
     const navigate = useNavigate();
     const tabs = useTabs((state) => state.tabs);
 
+    function DisconnectUser(){
+    sessionStorage.removeItem("Token_TickDesk");
+    navigate("/Login");
+    }
+
+
     return (
         <div>
             <div className="flex">
-                <div className="w-12 h-dvh bg-[#9AFFC0] flex flex-col gap-4">
-                    <div onClick={() => navigate("/Home")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
-                        <Home />
+                <div className="w-12 h-dvh bg-[#9AFFC0] flex flex-col gap-4 justify-between items-center">
+                    <div className="flex flex-col w-full">
+                        <div onClick={() => navigate("/Home")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                            <Home />
+                        </div>
+                        <div onClick={() => navigate("/Listagem/Tickets")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                            <WalletCards />
+                        </div>
+                        <div onClick={() => navigate("/Listagem/Users")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                            <Users />
+                        </div>
+                        <div onClick={() => navigate("/Dashboards/")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                            <ChartNoAxesCombined />
+                        </div>
                     </div>
-                    <div onClick={() => navigate("/Listagem/Tickets")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
-                        <WalletCards />
-                    </div>
-                    <div onClick={() => navigate("/Listagem/Users")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
-                        <Users />
-                    </div>
-                    <div onClick={() => navigate("/Dashboards/")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
-                        <ChartNoAxesCombined />
+                    <div className="flex flex-col w-full">
+                        <div onClick={DisconnectUser} className="flex justify-center items-center h-12 cursor-pointer hover:bg-red-200 hover:rounded-full">
+                            <LogOut />
+                        </div>
                     </div>
                 </div>
 
@@ -57,7 +70,7 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
 
 
                     <ScrollArea className="w-full max-h-(--height-default) md:h-svh h-full overflow-auto scrollbar-none">
-                         {TelaAtual}
+                        {TelaAtual}
                     </ScrollArea>
 
                 </div>

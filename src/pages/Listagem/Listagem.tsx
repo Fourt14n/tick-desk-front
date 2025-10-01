@@ -33,7 +33,7 @@ export default function Listagem() {
                 break;
             }
             case "Tickets": {
-                endpoint = "api/calls"; 
+                endpoint = "api/calls/"; 
                 getData<Ticket[]>(endpoint)
                     .then(result => {
                         setDataTickets(result);
