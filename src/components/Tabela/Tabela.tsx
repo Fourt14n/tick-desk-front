@@ -103,7 +103,7 @@ export function DataTable<TData, TValue>({
                                 <TableRow
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
-                                    onClick={() => navigate(`${caminho}${(row.original as Ticket).Id}`)}
+                                    onClick={() => navigate(`${caminho}${(row.original as Ticket).id}`)}
                                     className="cursor-pointer hover:bg-muted/50 transition-colors"
                                 >
                                     {row.getVisibleCells().map((cell) => (

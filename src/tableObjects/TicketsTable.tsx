@@ -3,7 +3,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 
 export interface Ticket {
-    Id: string,
+    id: string,
     callNumber: number,
     title: string,
     usernameEnvio: string,

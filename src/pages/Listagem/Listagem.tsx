@@ -69,7 +69,7 @@ export default function Listagem() {
                         data={dataUsers}
                         placeholder="Busque por nome do usuário"
                         caminho="/User/"
-                        colunaPesquisa="Nome"
+                        colunaPesquisa="name"
                     />
                 );
             case "Tickets":
