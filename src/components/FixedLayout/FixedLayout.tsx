@@ -1,9 +1,9 @@
-import { ChartNoAxesCombined, Home, LogOut, Plus, Search, Users, WalletCards } from "lucide-react";
+import { Building, ChartNoAxesCombined, Home, LogOut, Plus, Search, Users, WalletCards } from "lucide-react";
 import { type JSX } from "react"
 import { Input } from "../ui/input";
 import { useTabs } from "@/store/TabsStore";
 import HeaderCardTab from "../HeaderCardTab/HeaderCardTab";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { ScrollArea } from "../ui/scroll-area";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 
@@ -22,26 +22,32 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
             <div className="flex">
                 <div className="w-12 h-dvh bg-[#9AFFC0] flex flex-col gap-4 justify-between items-center">
                     <div className="flex flex-col w-full">
-                        <div onClick={() => navigate("/Home")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                        <Link to="/Home" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
                             <Home />
-                        </div>
+                        </Link>
                         {
                             usePermission({ minPermission: PermissionsRoles.SUPORT }) &&
-                            <div onClick={() => navigate("/Listagem/Tickets")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                            <Link to="/Listagem/Tickets" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
                                 <WalletCards />
-                            </div>
+                            </Link>
                         }
                         {
                             usePermission({ minPermission: PermissionsRoles.GERENT }) &&
-                            <div onClick={() => navigate("/Listagem/Users")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                            <Link to="/Listagem/Users" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
                                 <Users />
-                            </div>
+                            </Link>
                         }
                         {
                             usePermission({minPermission: PermissionsRoles.GERENT}) &&
-                            <div onClick={() => navigate("/Dashboards/")} className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                            <Link to="/Dashboards/" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
                                 <ChartNoAxesCombined />
-                            </div>
+                            </Link>
+                        }
+                        {
+                            usePermission({minPermission: PermissionsRoles.ADMIN}) &&
+                            <Link to="/CreateBusiness" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                                <Building/>
+                            </Link>
                         }
                     </div>
                     <div className="flex flex-col w-full">
@@ -56,9 +62,9 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
                     <header className="flex flex-1 w-full bg-(--bg-default) h-12">
                         <div className="flex justify-between items-center w-full">
                             <div className="flex h-full max-w-3/5">
-                                <div onClick={() => navigate("/Ticket/Criar")} className="bg-[#D0E2D0] flex justify-center items-center h-full w-12 cursor-pointer aspect-square">
+                                <Link to="/Ticket/Criar" className="bg-[#D0E2D0] flex justify-center items-center h-full w-12 cursor-pointer aspect-square">
                                     <Plus />
-                                </div>
+                                </Link>
                                 <div className="flex overflow-x-auto overflow-y-hidden scrollbar-none">
                                     {
                                         tabs.map((tab) => {
