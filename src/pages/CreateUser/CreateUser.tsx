@@ -4,9 +4,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { onError } from "@/hooks/onError";
+import { userValidation } from "@/validations/user";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { Link } from "react-router";
+import type z from "zod";
+
+
+type UserRegister = z.infer<typeof userValidation>;
+
 
 export default function CreateUser() {
+    const { register, handleSubmit, watch, formState: { errors, isValid } } = useForm<UserRegister>({
+        resolver: zodResolver(userValidation)
+    });
+
+    function OnSubmit(){
+        if(isValid){
+
+        }
+    }
+
     const valoresDropdown = [{
         label: "Teste1",
         value: "1"
@@ -27,34 +46,34 @@ export default function CreateUser() {
                         <Separator className="bg-[#BAB9B9]" orientation="horizontal" />
                     </div>
                 </div>
-                <form className="flex h-full w-full flex-col justify-evenly lg:justify-between pt-4 lg:py-10">
+                <form onSubmit={handleSubmit(OnSubmit, onError)} className="flex h-full w-full flex-col justify-evenly lg:justify-between pt-4 lg:py-10">
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-col gap-4 lg:flex-row">
                             <div className="flex flex-col lg:w-1/2 gap-2">
                                 <Label htmlFor="txtName">Nome</Label>
-                                <Input className="text-sm" placeholder="Nome completo" type="text" id="txtName" />
+                                <Input {...register("name")} maxLength={255} className="text-sm" placeholder="Nome completo" type="text" id="txtName" />
                             </div>
                             <div className="flex flex-col lg:w-1/2 gap-2">
                                 <Label htmlFor="txtUsername">Apelido</Label>
-                                <Input className="text-sm" placeholder="Digite um apelido para o usuário" type="mail" id="txtUsername" />
+                                <Input {...register("username")} maxLength={255} className="text-sm" placeholder="Digite um apelido para o usuário" type="mail" id="txtUsername" />
                             </div>
                         </div>
                         <div className="flex flex-col gap-4 lg:flex-row">
                             <div className="flex flex-col w-full gap-2">
                                 <Label htmlFor="txtEmail">E-mail</Label>
-                                <Input className="text-sm" placeholder="Digite seu email" type="mail" id="txtEmail" />
+                                <Input {...register("email")} maxLength={255} className="text-sm" placeholder="Digite seu email" type="mail" id="txtEmail" />
                             </div>
                             <div className="flex flex-col w-full gap-2 lg:w-1/3">
                                 <Label htmlFor="txtPassword">Senha</Label>
-                                <Input className="text-sm" placeholder="Digite sua senha" type="password" id="txtPassword" />
+                                <Input {...register("password")} maxLength={255} className="text-sm" placeholder="Digite sua senha" type="password" id="txtPassword" />
                             </div>
                         </div>
                         <div className="flex flex-col gap-4 lg:flex-row">
                             <div className="flex flex-col lg:w-1/2 gap-2">
-                                <Dropdown dados={{ keyDropdown: "cmbTipoUsuario", values: valoresDropdown, label: "Tipo de usuário" }} />
+                                <Dropdown {...register("role")} dados={{ keyDropdown: "cmbTipoUsuario", values: valoresDropdown, label: "Tipo de usuário" }} />
                             </div>
                             <div className="flex flex-col lg:w-1/2 gap-2">
-                                <Dropdown dados={{ keyDropdown: "cmbEquipe", values: valoresDropdown, label: "Equipe" }} />
+                                <Dropdown {...register("teamId")} dados={{ keyDropdown: "cmbEquipe", values: valoresDropdown, label: "Equipe" }} />
                             </div>
                         </div>
                     </div>
