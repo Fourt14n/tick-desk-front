@@ -1,4 +1,4 @@
-import { Building, ChartNoAxesCombined, Home, LogOut, Plus, Search, Users, WalletCards } from "lucide-react";
+import { Building, ChartNoAxesCombined, Home, LogOut, Network, Plus, Search, Users, WalletCards } from "lucide-react";
 import { type JSX } from "react"
 import { Input } from "../ui/input";
 import { useTabs } from "@/store/TabsStore";
@@ -35,6 +35,12 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
                             usePermission({ minPermission: PermissionsRoles.GERENT }) &&
                             <Link to="/Listagem/Users" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
                                 <Users />
+                            </Link>
+                        }
+                        {
+                            usePermission({ minPermission: PermissionsRoles.GERENT }) &&
+                            <Link to="/Listagem/Teams" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                                <Network />
                             </Link>
                         }
                         {

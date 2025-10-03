@@ -6,6 +6,7 @@ import Ticket from "./pages/Ticket/Ticket";
 import Listagem from "./pages/Listagem/Listagem";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import { NotFound } from "./pages/NotFound/NotFound";
+import CreateUser from "./pages/CreateUser/CreateUser";
 
 export default function Router(){
     return (
@@ -15,6 +16,7 @@ export default function Router(){
                 <Route path="Home/" index element={<PrivateRoute><Home/></PrivateRoute>}/>
                 <Route path="Ticket/:id" element={<PrivateRoute><Ticket/></PrivateRoute>}/>
                 <Route path="Listagem/:tipo" element={<PrivateRoute><Listagem/></PrivateRoute>}/>
+                <Route path="User/Create" element={<PrivateRoute><CreateUser/></PrivateRoute>}/>
             </Route>
             <Route path="*" index element={<NotFound/>}/>
         </Routes>

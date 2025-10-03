@@ -21,7 +21,7 @@ import {
 import { Button } from "../ui/button"
 import React from "react"
 import { Input } from "../ui/input"
-import { useNavigate } from "react-router"
+import { Link, useNavigate } from "react-router"
 import type { Ticket } from "@/tableObjects/TicketsTable"
 
 interface DataTableProps<TData, TValue> {
@@ -65,7 +65,7 @@ export function DataTable<TData, TValue>({
     return (
         <div className="grid grid-rows-[auto_1fr_auto] h-full w-full">
             {/* Header fixo com input de busca */}
-            <div className="flex items-center py-4">
+            <div className="flex items-center py-4 justify-between">
                 <Input
                     placeholder={placeholder}
                     value={(table.getColumn(colunaPesquisa)?.getFilterValue() as string) ?? ""}
@@ -74,6 +74,15 @@ export function DataTable<TData, TValue>({
                     }
                     className="md:max-w-sm max-w-full"
                 />
+
+                {
+                    caminho.includes("User") &&
+                    <Link to="/User/Create">
+                        <Button className="bg-(--weakGreen) lg:w-42 text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">
+                            Novo
+                        </Button>
+                    </Link>
+                }
             </div>
 
             {/* Container da tabela com scroll */}
@@ -128,26 +137,26 @@ export function DataTable<TData, TValue>({
             <div className="relative bottom-0 flex items-center justify-between space-x-2 py-4 w-full">
                 <div className="flex justify-between items-center w-full">
                     <div className="text-sm text-muted-foreground">
-                    Exibindo um total de {table.getRowCount()} registros
-                </div>
-                <div className="flex space-x-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => table.previousPage()}
-                        disabled={!table.getCanPreviousPage()}
-                    >
-                        Anterior
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => table.nextPage()}
-                        disabled={!table.getCanNextPage()}
-                    >
-                        Próximo
-                    </Button>
-                </div>
+                        Exibindo um total de {table.getRowCount()} registros
+                    </div>
+                    <div className="flex space-x-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => table.previousPage()}
+                            disabled={!table.getCanPreviousPage()}
+                        >
+                            Anterior
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => table.nextPage()}
+                            disabled={!table.getCanNextPage()}
+                        >
+                            Próximo
+                        </Button>
+                    </div>
                 </div>
             </div>
         </div>
