@@ -1,41 +1,89 @@
-import { Dropdown } from "@/components/Dropdown/Dropdown";
+import { Dropdown, type DropDownValues } from "@/components/Dropdown/Dropdown";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { onError } from "@/hooks/onError";
+import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
+import { showError, showSucces } from "@/hooks/useToast";
+import { api } from "@/lib/axios";
+import type { ResponseTeams } from "@/types/ResponseTeams/ResponseTeams";
 import { userValidation } from "@/validations/user";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import type z from "zod";
 
 
 type UserRegister = z.infer<typeof userValidation>;
 
-
 export default function CreateUser() {
-    const { register, handleSubmit, watch, formState: { errors, isValid } } = useForm<UserRegister>({
-        resolver: zodResolver(userValidation)
+    const navigate = useNavigate();
+    const [teams, setTeams] = useState<DropDownValues[]>([]);
+    const { register, handleSubmit, control, formState: { isValid } } = useForm<UserRegister>({
+        resolver: zodResolver(userValidation),
+        defaultValues: {
+            teamId: 0,
+            role: "CLIENT"
+        }
     });
 
-    function OnSubmit(){
-        if(isValid){
+    function GetTeams() {
+        api.get("api/team/get")
+            .then(res => {
+                console.log(res.data)
+                let teams: DropDownValues[] = res.data.map((team: ResponseTeams) => {
+                    return { label: team.name, value: team.id };
+                })
+                setTeams(teams);
+            })
+            .catch(erro => {
+                showError(erro.response.data.error)
+                return [];
+            })
+    }
+    function RegisterUser(user : UserRegister) {
+        api.post("api/user/register", user)
+            .then(res => {
+                console.log(res.data)
+                showSucces("Usuário criado com sucesso!");
+            })
+            .catch(erro => {
+                showError(erro.response.data.error)
+            })
+    }
 
+    function OnSubmit(data : UserRegister) {
+        if (isValid) {
+            console.log(data)
+            RegisterUser(data);
         }
     }
 
-    const valoresDropdown = [{
-        label: "Teste1",
-        value: "1"
+    // Aqui precisa ser hardcoded porque os tipos são definidos por nós mesmos
+    const tiposUser = [{
+        label: "Gerente",
+        value: "GERENT"
     }, {
-        label: "Teste2",
-        value: "2"
+        label: "Suporte",
+        value: "SUPORT"
     }, {
-        label: "Teste3",
-        value: "3"
-    },]
+        label: "Cliente",
+        value: "CLIENT"
+    }
+    ]
+
+    // Valido permissão para criar um novo usuário ADMIN
+    usePermission({ minPermission: PermissionsRoles.ADMIN }) && tiposUser.push({
+        label: "Admin",
+        value: "ADMIN"
+    })
+
+    useEffect(() => {
+        GetTeams();
+    }, [])
 
     return (
         <div className="flex h-full w-full">
@@ -59,21 +107,21 @@ export default function CreateUser() {
                             </div>
                         </div>
                         <div className="flex flex-col gap-4 lg:flex-row">
-                            <div className="flex flex-col w-full gap-2">
+                            <div className="flex flex-col w-full lg:w-1/2 gap-2">
                                 <Label htmlFor="txtEmail">E-mail</Label>
                                 <Input {...register("email")} maxLength={255} className="text-sm" placeholder="Digite seu email" type="mail" id="txtEmail" />
                             </div>
-                            <div className="flex flex-col w-full gap-2 lg:w-1/3">
+                            <div className="flex flex-col w-full gap-2 lg:w-1/2">
                                 <Label htmlFor="txtPassword">Senha</Label>
                                 <Input {...register("password")} maxLength={255} className="text-sm" placeholder="Digite sua senha" type="password" id="txtPassword" />
                             </div>
                         </div>
                         <div className="flex flex-col gap-4 lg:flex-row">
                             <div className="flex flex-col lg:w-1/2 gap-2">
-                                <Dropdown {...register("role")} dados={{ keyDropdown: "cmbTipoUsuario", values: valoresDropdown, label: "Tipo de usuário" }} />
+                                <Dropdown dados={{ keyDropdown: "cmbTipoUsuario", values: tiposUser, label: "Tipo de usuário", control: control, name: "role" }} />
                             </div>
                             <div className="flex flex-col lg:w-1/2 gap-2">
-                                <Dropdown {...register("teamId")} dados={{ keyDropdown: "cmbEquipe", values: valoresDropdown, label: "Equipe" }} />
+                                <Dropdown dados={{ keyDropdown: "cmbEquipe", values: teams, label: "Equipe", control: control, name: "teamId" }} />
                             </div>
                         </div>
                     </div>

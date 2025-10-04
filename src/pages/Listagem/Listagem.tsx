@@ -33,9 +33,10 @@ export default function Listagem() {
                 break;
             }
             case "Tickets": {
-                endpoint = "api/calls/"; 
+                endpoint = "api/calls/list"; 
                 getData<Ticket[]>(endpoint)
                     .then(result => {
+                        console.log(result)
                         setDataTickets(result);
                         setLoading(false);
                     })
@@ -54,7 +55,8 @@ export default function Listagem() {
         var resultado = await api.get<T>(endpoint)
             .then(res => res.data)
             .catch(erro => {
-                throw new Error(erro.response.data.error);
+                showError(erro.response.data.error);
+                return [];
             });
         console.log(resultado)
         return resultado;

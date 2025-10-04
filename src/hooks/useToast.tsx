@@ -5,3 +5,8 @@ export function showError(message : any){
         closeButton: false
     });
 }
+export function showSucces(message : any){
+    toast.success(message, {
+        closeButton: false
+    });
+}

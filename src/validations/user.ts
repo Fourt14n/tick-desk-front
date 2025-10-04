@@ -20,12 +20,12 @@ export const userValidation = z.object({
     .max(255, "A senha pode ter no máximo 255 caracteres!"),
     
     role: z.string("O tipo de usuário é obrigatório!")
-    .refine(valor => valor === "0", {
+    .refine(valor => valor != "", {
         message: "O tipo de usuário é obrigatório!"
     }),
 
     teamId: z.int32("A equipe é obrigatória!")
-    .refine(valor => valor === 0, {
+    .refine(valor => valor != 0, {
         message: "A equipe é obrigatória!"
     })
 });
