@@ -17,14 +17,14 @@ export type LoginCredentials = z.infer<typeof loginSchema>;
 
 export default function Login() {
     const [rememberMe, setRememberMe] = useState(false);
-    const { register, handleSubmit, watch, formState: { errors, isValid } } = useForm<LoginCredentials>({
+    const { register, handleSubmit, formState: { errors, isValid } } = useForm<LoginCredentials>({
         resolver: zodResolver(loginSchema)
     });
     const navigate = useNavigate();
 
-    async function handleLogin() {
+    async function handleLogin(data : LoginCredentials) {
         if (isValid) {
-            let auth = await useAuth({ email: watch("email"), password: watch("password") }, rememberMe);
+            let auth = await useAuth({ email: data.email, password: data.password }, rememberMe);
 
             if (auth)
                 navigate("/Home");
@@ -77,7 +77,7 @@ export default function Login() {
                             </div>
                             <div className="flex flex-col gap-6">
                                 <div className="grid gap-2">
-                                    <Button onClick={handleLogin} className="bg-(--btn-default) text-(--text-strongGreen) hover:bg-(--btn-default-strong) cursor-pointer lg:text-base">Entrar</Button>
+                                    <Button type="submit" className="bg-(--btn-default) text-(--text-strongGreen) hover:bg-(--btn-default-strong) cursor-pointer lg:text-base">Entrar</Button>
                                 </div>
                                 <div className="flex gap-2">
                                     <Checkbox checked={rememberMe} onCheckedChange={() => setRememberMe(!rememberMe)} id="rememberPassword" />

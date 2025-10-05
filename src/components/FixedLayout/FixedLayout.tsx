@@ -8,7 +8,6 @@ import { ScrollArea } from "../ui/scroll-area";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 
 export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
-    const navigate = useNavigate();
     const tabs = useTabs((state) => state.tabs);
 
     function DisconnectUser() {
