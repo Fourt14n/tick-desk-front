@@ -3,17 +3,17 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 
 export interface Ticket {
-    Id: string,
-    NumeroTicket: number,
-    TituloTicket: string,
-    NomeCriador: string,
-    PrevisaoSolucao: Date,
-    Urgencia: number
+    id: string,
+    callNumber: number,
+    title: string,
+    usernameEnvio: string,
+    previsaoSolucao: Date,
+    urgencia: number
 }
 
 export const TicketColumns: ColumnDef<Ticket>[] = [
   {
-    accessorKey: "NumeroTicket",
+    accessorKey: "id",
     header: ({ column }) => {
       return (
         <Button
@@ -27,19 +27,19 @@ export const TicketColumns: ColumnDef<Ticket>[] = [
     },
   },
   {
-    accessorKey: "TituloTicket",
+    accessorKey: "title",
     header: "Titulo",
   },
   {
-    accessorKey: "NomeCriador",
+    accessorKey: "usernameEnvio",
     header: "Criador",
   },
   {
-    accessorKey: "PrevisaoSolucao",
+    accessorKey: "previsaoSolucao",
     header: "Previsão de Solução",
   },
   {
-    accessorKey: "Urgencia",
+    accessorKey: "urgencia",
     header: "Urgência",
   },
 ]

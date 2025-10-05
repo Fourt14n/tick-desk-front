@@ -184,7 +184,7 @@ export default function Ticket() {
                                         <Label htmlFor="urgencies">Urgência</Label>
                                         <RadioGroup defaultValue="1" {...register("urgencia")} id="urgencies" className="flex justify-evenly">
                                             <RadioGroupItem
-                                                value="0"
+                                                value="1"
                                                 id="baixa"
                                                 className="sr-only peer"
                                             />
@@ -192,7 +192,7 @@ export default function Ticket() {
                                                 Baixa
                                             </Label>
                                             <RadioGroupItem
-                                                value="1"
+                                                value="2"
                                                 id="media"
                                                 className="sr-only peer"
                                             />

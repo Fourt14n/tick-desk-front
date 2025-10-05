@@ -1,19 +1,20 @@
 import { Button } from "@/components/ui/button";
+import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 
 export interface User {
-    Id: string,
-    Nome: string,
-    Email: string,
-    Equipe: string,
-    TipoUsuario: string,
+    id: string,
+    name: string,
+    email: string,
+    teamId: string,
+    role: string,
     DataHoraUltimaEntrada: Date
 }
 
 export const UsersColumns: ColumnDef<User>[] = [
   {
-    accessorKey: "Nome",
+    accessorKey: "name",
     header: ({ column }) => {
       return (
         <Button
@@ -27,19 +28,30 @@ export const UsersColumns: ColumnDef<User>[] = [
     },
   },
   {
-    accessorKey: "Email",
+    accessorKey: "email",
     header: "E-mail",
   },
+  // {
+  //   accessorKey: "Equipe",
+  //   header: "Equipe",
+  // },
   {
-    accessorKey: "Equipe",
-    header: "Equipe",
-  },
-  {
-    accessorKey: "TipoUsuario",
+    accessorKey: "role",
     header: "Tipo de Usuário",
+    cell: ({ row }) => {
+      const value = row.original.role;
+      console.log()
+      let valorAlterado = row.original.role;
+      switch(value){
+        case "CLIENT": valorAlterado = "Cliente"; break;
+        case "GERENT": valorAlterado = "Gerente"; break;
+        case "SUPORT": valorAlterado = "Suporte"; break;
+      }
+      return valorAlterado;
+    }
   },
-  {
-    accessorKey: "DataHoraUltimaEntrada",
-    header: "Ultima Entrada",
-  },
+  // {
+  //   accessorKey: "DataHoraUltimaEntrada",
+  //   header: "Ultima Entrada",
+  // },
 ]

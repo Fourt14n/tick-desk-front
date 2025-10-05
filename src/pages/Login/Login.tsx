@@ -5,20 +5,15 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useState, type ChangeEvent } from "react";
+import { useState } from "react";
 import useAuth from "@/hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { loginSchema } from "@/validations/login";
 import type z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
-import { showError } from "@/hooks/useToast";
 import { onError } from "@/hooks/onError";
 
-type LoginCredentials = z.infer<typeof loginSchema>;
-
-const handleInputChange = (event: ChangeEvent<HTMLInputElement>, setInput: React.Dispatch<React.SetStateAction<string>>) => {
-    setInput(event.target.value);
-}
+export type LoginCredentials = z.infer<typeof loginSchema>;
 
 export default function Login() {
     const [rememberMe, setRememberMe] = useState(false);
@@ -27,9 +22,9 @@ export default function Login() {
     });
     const navigate = useNavigate();
 
-    function handleLogin(data : LoginCredentials) {
+    async function handleLogin(data : LoginCredentials) {
         if (isValid) {
-            let auth = useAuth({ email: data.email, password: data.password }, rememberMe);
+            let auth = await useAuth({ email: data.email, password: data.password }, rememberMe);
 
             if (auth)
                 navigate("/Home");

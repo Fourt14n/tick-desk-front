@@ -1,43 +1,65 @@
-import { ChartNoAxesCombined, Home, Plus, Search, Users, WalletCards } from "lucide-react";
+import { Building, ChartNoAxesCombined, Home, LogOut, Network, Plus, Search, Users, WalletCards } from "lucide-react";
 import { type JSX } from "react"
 import { Input } from "../ui/input";
 import { useTabs } from "@/store/TabsStore";
 import HeaderCardTab from "../HeaderCardTab/HeaderCardTab";
-import { showError } from "@/hooks/useToast";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { ScrollArea } from "../ui/scroll-area";
-
-const API_URL = "";
-
-function returnNextTicketNum() {
-    try {
-        fetch(API_URL)
-            .then(res => res.json())
-            .then((data) => data)
-    } catch (error) {
-        showError(error);
-    }
-}
+import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 
 export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
     const tabs = useTabs((state) => state.tabs);
 
+    function DisconnectUser() {
+        sessionStorage.removeItem("Token_TickDesk");
+        navigate("/Login");
+    }
+
+
     return (
         <div>
             <div className="flex">
-                <div className="w-12 h-dvh bg-[#9AFFC0] flex flex-col gap-4">
-                    <Link to="/Home" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
-                        <Home />
-                    </Link>
-                    <Link to="/Listagem/Tickets" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
-                        <WalletCards />
-                    </Link>
-                    <Link to="/Listagem/Users" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
-                        <Users />
-                    </Link>
-                    <Link to="/Dashboards/" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
-                        <ChartNoAxesCombined />
-                    </Link>
+                <div className="w-12 h-dvh bg-[#9AFFC0] flex flex-col gap-4 justify-between items-center">
+                    <div className="flex flex-col w-full">
+                        <Link to="/Home" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                            <Home />
+                        </Link>
+                        {
+                            usePermission({ minPermission: PermissionsRoles.SUPORT }) &&
+                            <Link to="/Listagem/Tickets" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                                <WalletCards />
+                            </Link>
+                        }
+                        {
+                            usePermission({ minPermission: PermissionsRoles.GERENT }) &&
+                            <Link to="/Listagem/Users" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                                <Users />
+                            </Link>
+                        }
+                        {
+                            usePermission({ minPermission: PermissionsRoles.GERENT }) &&
+                            <Link to="/Listagem/Teams" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                                <Network />
+                            </Link>
+                        }
+                        {
+                            usePermission({minPermission: PermissionsRoles.GERENT}) &&
+                            <Link to="/Dashboards/" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                                <ChartNoAxesCombined />
+                            </Link>
+                        }
+                        {
+                            usePermission({minPermission: PermissionsRoles.ADMIN}) &&
+                            <Link to="/CreateBusiness" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                                <Building/>
+                            </Link>
+                        }
+                    </div>
+                    <div className="flex flex-col w-full">
+                        <div onClick={DisconnectUser} className="flex justify-center items-center h-12 cursor-pointer hover:bg-red-200 hover:rounded-full">
+                            <LogOut />
+                        </div>
+                    </div>
                 </div>
 
                 <div className="w-full h-dvh">
@@ -69,7 +91,7 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
 
 
                     <ScrollArea className="w-full max-h-(--height-default) md:h-svh h-full overflow-auto scrollbar-none">
-                         {TelaAtual}
+                        {TelaAtual}
                     </ScrollArea>
 
                 </div>
