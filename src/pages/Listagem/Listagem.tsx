@@ -1,8 +1,10 @@
 import { DataTable } from "@/components/Tabela/Tabela";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { showError } from "@/hooks/useToast";
 import { api } from "@/lib/axios";
+import { TeamColumns, type Team } from "@/tableObjects/TeamsTable";
 import { TicketColumns, type Ticket } from "@/tableObjects/TicketsTable";
 import { UsersColumns, type User } from "@/tableObjects/UsersTable";
 import { useEffect, useState } from "react";
@@ -12,6 +14,7 @@ export default function Listagem() {
     let { tipo = '' } = useParams();
     const [dataUsers, setDataUsers] = useState<User[]>([]);
     const [dataTickets, setDataTickets] = useState<Ticket[]>([]);
+    const [teams, setTeams] = useState<Team[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -23,7 +26,10 @@ export default function Listagem() {
                 endpoint = "api/user/get";
                 getData<User[]>(endpoint)
                     .then(result => {
-                        setDataUsers(result);
+                        // Lógica pra não mostrar usuários ADMIN pra quem não for ADMIN
+                        !usePermission({ minPermission: PermissionsRoles.ADMIN })
+                        ? setDataUsers(result.filter(user => user.role !== "ADMIN"))
+                        : setDataUsers(result);
                         setLoading(false);
                     })
                     .catch(erro => {
@@ -33,10 +39,9 @@ export default function Listagem() {
                 break;
             }
             case "Tickets": {
-                endpoint = "api/calls/list"; 
+                endpoint = "api/calls/list";
                 getData<Ticket[]>(endpoint)
                     .then(result => {
-                        console.log(result)
                         setDataTickets(result);
                         setLoading(false);
                     })
@@ -46,6 +51,19 @@ export default function Listagem() {
                     });
                 break;
             };
+            case "Teams": {
+                endpoint = "api/team/get";
+                getData<Team[]>(endpoint)
+                    .then(result => {
+                        setTeams(result);
+                        setLoading(false);
+                    })
+                    .catch(erro => {
+                        showError(erro);
+                        setLoading(false);
+                    });
+                break;
+            }
         }
 
     }, [tipo]);
@@ -84,6 +102,16 @@ export default function Listagem() {
                         colunaPesquisa="title"
                     />
                 );
+            case "Teams":
+                return (
+                    <DataTable
+                        columns={TeamColumns}
+                        data={teams}
+                        placeholder="Busque por nome da equipe"
+                        caminho="/Teams/"
+                        colunaPesquisa="name"
+                    />
+                );
             default:
                 return <div>Tipo não encontrado</div>;
         }
@@ -95,6 +123,8 @@ export default function Listagem() {
                 return "Usuários"
             case "Tickets":
                 return "Tickets"
+            case "Teams":
+                return "Equipes"
         }
     }
 

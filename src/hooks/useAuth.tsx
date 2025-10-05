@@ -50,7 +50,7 @@ export default async function useAuth({ email, password }: LoginCredentials, rem
     sessionStorage.setItem("Token_TickDesk", tokenResposta.access_token);
 
     if (rememberMe)
-        localStorage.setItem("RefreshToken", tokenResposta.access_token);
+        localStorage.setItem("Token_TickDesk", tokenResposta.access_token);
 
     return validateAuth();
 }

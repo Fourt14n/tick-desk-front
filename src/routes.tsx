@@ -17,6 +17,9 @@ export default function Router(){
                 <Route path="Ticket/:id" element={<PrivateRoute><Ticket/></PrivateRoute>}/>
                 <Route path="Listagem/:tipo" element={<PrivateRoute><Listagem/></PrivateRoute>}/>
                 <Route path="User/Create" element={<PrivateRoute><CreateUser/></PrivateRoute>}/>
+                <Route path="User/:id" element={<PrivateRoute><CreateUser/></PrivateRoute>}/>
+                <Route path="Teams/Create" element={<PrivateRoute><CreateUser/></PrivateRoute>}/>
+                <Route path="Teams/:id" element={<PrivateRoute><CreateUser/></PrivateRoute>}/>
             </Route>
             <Route path="*" index element={<NotFound/>}/>
         </Routes>

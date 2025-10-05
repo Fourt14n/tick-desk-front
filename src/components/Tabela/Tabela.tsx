@@ -83,6 +83,14 @@ export function DataTable<TData, TValue>({
                         </Button>
                     </Link>
                 }
+                {
+                    caminho.includes("Teams") &&
+                    <Link to="/Teams/Create">
+                        <Button className="bg-(--weakGreen) lg:w-42 text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">
+                            Novo
+                        </Button>
+                    </Link>
+                }
             </div>
 
             {/* Container da tabela com scroll */}
