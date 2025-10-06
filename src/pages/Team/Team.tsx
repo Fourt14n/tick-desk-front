@@ -1,10 +1,22 @@
 import { Dropdown } from "@/components/Dropdown/Dropdown";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { onError } from "@/hooks/onError";
+import { useForm } from "react-hook-form";
+import { Link } from "react-router";
 
-export default function CreateTeam() {
+export default function Team() {
+    const { handleSubmit, register } = useForm({
+
+    });
+
+    function OnSubmit(){
+
+    }
+
     return (
         <div className="flex h-full w-full">
             <ScrollArea className="w-full h-full p-4">
@@ -38,10 +50,10 @@ export default function CreateTeam() {
                         </div>
                         <div className="flex flex-col gap-4 lg:flex-row">
                             <div className="flex flex-col lg:w-1/2 gap-2">
-                                <Dropdown dados={{ keyDropdown: "cmbTipoUsuario", values: tiposUser, label: "Tipo de usuário", control: control, name: "role" }} />
+                                {/* <Dropdown dados={{ keyDropdown: "cmbTipoUsuario", values: tiposUser, label: "Tipo de usuário", control: control, name: "role" }} /> */}
                             </div>
                             <div className="flex flex-col lg:w-1/2 gap-2">
-                                <Dropdown dados={{ keyDropdown: "cmbEquipe", values: teams, label: "Equipe", control: control, name: "teamId" }} />
+                                {/* <Dropdown dados={{ keyDropdown: "cmbEquipe", values: teams, label: "Equipe", control: control, name: "teamId" }} /> */}
                             </div>
                         </div>
                     </div>

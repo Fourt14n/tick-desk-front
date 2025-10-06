@@ -19,7 +19,7 @@ import type z from "zod";
 
 type UserRegister = z.infer<typeof userValidation>;
 
-export default function CreateUser() {
+export default function User() {
     const navigate = useNavigate();
     const [teams, setTeams] = useState<DropDownValues[]>([]);
     const { register, handleSubmit, control, formState: { isValid } } = useForm<UserRegister>({
