@@ -6,7 +6,8 @@ import Ticket from "./pages/Ticket/Ticket";
 import Listagem from "./pages/Listagem/Listagem";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import { NotFound } from "./pages/NotFound/NotFound";
-import CreateUser from "./pages/CreateUser/CreateUser";
+import CreateUser from "./pages/User/User";
+import { EAction } from "./types/EAction/EAction";
 
 export default function Router(){
     return (
@@ -17,9 +18,9 @@ export default function Router(){
                 <Route path="Ticket/:id" element={<PrivateRoute><Ticket/></PrivateRoute>}/>
                 <Route path="Listagem/:tipo" element={<PrivateRoute><Listagem/></PrivateRoute>}/>
                 <Route path="User/Create" element={<PrivateRoute><CreateUser/></PrivateRoute>}/>
-                <Route path="User/:id" element={<PrivateRoute><CreateUser/></PrivateRoute>}/>
+                <Route path="User/:id" element={<PrivateRoute><CreateUser action={EAction.UPDATE}/></PrivateRoute>}/>
                 <Route path="Teams/Create" element={<PrivateRoute><CreateUser/></PrivateRoute>}/>
-                <Route path="Teams/:id" element={<PrivateRoute><CreateUser/></PrivateRoute>}/>
+                <Route path="Teams/:id" element={<PrivateRoute><CreateUser action={EAction.UPDATE}/></PrivateRoute>}/>
             </Route>
             <Route path="*" index element={<NotFound/>}/>
         </Routes>

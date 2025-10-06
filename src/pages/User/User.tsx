@@ -8,6 +8,7 @@ import { onError } from "@/hooks/onError";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { showError, showSucces } from "@/hooks/useToast";
 import { api } from "@/lib/axios";
+import { EAction } from "@/types/EAction/EAction";
 import type { ResponseTeams } from "@/types/ResponseTeams/ResponseTeams";
 import { userValidation } from "@/validations/user";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,7 +20,11 @@ import type z from "zod";
 
 type UserRegister = z.infer<typeof userValidation>;
 
-export default function User() {
+type Action = {
+    action? : EAction
+}
+
+export default function User({action} : Action) {
     const navigate = useNavigate();
     const [teams, setTeams] = useState<DropDownValues[]>([]);
     const { register, handleSubmit, control, formState: { isValid } } = useForm<UserRegister>({
@@ -83,6 +88,9 @@ export default function User() {
 
     useEffect(() => {
         GetTeams();
+        if(action === EAction.UPDATE){
+            alert("Edição")
+        }
     }, [])
 
     return (
