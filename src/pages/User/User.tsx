@@ -9,12 +9,11 @@ import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { showError, showSucces } from "@/hooks/useToast";
 import { api } from "@/lib/axios";
 import { EAction } from "@/types/EAction/EAction";
-import type { ResponseTeams } from "@/types/ResponseTeams/ResponseTeams";
 import { userValidation } from "@/validations/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import type z from "zod";
 
 
@@ -26,6 +25,7 @@ type Action = {
 
 export default function User({action} : Action) {
     const navigate = useNavigate();
+    let { id = '' } = useParams();
     const [teams, setTeams] = useState<DropDownValues[]>([]);
     const { register, handleSubmit, control, formState: { isValid } } = useForm<UserRegister>({
         resolver: zodResolver(userValidation),
@@ -34,21 +34,6 @@ export default function User({action} : Action) {
             role: "CLIENT"
         }
     });
-
-    function GetTeams() {
-        api.get("api/team/get")
-            .then(res => {
-                console.log(res.data)
-                let teams: DropDownValues[] = res.data.map((team: ResponseTeams) => {
-                    return { label: team.name, value: team.id };
-                })
-                setTeams(teams);
-            })
-            .catch(erro => {
-                showError(erro.response.data.error)
-                return [];
-            })
-    }
     function RegisterUser(user : UserRegister) {
         api.post("api/user/register", user)
             .then(res => {
@@ -64,6 +49,7 @@ export default function User({action} : Action) {
         if (isValid) {
             console.log(data)
             RegisterUser(data);
+            setTimeout(() => navigate("/Listagem/Users"), 3000); // Redireciona para a tela de listagem de usuários
         }
     }
 
@@ -87,9 +73,8 @@ export default function User({action} : Action) {
     })
 
     useEffect(() => {
-        GetTeams();
         if(action === EAction.UPDATE){
-            alert("Edição")
+            
         }
     }, [])
 

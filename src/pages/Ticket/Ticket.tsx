@@ -52,7 +52,7 @@ export default function Ticket() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const confirmDialog = useConfirmation();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const { register, handleSubmit, watch, formState: { errors, isValid } } = useForm<TicketAction>({
+    const { register, handleSubmit, watch, control, formState: { errors, isValid } } = useForm<TicketAction>({
         resolver: zodResolver(TicketThenAction)
     });
 
@@ -177,9 +177,9 @@ export default function Ticket() {
 
                             <ScrollArea className="bg-(--bg-divs) pb-3">
                                 <div className="flex flex-col w-full p-2 gap-4">
-                                    <Dropdown {...register("idUsuarioResponsavel")} dados={{ keyDropdown: "exemplo", values: valoresDropdown, label: "Usuário Responsável" }} />
-                                    <Dropdown {...register("idEquipe")} dados={{ keyDropdown: "exemplo2", values: valoresDropdown, label: "Equipe Responsável" }} />
-                                    <Dropdown dados={{ keyDropdown: "exemplo3", values: valoresDropdown, label: "Requisitante" }} />
+                                    <Dropdown dados={{ keyDropdown: "exemplo", values: valoresDropdown, label: "Usuário Responsável", control: control, name: "idUsuarioResponsavel" }} />
+                                    <Dropdown dados={{ keyDropdown: "exemplo2", values: valoresDropdown, label: "Equipe Responsável", control: control, name: "idEquipe" }} />
+                                    <Dropdown dados={{ keyDropdown: "exemplo3", values: valoresDropdown, label: "Requisitante", control: control, name: "idUsuario" }} />
                                     <div id="urgencyOpts" className="flex flex-col gap-2">
                                         <Label htmlFor="urgencies">Urgência</Label>
                                         <RadioGroup defaultValue="1" {...register("urgencia")} id="urgencies" className="flex justify-evenly">
