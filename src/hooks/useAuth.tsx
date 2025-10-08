@@ -9,24 +9,24 @@ interface TokenAnswer {
 
 async function Authenticate({ email, password }: LoginCredentials) {
     // Objeto padrão nulo
-    var result: TokenAnswer = { access_token: "", expires_in: 0};
+    var result: TokenAnswer = { access_token: "", expires_in: 0 };
     try {
         await api.post("/api/user/login", {
-            email, 
+            email,
             password
         })
-        .then((res) => {
+            .then((res) => {
                 // Se der errado o fetch eu puxo a mensagem de erro
                 // Pra então poder mostrar essa mensagem pro usuário
                 if (res.status !== 200)
                     showError(res.data.error);
-                
+
                 Object.assign(result, res.data);
-        })
-        .catch(erro => {
-            console.log(erro.response.data.error)
-            showError(erro.response.data.error);
-        })
+            })
+            .catch(erro => {
+                console.log(erro.response.data.error)
+                showError(erro.response.data.error);
+            })
     } catch (error) {
         showError(error);
     }
@@ -36,8 +36,16 @@ async function Authenticate({ email, password }: LoginCredentials) {
 
 // Essa função vai ser exportada e vai ser usada pra validar a autenticação
 function validateAuth() {
+    console.log("Veio validar")
     let token = sessionStorage.getItem("Token_TickDesk");
-    return token == "" || token == undefined ? false : true;
+    let expiresAt = sessionStorage.getItem("Token_TickDesk_ExpiresAt");
+    if (token && expiresAt && Date.now() < parseInt(expiresAt)) {
+        return true;
+    } else {
+        sessionStorage.removeItem("Token_TickDesk");
+        sessionStorage.removeItem("Token_TickDesk_ExpiresAt");
+        return false;
+    }
 }
 
 export default async function useAuth({ email, password }: LoginCredentials, rememberMe: boolean) {
@@ -48,6 +56,8 @@ export default async function useAuth({ email, password }: LoginCredentials, rem
     var tokenResposta = await Authenticate({ email, password });
     console.log(tokenResposta)
     sessionStorage.setItem("Token_TickDesk", tokenResposta.access_token);
+    const expiresAt = Date.now() + (tokenResposta.expires_in * 1000);
+    sessionStorage.setItem("Token_TickDesk_ExpiresAt", expiresAt.toString());
 
     if (rememberMe)
         localStorage.setItem("Token_TickDesk", tokenResposta.access_token);

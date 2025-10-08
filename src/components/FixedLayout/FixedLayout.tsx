@@ -1,11 +1,13 @@
 import { Building, ChartNoAxesCombined, Home, LogOut, Network, Plus, Search, Users, WalletCards } from "lucide-react";
-import { type JSX } from "react"
+import { useState, type JSX } from "react"
 import { Input } from "../ui/input";
 import { useTabs } from "@/store/TabsStore";
 import HeaderCardTab from "../HeaderCardTab/HeaderCardTab";
 import { Link, useNavigate } from "react-router";
 import { ScrollArea } from "../ui/scroll-area";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
+import { AutoComplete } from "../Autocomplete/Autocomplete";
+
 
 export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
     const navigate = useNavigate();
@@ -84,7 +86,15 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
                             </div>
 
                             <div className="relative w-3/4 md:w-2/5 mr-2 lg:w-1/3 xl:w-2/6">
-                                <Input placeholder="Localize seu ticket" className="bg-white pr-8 w-full" />
+                            <AutoComplete/>
+                            {/* <AutoComplete
+                                items={[{value: "1", label: "Teste"}, {value: "2", label: "Bulbasauro"}, {value: "3", label: "Charmandinho"}]}
+                                selectedValue=""
+                                onSearchValueChange={() => {}}
+                                onSelectedValueChange={() => {}}
+                                searchValue=""
+                            /> */}
+                                {/* */}
                                 <Search size={20} className="absolute top-2 right-2 cursor-pointer" />
                             </div>
                         </div>
