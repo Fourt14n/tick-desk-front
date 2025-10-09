@@ -1,7 +1,6 @@
 import { Input } from "../ui/input"
 import { useEffect, useRef, useState } from "react"
 import Searching from "../Searching/Searching"
-import { ScrollArea } from "../ui/scroll-area"
 
 const autoCompleteFake = [
   {

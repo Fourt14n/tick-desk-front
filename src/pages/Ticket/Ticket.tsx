@@ -54,7 +54,7 @@ export default function Ticket() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const confirmDialog = useConfirmation();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const { register, handleSubmit, watch, control, formState: { errors, isValid } } = useForm<TicketAction>({
+    const { register, handleSubmit, watch, control, formState: { isValid } } = useForm<TicketAction>({
         resolver: zodResolver(TicketThenAction)
     });
 

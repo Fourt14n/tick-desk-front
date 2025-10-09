@@ -9,11 +9,13 @@ import { NotFound } from "./pages/NotFound/NotFound";
 import CreateUser from "./pages/User/User";
 import { EAction } from "./types/EAction/EAction";
 import Team from "./pages/Team/Team";
+import RecoveryPassword from "./pages/RecoveryPassword/RecoveryPassword";
 
 export default function Router(){
     return (
         <Routes>
             <Route index element={<Login/>} path="/Login" />
+            <Route element={<RecoveryPassword/>} path="/RecuperacaoSenha" />
             <Route path="/" element={<PrivateRoute><Layout/></PrivateRoute>}>
                 <Route path="Home/" index element={<PrivateRoute><Home/></PrivateRoute>}/>
                 <Route path="Ticket/:id" element={<PrivateRoute><Ticket/></PrivateRoute>}/>

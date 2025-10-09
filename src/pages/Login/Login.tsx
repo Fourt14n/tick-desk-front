@@ -67,12 +67,12 @@ export default function Login() {
                                         placeholder="**********"
                                         id="password"
                                         type="password" />
-                                    <a
-                                        href="#"
+                                    <Link
+                                    to={'/RecuperacaoSenha'}
                                         className="ml-auto inline-block text-sm underline-offset-4 underline hover:text-(--grey)"
                                     >
                                         Esqueceu a senha?
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                             <div className="flex flex-col gap-6">

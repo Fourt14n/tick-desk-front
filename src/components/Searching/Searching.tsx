@@ -2,7 +2,7 @@ import { Link } from "react-router"
 
 type Infos = {
     ticket: TicketInfos,
-    eraserFunc: (event : any) => void
+    eraserFunc: () => void
 }
 
 type TicketInfos = {
