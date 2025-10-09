@@ -86,8 +86,10 @@ export default function Ticket() {
     const ticket = Number.isInteger(parseInt(id)) ? parseInt(id) : 0;
 
     useEffect(() => {
-        var caminhoEspecifico = `/Ticket/${ticket}`;
-        addTab(caminhoEspecifico);
+        if(ticket > 0){
+            var caminhoEspecifico = `/Ticket/${ticket}`;
+            addTab(caminhoEspecifico);
+        }
     }, [])
 
     return (
