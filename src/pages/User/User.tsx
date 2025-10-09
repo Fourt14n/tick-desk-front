@@ -9,6 +9,7 @@ import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { showError, showSucces } from "@/hooks/useToast";
 import { api } from "@/lib/axios";
 import { EAction, type Action } from "@/types/EAction/EAction";
+import type { ResponseUser } from "@/types/ResponseUser/ResponseUser";
 import { userValidation } from "@/validations/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
@@ -20,6 +21,7 @@ import type z from "zod";
 type UserRegister = z.infer<typeof userValidation>;
 
 export default function User({action} : Action) {
+    const [userInfos, setUserInfos] = useState<ResponseUser>();
     const navigate = useNavigate();
     let { id = '' } = useParams();
     const [teams, setTeams] = useState<DropDownValues[]>([]);
@@ -32,19 +34,27 @@ export default function User({action} : Action) {
     });
     function RegisterUser(user : UserRegister) {
         api.post("api/user/register", user)
-            .then(res => {
-                console.log(res.data)
-                showSucces("Usuário criado com sucesso!");
-            })
+            .then(res => res.data)
             .catch(erro => {
                 showError(erro.response.data.error)
             })
+    }
+
+    async function SelectUser(){
+        api.get(`api/user/get/${id}`)
+        .then(res => {
+            console.log(res.data)
+            setUserInfos(res.data);
+        }).catch(erro => {
+            showError(erro.response.data.error);
+        })
     }
 
     function OnSubmit(data : UserRegister) {
         if (isValid) {
             console.log(data)
             RegisterUser(data);
+            showSucces("Usuário criado com sucesso!");
             setTimeout(() => navigate("/Listagem/Users"), 3000); // Redireciona para a tela de listagem de usuários
         }
     }
@@ -70,7 +80,7 @@ export default function User({action} : Action) {
 
     useEffect(() => {
         if(action === EAction.UPDATE){
-            
+            SelectUser();
         }
     }, [])
 
@@ -88,17 +98,17 @@ export default function User({action} : Action) {
                         <div className="flex flex-col gap-4 lg:flex-row">
                             <div className="flex flex-col lg:w-1/2 gap-2">
                                 <Label htmlFor="txtName">Nome</Label>
-                                <Input {...register("name")} maxLength={255} className="text-sm" placeholder="Nome completo" type="text" id="txtName" />
+                                <Input {...register("name")} maxLength={255} className="text-sm" placeholder="Nome completo" type="text" id="txtName" value={userInfos?.name} />
                             </div>
                             <div className="flex flex-col lg:w-1/2 gap-2">
                                 <Label htmlFor="txtUsername">Apelido</Label>
-                                <Input {...register("username")} maxLength={255} className="text-sm" placeholder="Digite um apelido para o usuário" type="mail" id="txtUsername" />
+                                <Input {...register("username")} maxLength={255} className="text-sm" placeholder="Digite um apelido para o usuário" type="mail" id="txtUsername" value={userInfos?.username} />
                             </div>
                         </div>
                         <div className="flex flex-col gap-4 lg:flex-row">
                             <div className="flex flex-col w-full lg:w-1/2 gap-2">
                                 <Label htmlFor="txtEmail">E-mail</Label>
-                                <Input {...register("email")} maxLength={255} className="text-sm" placeholder="Digite seu email" type="mail" id="txtEmail" />
+                                <Input {...register("email")} maxLength={255} className="text-sm" placeholder="Digite seu email" type="mail" id="txtEmail" value={userInfos?.email}/>
                             </div>
                             <div className="flex flex-col w-full gap-2 lg:w-1/2">
                                 <Label htmlFor="txtPassword">Senha</Label>
@@ -107,10 +117,10 @@ export default function User({action} : Action) {
                         </div>
                         <div className="flex flex-col gap-4 lg:flex-row">
                             <div className="flex flex-col lg:w-1/2 gap-2">
-                                <Dropdown dados={{ keyDropdown: "cmbTipoUsuario", values: tiposUser, label: "Tipo de usuário", control: control, name: "role" }} />
+                                <Dropdown dados={{ keyDropdown: "cmbTipoUsuario", values: tiposUser, label: "Tipo de usuário", control: control, name: "role", defaultValue:userInfos?.role }} />
                             </div>
                             <div className="flex flex-col lg:w-1/2 gap-2">
-                                <Dropdown dados={{ keyDropdown: "cmbEquipe", values: teams, label: "Equipe", control: control, name: "teamId" }} />
+                                <Dropdown dados={{ keyDropdown: "cmbEquipe", values: teams, label: "Equipe", control: control, name: "teamId", defaultValue: userInfos?.team.id }} />
                             </div>
                         </div>
                     </div>

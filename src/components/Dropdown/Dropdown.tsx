@@ -17,8 +17,9 @@ export interface DropdownProperties {
   keyDropdown: string,
   label: string,
   values: Array<DropDownValues>,
-  control: Control<any> // Passa o control ao invés do register
-  name: string // Nome do campo no formulário
+  control: Control<any>, // Passa o control ao invés do register
+  name: string, // Nome do campo no formulário
+  defaultValue?: any
 }
 
 export interface DropDownValues {
@@ -37,7 +38,7 @@ export function Dropdown({ dados }: Data) {
           <Select {...dados.control.register(dados.name)}
             key={field.value}
             onValueChange={field.onChange}
-            value={field.value || ""}
+            value={ dados.defaultValue || field.value || ""}
             defaultValue={field.value}>
             <SelectTrigger
               id={dados.keyDropdown}
