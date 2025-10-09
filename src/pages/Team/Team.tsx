@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { onError } from "@/hooks/onError";
+import type { Action } from "@/types/EAction/EAction";
 import { team } from "@/validations/team";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -12,7 +13,7 @@ import type z from "zod";
 
 type Team = z.infer<typeof team>;
 
-export default function Team() {
+export default function Team({action} : Action) {
     const { handleSubmit, register } = useForm({
         resolver: zodResolver(team)
     });

@@ -8,7 +8,7 @@ import { onError } from "@/hooks/onError";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { showError, showSucces } from "@/hooks/useToast";
 import { api } from "@/lib/axios";
-import { EAction } from "@/types/EAction/EAction";
+import { EAction, type Action } from "@/types/EAction/EAction";
 import { userValidation } from "@/validations/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
@@ -18,10 +18,6 @@ import type z from "zod";
 
 
 type UserRegister = z.infer<typeof userValidation>;
-
-type Action = {
-    action? : EAction
-}
 
 export default function User({action} : Action) {
     const navigate = useNavigate();

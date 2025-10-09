@@ -23,7 +23,6 @@ import React from "react"
 import { Input } from "../ui/input"
 import { Link, useNavigate } from "react-router"
 import type { Ticket } from "@/tableObjects/TicketsTable"
-import { useTabs } from "@/store/TabsStore"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -44,7 +43,6 @@ export function DataTable<TData, TValue>({
     caminho,
     colunaPesquisa
 }: DataTableProps<TData, TValue>) {
-    const addTab = useTabs(state => state.addTab);
     const navigate = useNavigate();
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -124,7 +122,6 @@ export function DataTable<TData, TValue>({
                                     data-state={row.getIsSelected() && "selected"}
                                     onClick={() => {
                                         var caminhoEspecifico = `${caminho}${(row.original as Ticket).id}`;
-                                        addTab(caminhoEspecifico);
                                         navigate(caminhoEspecifico)
                                     }}
                                     className="cursor-pointer hover:bg-muted/50 transition-colors"

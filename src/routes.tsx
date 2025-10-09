@@ -21,7 +21,7 @@ export default function Router(){
                 <Route path="User/Create" element={<PrivateRoute><CreateUser/></PrivateRoute>}/>
                 <Route path="User/:id" element={<PrivateRoute><CreateUser action={EAction.UPDATE}/></PrivateRoute>}/>
                 <Route path="Teams/Create" element={<PrivateRoute><Team/></PrivateRoute>}/>
-                <Route path="Teams/:id" element={<PrivateRoute><CreateUser action={EAction.UPDATE}/></PrivateRoute>}/>
+                <Route path="Teams/:id" element={<PrivateRoute><Team action={EAction.UPDATE}/></PrivateRoute>}/>
             </Route>
             <Route path="*" index element={<NotFound/>}/>
         </Routes>

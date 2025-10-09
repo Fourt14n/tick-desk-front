@@ -4,7 +4,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { showError } from "@/hooks/useToast";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { ArrowLeft, ArrowRight, Paperclip } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import "@/index.css";
 import useConfirmation from "@/hooks/useConfirmation";
@@ -21,6 +21,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { onError } from "@/hooks/onError";
+import { useTabs } from "@/store/TabsStore";
 
 function handleSelectedChange(event: React.MouseEvent<HTMLLabelElement, MouseEvent>, parentElement: string) {
     // Selecino o elemento anterior e removo a classe de selecionado
@@ -49,6 +50,7 @@ const valoresDropdown = [{
 export default function Ticket() {
     const navigate = useNavigate();
     let { id = '' } = useParams();
+    const addTab = useTabs(tabs => tabs.addTab);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const confirmDialog = useConfirmation();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -83,6 +85,11 @@ export default function Ticket() {
 
     const ticket = Number.isInteger(parseInt(id)) ? parseInt(id) : 0;
 
+    useEffect(() => {
+        var caminhoEspecifico = `/Ticket/${ticket}`;
+        addTab(caminhoEspecifico);
+    }, [])
+
     return (
         <div className="grid grid-rows-7 w-full bg-(--bg-default) grid-cols-[1fr_25px] md:grid-cols-[1fr_2rem]">
             <div className="row-span-7 h-full p-3 w-full">
@@ -96,7 +103,7 @@ export default function Ticket() {
 
                         <div className="flex flex-col gap-2">
                             <Label htmlFor="tituloTicket">Título do Ticket</Label>
-                            <Input {...register("tituloTicket")} type="text" placeholder="Título do ticket" maxLength={255} className="bg-white w-full"/>
+                            <Input {...register("tituloTicket")} type="text" placeholder="Título do ticket" maxLength={255} className="bg-white w-full" />
                         </div>
 
                         {/* Textarea container */}
