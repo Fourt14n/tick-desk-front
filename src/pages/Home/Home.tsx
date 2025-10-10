@@ -1,8 +1,12 @@
 import HomeCard from "@/components/HomeCard/HomeCard";
 import { Clock } from "@/components/HomeClock/HomeClock";
+import { validateAuth } from "@/hooks/useAuth";
 import useUser from "@/hooks/useUser";
+import { api } from "@/lib/axios";
 import { capitalizeFirstWord } from "@/lib/utils";
-import { useEffect } from "react";
+import { useUserInfo } from "@/store/UserInfosStore";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
 
 // Para fins educativos eu vou criar aqui um array do bagulho pra nós ver funcionando
 var equipes = [{
@@ -28,19 +32,42 @@ var equipes = [{
     OpenedToday: 4,
     ExpiresToday: 5,
     Expired: 3
-}
-
-]
-
-function PopularHome(){
-
-}
+}]
 
 export default function Home() {
     const user = useUser(sessionStorage.getItem("Token_TickDesk")!);
+    // const [userTickets, setUserTickets] = useState([]);
+    // const [teamTickets, setTeamTickets] = useState([]);
+    // const [enterpriseTickets, setEnterpriseTickets] = useState([]);
+
+
+    // const userInfos = useUserInfo((hook) => hook.user);
+
+    // function PopularHome() {
+    //     var equipes = [];
+
+
+    // }
+
+    // function GetUserTickets() {
+    //     api.get(`api/calls/user/${user.id}`)
+
+    // }
+
+    // function GetTeamTickets() {
+
+    // }
+
+    // function GetEnterpiseTickets() {
+
+    // }
+
 
     useEffect(() => {
-        PopularHome();
+        if (validateAuth()) {
+            // PopularHome();
+
+        }
     }, []);
 
     return (

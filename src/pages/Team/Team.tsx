@@ -3,24 +3,71 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { onError } from "@/hooks/onError";
-import type { Action } from "@/types/EAction/EAction";
+import { showError, showSucces } from "@/hooks/useToast";
+import { api } from "@/lib/axios";
+import { UsersColumns, type User } from "@/tableObjects/UsersTable";
+import { EAction, type Action } from "@/types/EAction/EAction";
 import { team } from "@/validations/team";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import type z from "zod";
 
 type Team = z.infer<typeof team>;
 
-export default function Team({action} : Action) {
-    const { handleSubmit, register } = useForm({
+export default function Team({ action }: Action) {
+    const [users, setUsers] = useState<User[]>([]);
+    const [specificTeam, setSpecificTeam] = useState<Team>();
+    let { id = '' } = useParams();
+    const navigate = useNavigate();
+    const { handleSubmit, register, formState: { isValid } } = useForm({
         resolver: zodResolver(team)
     });
+    const table = useReactTable({
+        data: users,
+        columns: UsersColumns,
+        getCoreRowModel: getCoreRowModel(),
+    })
 
-    function OnSubmit() {
-
+    function OnSubmit(data: Team) {
+        if (isValid)
+            CreateTeam(data);
     }
+
+    function GetUsersByTeam() {
+        api.get(`api/team/get-user/${id}`)
+            .then(res => setUsers(res.data))
+            .catch(erro => {
+                showError(erro.response.data.error);
+            })
+    }
+
+    // function GetTeamById() {
+    //     api.get(`api/team/get/${id}`)
+    //         .then(res => setUsers(res.data))
+    //         .catch(erro => {
+    //             showError(erro.response.data.error);
+    //         })
+    // }
+
+    function CreateTeam(team: Team) {
+        api.post("api/team/create", team)
+            .then(res => {
+                showSucces("Equipe criada com sucesso!");
+                setTimeout(() => navigate("/Listagem/Teams"), 3000);
+            }).catch(erro => showError(erro.response.data.error))
+    }
+
+    useEffect(() => {
+        if (action === EAction.UPDATE) {
+            GetUsersByTeam();
+            // GetTeamById();
+        }
+    }, [])
 
     return (
         <div className="flex h-full w-full">
@@ -33,11 +80,59 @@ export default function Team({action} : Action) {
                 </div>
                 <form onSubmit={handleSubmit(OnSubmit, onError)} className="flex h-full w-full flex-col justify-evenly lg:justify-between pt-4 lg:py-10">
                     <div className="flex flex-col gap-4">
-                        <div className="flex flex-col gap-4 w-full">
+                        <div className="grid grid-rows-[auto_1fr_auto] h-full w-full gap-4">
                             <div className="flex flex-col w-full gap-2">
                                 <Label htmlFor="txtName">Nome da equipe</Label>
-                                <Input {...register("name")} maxLength={255} className="text-sm" placeholder="Nome da equipe" type="text" id="txtName" />
+                                <Input {...register("name")} maxLength={255} className="text-sm" placeholder="Nome da equipe" type="text" id="txtName" value={specificTeam?.name} />
                             </div>
+                            {
+                                action === EAction.UPDATE &&
+                                <div className="flex overflow-hidden flex-col gap-2">
+                                    <Label className="text-base">Usuários da Equipe</Label>
+                                    <Table className="border-1 border-black-50">
+                                        <TableHeader>
+                                            {table.getHeaderGroups().map((headerGroup) => (
+                                                <TableRow key={headerGroup.id}>
+                                                    {headerGroup.headers.map((header) => {
+                                                        return (
+                                                            <TableHead key={header.id}>
+                                                                {header.isPlaceholder
+                                                                    ? null
+                                                                    : flexRender(
+                                                                        header.column.columnDef.header,
+                                                                        header.getContext()
+                                                                    )}
+                                                            </TableHead>
+                                                        )
+                                                    })}
+                                                </TableRow>
+                                            ))}
+                                        </TableHeader>
+                                        <TableBody>
+                                            {table.getRowModel().rows?.length ? (
+                                                table.getRowModel().rows.map((row) => (
+                                                    <TableRow
+                                                        key={row.id}
+                                                        data-state={row.getIsSelected() && "selected"}
+                                                    >
+                                                        {row.getVisibleCells().map((cell) => (
+                                                            <TableCell key={cell.id}>
+                                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                            </TableCell>
+                                                        ))}
+                                                    </TableRow>
+                                                ))
+                                            ) : (
+                                                <TableRow>
+                                                    <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
+                                                        Equipe sem usuários.
+                                                    </TableCell>
+                                                </TableRow>
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                            }
                         </div>
                     </div>
                     <div className="flex w-full justify-end gap-2 flex-col py-2 lg:flex-row">

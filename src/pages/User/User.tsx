@@ -106,13 +106,9 @@ export default function User({action} : Action) {
                             </div>
                         </div>
                         <div className="flex flex-col gap-4 lg:flex-row">
-                            <div className="flex flex-col w-full lg:w-1/2 gap-2">
+                            <div className="flex flex-col w-full gap-2">
                                 <Label htmlFor="txtEmail">E-mail</Label>
                                 <Input {...register("email")} maxLength={255} className="text-sm" placeholder="Digite seu email" type="mail" id="txtEmail" value={userInfos?.email}/>
-                            </div>
-                            <div className="flex flex-col w-full gap-2 lg:w-1/2">
-                                <Label htmlFor="txtPassword">Senha</Label>
-                                <Input {...register("password")} maxLength={255} className="text-sm" placeholder="Digite sua senha" type="password" id="txtPassword" />
                             </div>
                         </div>
                         <div className="flex flex-col gap-4 lg:flex-row">

@@ -35,8 +35,7 @@ async function Authenticate({ email, password }: LoginCredentials) {
 }
 
 // Essa função vai ser exportada e vai ser usada pra validar a autenticação
-function validateAuth() {
-    console.log("Veio validar")
+export function validateAuth() {
     let token = sessionStorage.getItem("Token_TickDesk");
     let expiresAt = sessionStorage.getItem("Token_TickDesk_ExpiresAt");
     if (token && expiresAt && Date.now() < parseInt(expiresAt)) {

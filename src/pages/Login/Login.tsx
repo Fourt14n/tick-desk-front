@@ -12,6 +12,10 @@ import { loginSchema } from "@/validations/login";
 import type z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { onError } from "@/hooks/onError";
+import { useUserInfo } from "@/store/UserInfosStore";
+import { api } from "@/lib/axios";
+import useUser from "@/hooks/useUser";
+import { showError } from "@/hooks/useToast";
 
 export type LoginCredentials = z.infer<typeof loginSchema>;
 
@@ -21,13 +25,30 @@ export default function Login() {
         resolver: zodResolver(loginSchema)
     });
     const navigate = useNavigate();
+    const setUserInfo = useUserInfo((state) => state.setUser);
+
+    function GetLoggedUserInfos(id : number){
+        api.get(`api/user/get/${id}`)
+        .then(res => {
+            const user = res.data;
+            setUserInfo({
+                enterpriseId: user.team.enterpriseDto.id, 
+                teamId:user.team.id
+            });
+        }).catch(erro => {
+            showError("Erro ao tentar buscar o usuário logado: " + erro.response.data.error);
+        })
+    }
 
     async function handleLogin(data : LoginCredentials) {
         if (isValid) {
             let auth = await useAuth({ email: data.email, password: data.password }, rememberMe);
 
-            if (auth)
+            if (auth){
+                var user = useUser(sessionStorage.getItem("Token_TickDesk")!);
+                GetLoggedUserInfos(user.id);
                 navigate("/Home");
+            }
         }
     }
 
