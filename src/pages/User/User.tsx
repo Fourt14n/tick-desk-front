@@ -9,7 +9,6 @@ import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { showError, showSucces } from "@/hooks/useToast";
 import { api } from "@/lib/axios";
 import { EAction, type Action } from "@/types/EAction/EAction";
-import type { ResponseUser } from "@/types/ResponseUser/ResponseUser";
 import { userValidation } from "@/validations/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
@@ -21,11 +20,10 @@ import type z from "zod";
 type UserRegister = z.infer<typeof userValidation>;
 
 export default function User({action} : Action) {
-    const [userInfos, setUserInfos] = useState<ResponseUser>();
     const navigate = useNavigate();
     let { id = '' } = useParams();
     const [teams, setTeams] = useState<DropDownValues[]>([]);
-    const { register, handleSubmit, control, formState: { isValid } } = useForm<UserRegister>({
+    const { register, handleSubmit, reset, control, formState: { isValid } } = useForm<UserRegister>({
         resolver: zodResolver(userValidation),
         defaultValues: {
             teamId: 0,
@@ -39,12 +37,19 @@ export default function User({action} : Action) {
                 showError(erro.response.data.error)
             })
     }
+    function UpdateUser(user : UserRegister) {
+        api.post(`api/user/update/${id}`, user)
+            .then(res => res.data)
+            .catch(erro => {
+                showError(erro.response.data.error)
+            })
+    }
 
     async function SelectUser(){
         api.get(`api/user/get/${id}`)
         .then(res => {
             console.log(res.data)
-            setUserInfos(res.data);
+            reset(res.data)
         }).catch(erro => {
             showError(erro.response.data.error);
         })
@@ -53,7 +58,11 @@ export default function User({action} : Action) {
     function OnSubmit(data : UserRegister) {
         if (isValid) {
             console.log(data)
-            RegisterUser(data);
+            if(action === EAction.UPDATE)
+                UpdateUser(data);
+            else
+                RegisterUser(data);
+
             showSucces("Usuário criado com sucesso!");
             setTimeout(() => navigate("/Listagem/Users"), 3000); // Redireciona para a tela de listagem de usuários
         }
@@ -98,25 +107,25 @@ export default function User({action} : Action) {
                         <div className="flex flex-col gap-4 lg:flex-row">
                             <div className="flex flex-col lg:w-1/2 gap-2">
                                 <Label htmlFor="txtName">Nome</Label>
-                                <Input {...register("name")} maxLength={255} className="text-sm" placeholder="Nome completo" type="text" id="txtName" value={userInfos?.name} />
+                                <Input {...register("name")} maxLength={255} className="text-sm" placeholder="Nome completo" type="text" id="txtName" />
                             </div>
                             <div className="flex flex-col lg:w-1/2 gap-2">
                                 <Label htmlFor="txtUsername">Apelido</Label>
-                                <Input {...register("username")} maxLength={255} className="text-sm" placeholder="Digite um apelido para o usuário" type="mail" id="txtUsername" value={userInfos?.username} />
+                                <Input {...register("username")} maxLength={255} className="text-sm" placeholder="Digite um apelido para o usuário" type="mail" id="txtUsername" />
                             </div>
                         </div>
                         <div className="flex flex-col gap-4 lg:flex-row">
                             <div className="flex flex-col w-full gap-2">
                                 <Label htmlFor="txtEmail">E-mail</Label>
-                                <Input {...register("email")} maxLength={255} className="text-sm" placeholder="Digite seu email" type="mail" id="txtEmail" value={userInfos?.email}/>
+                                <Input {...register("email")} maxLength={255} className="text-sm" placeholder="Digite seu email" type="mail" id="txtEmail"/>
                             </div>
                         </div>
                         <div className="flex flex-col gap-4 lg:flex-row">
                             <div className="flex flex-col lg:w-1/2 gap-2">
-                                <Dropdown dados={{ keyDropdown: "cmbTipoUsuario", values: tiposUser, label: "Tipo de usuário", control: control, name: "role", defaultValue:userInfos?.role }} />
+                                <Dropdown dados={{ keyDropdown: "cmbTipoUsuario", values: tiposUser, label: "Tipo de usuário", control: control, name: "role" }} />
                             </div>
                             <div className="flex flex-col lg:w-1/2 gap-2">
-                                <Dropdown dados={{ keyDropdown: "cmbEquipe", values: teams, label: "Equipe", control: control, name: "teamId", defaultValue: userInfos?.team.id }} />
+                                <Dropdown dados={{ keyDropdown: "cmbEquipe", values: teams, label: "Equipe", control: control, name: "teamId" }} />
                             </div>
                         </div>
                     </div>

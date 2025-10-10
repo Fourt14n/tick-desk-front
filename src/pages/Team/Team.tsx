@@ -21,10 +21,9 @@ type Team = z.infer<typeof team>;
 
 export default function Team({ action }: Action) {
     const [users, setUsers] = useState<User[]>([]);
-    const [specificTeam, setSpecificTeam] = useState<Team>();
     let { id = '' } = useParams();
     const navigate = useNavigate();
-    const { handleSubmit, register, formState: { isValid } } = useForm({
+    const { handleSubmit, register, reset, formState: { isValid } } = useForm({
         resolver: zodResolver(team)
     });
     const table = useReactTable({
@@ -48,7 +47,7 @@ export default function Team({ action }: Action) {
 
     // function GetTeamById() {
     //     api.get(`api/team/get/${id}`)
-    //         .then(res => setUsers(res.data))
+    //         .then(res => reset(res.data))
     //         .catch(erro => {
     //             showError(erro.response.data.error);
     //         })
@@ -83,7 +82,7 @@ export default function Team({ action }: Action) {
                         <div className="grid grid-rows-[auto_1fr_auto] h-full w-full gap-4">
                             <div className="flex flex-col w-full gap-2">
                                 <Label htmlFor="txtName">Nome da equipe</Label>
-                                <Input {...register("name")} maxLength={255} className="text-sm" placeholder="Nome da equipe" type="text" id="txtName" value={specificTeam?.name} />
+                                <Input {...register("name")} maxLength={255} className="text-sm" placeholder="Nome da equipe" type="text" id="txtName" />
                             </div>
                             {
                                 action === EAction.UPDATE &&
