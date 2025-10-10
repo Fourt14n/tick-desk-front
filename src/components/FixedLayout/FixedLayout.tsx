@@ -6,14 +6,17 @@ import { Link, useNavigate } from "react-router";
 import { ScrollArea } from "../ui/scroll-area";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { AutoComplete } from "../Autocomplete/Autocomplete";
+import { useUserInfo } from "@/store/UserInfosStore";
 
 
 export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
     const navigate = useNavigate();
     const tabs = useTabs((state) => state.tabs);
+    const clearUser = useUserInfo((state) => state.clearUser);
 
     function DisconnectUser() {
         sessionStorage.removeItem("Token_TickDesk");
+        clearUser();
         navigate("/Login");
     }
 
