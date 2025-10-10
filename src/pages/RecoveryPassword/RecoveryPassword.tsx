@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { onError } from "@/hooks/onError";
+import { useLoading } from "@/hooks/useLoading";
 import { showError, showSucces } from "@/hooks/useToast";
 import { api } from "@/lib/axios";
 import { sendMailRecoveryPassword } from "@/validations/sendMailRecoveryPassword";
@@ -14,6 +15,7 @@ import type z from "zod";
 type SendMailRecoveryPassword = z.infer<typeof sendMailRecoveryPassword>
 
 export default function RecoveryPassword() {
+    const loading = useLoading();
     const navigate = useNavigate();
     const {register, handleSubmit, formState: {isValid, isSubmitting}} = useForm({
         resolver: zodResolver(sendMailRecoveryPassword)

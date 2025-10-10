@@ -37,7 +37,7 @@ var equipes = [{
 
 export default function Home() {
     const user = useUser(sessionStorage.getItem("Token_TickDesk")!);
-    const loading = useLoading();
+    // const loading = useLoading();
     
     // const [userTickets, setUserTickets] = useState([]);
     // const [teamTickets, setTeamTickets] = useState([]);
@@ -67,12 +67,12 @@ export default function Home() {
 
 
     useEffect(() => {
-        loading.showLoading();
+        // loading.showLoading();
         if (validateAuth()) {
             // PopularHome();
 
         }
-        loading.hideLoading();
+        // loading.hideLoading();
     }, []);
 
     return (
