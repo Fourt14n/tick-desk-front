@@ -1,6 +1,7 @@
 import HomeCard from "@/components/HomeCard/HomeCard";
 import { Clock } from "@/components/HomeClock/HomeClock";
 import { validateAuth } from "@/hooks/useAuth";
+import { useLoading } from "@/hooks/useLoading";
 import useUser from "@/hooks/useUser";
 import { api } from "@/lib/axios";
 import { capitalizeFirstWord } from "@/lib/utils";
@@ -36,6 +37,8 @@ var equipes = [{
 
 export default function Home() {
     const user = useUser(sessionStorage.getItem("Token_TickDesk")!);
+    const loading = useLoading();
+    
     // const [userTickets, setUserTickets] = useState([]);
     // const [teamTickets, setTeamTickets] = useState([]);
     // const [enterpriseTickets, setEnterpriseTickets] = useState([]);
@@ -64,10 +67,12 @@ export default function Home() {
 
 
     useEffect(() => {
+        loading.showLoading();
         if (validateAuth()) {
             // PopularHome();
 
         }
+        loading.hideLoading();
     }, []);
 
     return (
