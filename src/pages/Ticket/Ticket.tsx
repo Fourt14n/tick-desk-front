@@ -54,7 +54,7 @@ export default function Ticket() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const confirmDialog = useConfirmation();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const { register, handleSubmit, watch, control, formState: { isValid } } = useForm<TicketAction>({
+    const { register, handleSubmit, watch, control, formState: { isValid, isSubmitting } } = useForm<TicketAction>({
         resolver: zodResolver(TicketThenAction)
     });
 
@@ -157,6 +157,7 @@ export default function Ticket() {
 
                                     {/* Botão à direita */}
                                     <Button
+                                    disabled={isSubmitting}
                                         className="px-4 max-[360px]:px-2 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer" onClick={handleSendAction}>
                                         Enviar
                                     </Button>
@@ -228,7 +229,7 @@ export default function Ticket() {
                                         <Input className="bg-white" type="text" disabled></Input>
                                     </div>
 
-                                    {ticket > 0 && <Button className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">Finalizar Ticket</Button>}
+                                    {ticket > 0 && <Button disabled={isSubmitting} className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">Finalizar Ticket</Button>}
                                 </div>
                             </ScrollArea>
                         </div>
