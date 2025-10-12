@@ -2,9 +2,8 @@ import { Separator } from "@radix-ui/react-separator";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Link } from "react-router";
 
-interface TicketGroup {
+export interface TicketGroup {
     GroupName: string,
-    GroupId: Number,
     Total: Number,
     OpenedToday: Number,
     ExpiresToday: Number,
