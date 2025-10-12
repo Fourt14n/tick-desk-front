@@ -11,10 +11,12 @@ export interface TokenReturn {
 }
 
 export default function useUser(token: string): TokenReturn {
+    let user : TokenReturn = {email: "", exp: 1, id: 0, name: "", role: ""}
     if(token === "" || token === null)
         DisconnectUser();
+    else
+        user = jwtDecode(token) as TokenReturn;
 
-    const user = jwtDecode(token) as TokenReturn;
 
     return user;
 }

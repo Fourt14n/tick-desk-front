@@ -39,7 +39,7 @@ async function Authenticate({ email, password }: LoginCredentials) {
 
 // Essa função vai ser exportada e vai ser usada pra validar a autenticação
 export function validateAuth() {
-    console.trace("Vai tomar no cu");
+    console.trace("Veio validar");
     let token = sessionStorage.getItem("Token_TickDesk");
     console.log(sessionStorage.getItem("Token_TickDesk_ExpiresAt"))
     var decoded = useUser(token || "")
