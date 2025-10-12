@@ -1,20 +1,20 @@
 import { jwtDecode } from 'jwt-decode';
+import { DisconnectUser } from './useAuth';
 
-interface LoggedUser {
-    user: TokenReturn;
-}
 
 export interface TokenReturn {
     id: number,
     name: string,
     role: string,
     email: string,
+    exp: number
 }
 
 export default function useUser(token: string): TokenReturn {
-    console.log(token)
-    const user = jwtDecode(token) as TokenReturn;
+    if(token === "" || token === null)
+        DisconnectUser();
 
+    const user = jwtDecode(token) as TokenReturn;
 
     return user;
 }

@@ -1,13 +1,29 @@
-import { Navigate } from "react-router";
+import { validateAuth } from "@/hooks/useAuth";
+import Login from "@/pages/Login/Login";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 
 interface PrivateRouteType {
     children: React.ReactNode
 }
 
 export default function PrivateRoute({children} : PrivateRouteType){
-    const token = sessionStorage.getItem("Token_TickDesk");
-    if(!token)
-        return <Navigate to="/Login" />
+    const navigate = useNavigate();
+    const isAuthenticated = validateAuth();
     
-    return <>{children}</>
+    useEffect(() => {
+        console.log("Veio autenticar");
+        console.log(isAuthenticated);
+        
+        if(!isAuthenticated) {
+            navigate("/Login");
+        }
+    }, [isAuthenticated]);
+    
+    // Se não estiver autenticado, não renderiza nada enquanto redireciona
+    if(!isAuthenticated) {
+        return null;
+    }
+    
+    return <>{children}</>;
 }

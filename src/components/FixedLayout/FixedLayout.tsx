@@ -2,24 +2,15 @@ import { Building, ChartNoAxesCombined, Home, LogOut, Network, Plus, Search, Use
 import { type JSX } from "react"
 import { useTabs } from "@/store/TabsStore";
 import HeaderCardTab from "../HeaderCardTab/HeaderCardTab";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { ScrollArea } from "../ui/scroll-area";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { AutoComplete } from "../Autocomplete/Autocomplete";
-import { useUserInfo } from "@/store/UserInfosStore";
+import { DisconnectUser } from "@/hooks/useAuth";
 
 
 export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
-    const navigate = useNavigate();
     const tabs = useTabs((state) => state.tabs);
-    const clearUser = useUserInfo((state) => state.clearUser);
-
-    function DisconnectUser() {
-        sessionStorage.removeItem("Token_TickDesk");
-        clearUser();
-        navigate("/Login");
-    }
-
 
     return (
         <div>
