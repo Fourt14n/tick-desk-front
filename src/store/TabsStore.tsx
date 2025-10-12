@@ -15,7 +15,7 @@ export const useTabs = create<Tabs>()(
             deleteTab: (tabToRemove) => set((state) => ({ tabs: state.tabs.filter(prev => prev !== tabToRemove) }))
         }),
         {
-            name: 'user-storage', // nome da chave no localStorage
+            name: 'tabs-storage', // nome da chave no localStorage
         }
     )
 );
