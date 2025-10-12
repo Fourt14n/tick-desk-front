@@ -135,7 +135,7 @@ export default function Team({ action }: Action) {
                         </div>
                     </div>
                     <div className="flex w-full justify-end gap-2 flex-col py-2 lg:flex-row">
-                        <Button disabled={isSubmitting} type="submit" className="bg-(--weakGreen) w-full lg:w-42 text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">Cadastrar</Button>
+                        <Button disabled={isSubmitting} type="submit" className="bg-(--weakGreen) w-full lg:w-42 text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">{action === EAction.CREATE ? "Cadastrar" : "Atualizar"}</Button>
                         <Link to="/Listagem/Teams">
                             <Button variant={"destructive"} type="submit" className="w-full lg:w-42 cursor-pointer">Voltar</Button>
                         </Link>

@@ -20,9 +20,9 @@ export default function Router(){
                 <Route path="Home/" index element={<PrivateRoute children={<Home/>}></PrivateRoute>}/>
                 <Route path="Ticket/:id" element={<PrivateRoute children={<Ticket/>}></PrivateRoute>}/>
                 <Route path="Listagem/:tipo" element={<PrivateRoute children={<Listagem/>}></PrivateRoute>}/>
-                <Route path="User/Create" element={<PrivateRoute children={<CreateUser/>}></PrivateRoute>}/>
+                <Route path="User/Create" element={<PrivateRoute children={<CreateUser action={EAction.CREATE}/>}></PrivateRoute>}/>
                 <Route path="User/:id" element={<PrivateRoute children={<CreateUser action={EAction.UPDATE}/>}></PrivateRoute>}/>
-                <Route path="Teams/Create" element={<PrivateRoute children={<Team/>}></PrivateRoute>}/>
+                <Route path="Teams/Create" element={<PrivateRoute children={<Team action={EAction.CREATE}/>}></PrivateRoute>}/>
                 <Route path="Teams/:id" element={<PrivateRoute children={<Team action={EAction.UPDATE}/>}></PrivateRoute>}/>
             </Route>
             <Route path="*" index element={<NotFound/>}/>
