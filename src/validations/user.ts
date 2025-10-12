@@ -14,10 +14,6 @@ export const userValidation = z.object({
     email: z.email("O e-mail precisa ser válido!")
     .nonempty("O email é obrigatório!")
     .max(255, "O email pode ter no máximo 255 caracteres!"),
-
-    password: z.string("A senha não pode ser vazia!")
-    .min(8, "A senha precisa ter no mínimo 8 caracteres!")
-    .max(255, "A senha pode ter no máximo 255 caracteres!"),
     
     role: z.string("O tipo de usuário é obrigatório!")
     .refine(valor => valor != "", {

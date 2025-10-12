@@ -61,7 +61,7 @@ export function DataTable<TData, TValue>({
             columnFilters
         }
     });
-
+    
     return (
         <div className="grid grid-rows-[auto_1fr_auto] h-full w-full">
             {/* Header fixo com input de busca */}
@@ -120,7 +120,10 @@ export function DataTable<TData, TValue>({
                                 <TableRow
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
-                                    onClick={() => navigate(`${caminho}${(row.original as Ticket).id}`)}
+                                    onClick={() => {
+                                        var caminhoEspecifico = `${caminho}${(row.original as Ticket).id}`;
+                                        navigate(caminhoEspecifico)
+                                    }}
                                     className="cursor-pointer hover:bg-muted/50 transition-colors"
                                 >
                                     {row.getVisibleCells().map((cell) => (

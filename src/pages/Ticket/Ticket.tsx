@@ -4,7 +4,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { showError } from "@/hooks/useToast";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { ArrowLeft, ArrowRight, Paperclip } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import "@/index.css";
 import useConfirmation from "@/hooks/useConfirmation";
@@ -21,6 +21,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { onError } from "@/hooks/onError";
+import { useTabs } from "@/store/TabsStore";
 
 function handleSelectedChange(event: React.MouseEvent<HTMLLabelElement, MouseEvent>, parentElement: string) {
     // Selecino o elemento anterior e removo a classe de selecionado
@@ -49,10 +50,11 @@ const valoresDropdown = [{
 export default function Ticket() {
     const navigate = useNavigate();
     let { id = '' } = useParams();
+    const addTab = useTabs(tabs => tabs.addTab);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const confirmDialog = useConfirmation();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const { register, handleSubmit, watch, formState: { errors, isValid } } = useForm<TicketAction>({
+    const { register, handleSubmit, watch, control, formState: { isValid, isSubmitting } } = useForm<TicketAction>({
         resolver: zodResolver(TicketThenAction)
     });
 
@@ -83,6 +85,13 @@ export default function Ticket() {
 
     const ticket = Number.isInteger(parseInt(id)) ? parseInt(id) : 0;
 
+    useEffect(() => {
+        if(ticket > 0){
+            var caminhoEspecifico = `/Ticket/${ticket}`;
+            addTab(caminhoEspecifico);
+        }
+    }, [])
+
     return (
         <div className="grid grid-rows-7 w-full bg-(--bg-default) grid-cols-[1fr_25px] md:grid-cols-[1fr_2rem]">
             <div className="row-span-7 h-full p-3 w-full">
@@ -96,7 +105,7 @@ export default function Ticket() {
 
                         <div className="flex flex-col gap-2">
                             <Label htmlFor="tituloTicket">Título do Ticket</Label>
-                            <Input {...register("tituloTicket")} type="text" placeholder="Título do ticket" maxLength={255} className="bg-white w-full"/>
+                            <Input {...register("tituloTicket")} type="text" placeholder="Título do ticket" maxLength={255} className="bg-white w-full" />
                         </div>
 
                         {/* Textarea container */}
@@ -148,6 +157,7 @@ export default function Ticket() {
 
                                     {/* Botão à direita */}
                                     <Button
+                                    disabled={isSubmitting}
                                         className="px-4 max-[360px]:px-2 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer" onClick={handleSendAction}>
                                         Enviar
                                     </Button>
@@ -177,9 +187,9 @@ export default function Ticket() {
 
                             <ScrollArea className="bg-(--bg-divs) pb-3">
                                 <div className="flex flex-col w-full p-2 gap-4">
-                                    <Dropdown {...register("idUsuarioResponsavel")} dados={{ keyDropdown: "exemplo", values: valoresDropdown, label: "Usuário Responsável" }} />
-                                    <Dropdown {...register("idEquipe")} dados={{ keyDropdown: "exemplo2", values: valoresDropdown, label: "Equipe Responsável" }} />
-                                    <Dropdown dados={{ keyDropdown: "exemplo3", values: valoresDropdown, label: "Requisitante" }} />
+                                    <Dropdown dados={{ keyDropdown: "exemplo", values: valoresDropdown, label: "Usuário Responsável", control: control, name: "idUsuarioResponsavel" }} />
+                                    <Dropdown dados={{ keyDropdown: "exemplo2", values: valoresDropdown, label: "Equipe Responsável", control: control, name: "idEquipe" }} />
+                                    <Dropdown dados={{ keyDropdown: "exemplo3", values: valoresDropdown, label: "Requisitante", control: control, name: "idUsuario" }} />
                                     <div id="urgencyOpts" className="flex flex-col gap-2">
                                         <Label htmlFor="urgencies">Urgência</Label>
                                         <RadioGroup defaultValue="1" {...register("urgencia")} id="urgencies" className="flex justify-evenly">
@@ -219,7 +229,7 @@ export default function Ticket() {
                                         <Input className="bg-white" type="text" disabled></Input>
                                     </div>
 
-                                    {ticket > 0 && <Button className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">Finalizar Ticket</Button>}
+                                    {ticket > 0 && <Button disabled={isSubmitting} className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">Finalizar Ticket</Button>}
                                 </div>
                             </ScrollArea>
                         </div>

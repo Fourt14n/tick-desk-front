@@ -8,57 +8,63 @@ import { onError } from "@/hooks/onError";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { showError, showSucces } from "@/hooks/useToast";
 import { api } from "@/lib/axios";
-import type { ResponseTeams } from "@/types/ResponseTeams/ResponseTeams";
+import { EAction, type Action } from "@/types/EAction/EAction";
 import { userValidation } from "@/validations/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import type z from "zod";
 
 
 type UserRegister = z.infer<typeof userValidation>;
 
-export default function CreateUser() {
+export default function User({action} : Action) {
     const navigate = useNavigate();
+    let { id = '' } = useParams();
     const [teams, setTeams] = useState<DropDownValues[]>([]);
-    const { register, handleSubmit, control, formState: { isValid } } = useForm<UserRegister>({
+    const { register, handleSubmit, reset, control, formState: { isValid, isSubmitting } } = useForm<UserRegister>({
         resolver: zodResolver(userValidation),
         defaultValues: {
             teamId: 0,
             role: "CLIENT"
         }
     });
-
-    function GetTeams() {
-        api.get("api/team/get")
-            .then(res => {
-                console.log(res.data)
-                let teams: DropDownValues[] = res.data.map((team: ResponseTeams) => {
-                    return { label: team.name, value: team.id };
-                })
-                setTeams(teams);
-            })
-            .catch(erro => {
-                showError(erro.response.data.error)
-                return [];
-            })
-    }
     function RegisterUser(user : UserRegister) {
         api.post("api/user/register", user)
-            .then(res => {
-                console.log(res.data)
-                showSucces("Usuário criado com sucesso!");
-            })
+            .then(res => res.data)
             .catch(erro => {
                 showError(erro.response.data.error)
             })
+    }
+    function UpdateUser(user : UserRegister) {
+        api.post(`api/user/update/${id}`, user)
+            .then(res => res.data)
+            .catch(erro => {
+                showError(erro.response.data.error)
+            })
+    }
+
+    async function SelectUser(){
+        api.get(`api/user/get/${id}`)
+        .then(res => {
+            console.log(res.data)
+            reset(res.data)
+        }).catch(erro => {
+            showError(erro.response.data.error);
+        })
     }
 
     function OnSubmit(data : UserRegister) {
         if (isValid) {
             console.log(data)
-            RegisterUser(data);
+            if(action === EAction.UPDATE)
+                UpdateUser(data);
+            else
+                RegisterUser(data);
+
+            showSucces("Usuário criado com sucesso!");
+            setTimeout(() => navigate("/Listagem/Users"), 3000); // Redireciona para a tela de listagem de usuários
         }
     }
 
@@ -82,7 +88,9 @@ export default function CreateUser() {
     })
 
     useEffect(() => {
-        GetTeams();
+        if(action === EAction.UPDATE){
+            SelectUser();
+        }
     }, [])
 
     return (
@@ -107,13 +115,9 @@ export default function CreateUser() {
                             </div>
                         </div>
                         <div className="flex flex-col gap-4 lg:flex-row">
-                            <div className="flex flex-col w-full lg:w-1/2 gap-2">
+                            <div className="flex flex-col w-full gap-2">
                                 <Label htmlFor="txtEmail">E-mail</Label>
-                                <Input {...register("email")} maxLength={255} className="text-sm" placeholder="Digite seu email" type="mail" id="txtEmail" />
-                            </div>
-                            <div className="flex flex-col w-full gap-2 lg:w-1/2">
-                                <Label htmlFor="txtPassword">Senha</Label>
-                                <Input {...register("password")} maxLength={255} className="text-sm" placeholder="Digite sua senha" type="password" id="txtPassword" />
+                                <Input {...register("email")} maxLength={255} className="text-sm" placeholder="Digite seu email" type="mail" id="txtEmail"/>
                             </div>
                         </div>
                         <div className="flex flex-col gap-4 lg:flex-row">
@@ -126,7 +130,7 @@ export default function CreateUser() {
                         </div>
                     </div>
                     <div className="flex w-full justify-end gap-2 flex-col py-2 lg:flex-row">
-                        <Button type="submit" className="bg-(--weakGreen) w-full lg:w-42 text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">Cadastrar</Button>
+                        <Button disabled={isSubmitting} type="submit" className="bg-(--weakGreen) w-full lg:w-42 text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">{action === EAction.CREATE ? "Cadastrar" : "Atualizar"}</Button>
                         <Link to="/Listagem/Users">
                             <Button variant={"destructive"} type="submit" className="w-full lg:w-42 cursor-pointer">Voltar</Button>
                         </Link>

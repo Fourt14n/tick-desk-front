@@ -12,22 +12,48 @@ import { loginSchema } from "@/validations/login";
 import type z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { onError } from "@/hooks/onError";
+import { useUserInfo } from "@/store/UserInfosStore";
+import { api } from "@/lib/axios";
+import useUser from "@/hooks/useUser";
+import { showError } from "@/hooks/useToast";
+import { Loader } from "lucide-react";
 
 export type LoginCredentials = z.infer<typeof loginSchema>;
 
 export default function Login() {
     const [rememberMe, setRememberMe] = useState(false);
-    const { register, handleSubmit, formState: { errors, isValid } } = useForm<LoginCredentials>({
+    const { register, handleSubmit, formState: { errors, isValid, isSubmitting } } = useForm<LoginCredentials>({
         resolver: zodResolver(loginSchema)
     });
     const navigate = useNavigate();
+    const { user, setUser } = useUserInfo();
 
-    async function handleLogin(data : LoginCredentials) {
+    async function GetLoggedUserInfos(id: number) {
+        return api.get(`api/user/get/${id}`)
+            .then(res => {
+                const userInfos = res.data;
+                console.log(user)
+                console.log(userInfos.team.enterpriseDto.id);
+                console.log(userInfos.team.id);
+                setUser({
+                    enterpriseId: userInfos.team.enterpriseDto.id,
+                    teamId: userInfos.team.id
+                });
+                console.log(user)
+            }).catch(erro => {
+                showError("Erro ao tentar buscar o usuário logado: " + erro.response.data.error);
+            })
+    }
+
+    async function handleLogin(data: LoginCredentials) {
         if (isValid) {
             let auth = await useAuth({ email: data.email, password: data.password }, rememberMe);
 
-            if (auth)
+            if (auth) {
+                var user = useUser(sessionStorage.getItem("Token_TickDesk")!);
+                await GetLoggedUserInfos(user.id);
                 navigate("/Home");
+            }
         }
     }
 
@@ -67,17 +93,25 @@ export default function Login() {
                                         placeholder="**********"
                                         id="password"
                                         type="password" />
-                                    <a
-                                        href="#"
+                                    <Link
+                                        to={'/RecuperacaoSenha'}
                                         className="ml-auto inline-block text-sm underline-offset-4 underline hover:text-(--grey)"
                                     >
                                         Esqueceu a senha?
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                             <div className="flex flex-col gap-6">
                                 <div className="grid gap-2">
-                                    <Button type="submit" className="bg-(--btn-default) text-(--text-strongGreen) hover:bg-(--btn-default-strong) cursor-pointer lg:text-base">Entrar</Button>
+                                    <Button
+                                        disabled={isSubmitting}
+                                        type="submit"
+                                        className="bg-(--btn-default) text-(--text-strongGreen) hover:bg-(--btn-default-strong) cursor-pointer lg:text-base">
+                                        {
+                                            isSubmitting && <Loader/>
+                                        }
+                                        Entrar
+                                    </Button>
                                 </div>
                                 <div className="flex gap-2">
                                     <Checkbox checked={rememberMe} onCheckedChange={() => setRememberMe(!rememberMe)} id="rememberPassword" />

@@ -10,3 +10,10 @@ export function showSucces(message : any){
         closeButton: false
     });
 }
+export function showLoading(message: any, promisse: Promise<any>){
+    toast.promise(promisse, {
+        loading: message,
+        success: (data) => data,
+        error: (data) => data
+    })
+}   

@@ -113,7 +113,7 @@ export default function Listagem() {
                     />
                 );
             default:
-                return <div>Tipo não encontrado</div>;
+                return <div>Listagem não encontrado</div>;
         }
     };
 
