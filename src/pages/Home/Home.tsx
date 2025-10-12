@@ -1,6 +1,8 @@
 import HomeCard, { type TicketGroup } from "@/components/HomeCard/HomeCard";
 import { Clock } from "@/components/HomeClock/HomeClock";
+import { Skeleton } from "@/components/ui/skeleton";
 import { validateAuth } from "@/hooks/useAuth";
+import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { showError } from "@/hooks/useToast";
 import { api } from "@/lib/axios";
 import { capitalizeFirstWord } from "@/lib/utils";
@@ -44,21 +46,31 @@ enum GroupType {
 
 export default function Home() {
     const [equipes, setEquipes] = useState<TicketGroup[]>([]);
+    // Isso aqui já é capricho
+    // Penso em criar um Skeleton pra ficar bonitinho enquanto carrega
+    // Mas é frescura isso aqui do loading
+    const [loading, setLoading] = useState(true);
     console.log("Carregou a home")
     const { user } = UserInfo();
 
     async function PopularHome() {
+        let equipesTemp = [];
+
         let resultadoUsuario = await GetUserTickets();
-        console.log(resultadoUsuario)
-        let resultadoEquipe = await GetTeamTickets();
-        console.log(resultadoEquipe)
-        let resultadoEmpresa = await GetEnterpiseTickets();
-        console.log(resultadoEmpresa)
+        equipesTemp.push(resultadoUsuario)
 
-        setEquipes([resultadoUsuario, resultadoEquipe, resultadoEmpresa])
+        // Dessa forma eu consigo usar o usePermission pra evitar de carregar dados
+        // Pra usuários que forem por exemplo do perfil cliente
+        if (usePermission({ minPermission: PermissionsRoles.SUPORT })) {
+            let resultadoEquipe = await GetTeamTickets();
+            equipesTemp.push(resultadoEquipe)
 
-        console.log(equipes);
+            let resultadoEmpresa = await GetEnterpiseTickets();
+            equipesTemp.push(resultadoEmpresa)
+        }
 
+        setEquipes(equipesTemp);
+        setLoading(false);
     }
 
     function GetUserTickets() {
@@ -69,7 +81,7 @@ export default function Home() {
 
     function GetTeamTickets() {
         return api.get(`api/calls/team/${user?.teamId}`)
-            .then(res => FormataChamados( GroupType.Team ,res.data))
+            .then(res => FormataChamados(GroupType.Team, res.data))
             .catch(erro => FormataChamados(GroupType.Error))
     }
 
@@ -123,25 +135,39 @@ export default function Home() {
     }
 
     useEffect(() => {
-        (async() => {
+        (async () => {
             await PopularHome();
         })();
     }, []);
 
     return (
-        <div className="w-full h-full px-5 md:px-20 bg-(--bg-default)">
-            <div className="flex justify-center items-center md:justify-between w-full flex-col md:flex-row py-5 lg:py-10 gap-2 md:gap-0">
-                <p className="text-(--grey) font-bold text-xl md:text-xl lg:text-2xl text-center">{`Seja bem-vindo(a), ${capitalizeFirstWord(user?.username!)}`}</p>
+        <div className={`w-full px-5 md:px-20 bg-(--bg-default) ${loading ? "h-dvh" : "h-full"}`}>
+            {loading ?
+                <div className="flex flex-col lg:flex-row flex-1 h-full justify-evenly items-center space-y-6">
+                    <Skeleton className="h-96 w-64 bg-[#c1cac1]"></Skeleton>
+                    <Skeleton className="h-96 w-64 bg-[#c1cac1]"></Skeleton>
+                    <Skeleton className="h-96 w-64 bg-[#c1cac1]"></Skeleton>
+                    
+                </div>
+                :
+                <>
+                    <div className="flex justify-center items-center md:justify-between w-full flex-col md:flex-row py-5 lg:py-10 gap-2 md:gap-0">
+                        <p className="text-(--grey) font-bold text-xl md:text-xl lg:text-2xl text-center">{`Seja bem-vindo(a), ${capitalizeFirstWord(user?.username!)}`}</p>
 
-                <Clock />
-            </div>
-            <div className="flex flex-col gap-5 pb-10 lg:flex-row lg:pb:0 md-pb-5 lg:justify-center lg:items-center xl:justify-between">
-                {equipes.map(item => {
-                    console.log("SENTA NO BUGALU, SENTA NO BUGALU")
-                    console.log(equipes)
-                    return <HomeCard group={item} />
-                })}
-            </div>
+                        <Clock />
+                    </div>
+                    <div className="flex flex-col gap-5 pb-10 lg:flex-row lg:pb:0 md-pb-5 lg:justify-center lg:items-center xl:justify-between">
+                        {
+                            equipes.map(item => {
+                                console.log("SENTA NO BUGALU, SENTA NO BUGALU")
+                                console.log(equipes)
+                                return <HomeCard group={item} />
+                            })
+                        }
+                    </div>
+                </>
+            }
+
         </div>
     )
 }
