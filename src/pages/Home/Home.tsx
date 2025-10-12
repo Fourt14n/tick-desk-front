@@ -1,12 +1,11 @@
 import HomeCard from "@/components/HomeCard/HomeCard";
 import { Clock } from "@/components/HomeClock/HomeClock";
 import { validateAuth } from "@/hooks/useAuth";
-import useUser from "@/hooks/useUser";
 import { api } from "@/lib/axios";
 import { capitalizeFirstWord } from "@/lib/utils";
-import { useUserInfo } from "@/store/UserInfosStore";
+import { UserInfo } from "@/store/UserInfosStore";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 
 // Para fins educativos eu vou criar aqui um array do bagulho pra nós ver funcionando
 var equipes = [{
@@ -36,14 +35,13 @@ var equipes = [{
 
 export default function Home() {
     console.log("Carregou a home")
-    const user = useUser(sessionStorage.getItem("Token_TickDesk")!);
+    const { user } = UserInfo();
     
     // const [userTickets, setUserTickets] = useState([]);
     // const [teamTickets, setTeamTickets] = useState([]);
     // const [enterpriseTickets, setEnterpriseTickets] = useState([]);
 
 
-    const userInfos = useUserInfo((hook) => hook.user);
 
     // function PopularHome() {
     //     var equipes = [];
@@ -76,7 +74,7 @@ export default function Home() {
     return (
         <div className="w-full h-full px-5 md:px-20 bg-(--bg-default)">
             <div className="flex justify-center items-center md:justify-between w-full flex-col md:flex-row py-5 lg:py-10 gap-2 md:gap-0">
-                <p className="text-(--grey) font-bold text-xl md:text-xl lg:text-2xl text-center">{`Seja bem-vindo(a), ${capitalizeFirstWord(user.name.split(" ").at(0)!)}`}</p>
+                <p className="text-(--grey) font-bold text-xl md:text-xl lg:text-2xl text-center">{`Seja bem-vindo(a), ${capitalizeFirstWord(user?.username!)}`}</p>
 
                 <Clock />
             </div>

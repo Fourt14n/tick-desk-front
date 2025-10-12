@@ -2,8 +2,6 @@ import type { LoginCredentials } from "@/pages/Login/Login";
 import { showError } from "./useToast";
 import { api } from "@/lib/axios";
 import useUser from "./useUser";
-import { useUserInfo } from "@/store/UserInfosStore";
-import { useNavigate } from "react-router";
 
 interface TokenAnswer {
     access_token: string,
@@ -72,11 +70,3 @@ export default async function useAuth({ email, password }: LoginCredentials, rem
     console.log("Antes de ir pro validate")
     return validateAuth();
 }
-
-export function DisconnectUser() {
-        const {clearUser} = useUserInfo();
-        const navigate = useNavigate();
-        sessionStorage.removeItem("Token_TickDesk");
-        clearUser();
-        navigate("/Login");
-    }
