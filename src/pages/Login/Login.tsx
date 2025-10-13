@@ -12,7 +12,7 @@ import { loginSchema } from "@/validations/login";
 import type z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { onError } from "@/hooks/onError";
-import { useUserInfo } from "@/store/UserInfosStore";
+import { UserInfo } from "@/store/UserInfosStore";
 import { api } from "@/lib/axios";
 import useUser from "@/hooks/useUser";
 import { showError } from "@/hooks/useToast";
@@ -26,7 +26,7 @@ export default function Login() {
         resolver: zodResolver(loginSchema)
     });
     const navigate = useNavigate();
-    const { user, setUser } = useUserInfo();
+    const { user, setUser } = UserInfo();
 
     async function GetLoggedUserInfos(id: number) {
         return api.get(`api/user/get/${id}`)
@@ -37,7 +37,9 @@ export default function Login() {
                 console.log(userInfos.team.id);
                 setUser({
                     enterpriseId: userInfos.team.enterpriseDto.id,
-                    teamId: userInfos.team.id
+                    teamId: userInfos.team.id,
+                    id: userInfos.id,
+                    username: userInfos.username
                 });
                 console.log(user)
             }).catch(erro => {

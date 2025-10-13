@@ -2,8 +2,6 @@ import type { LoginCredentials } from "@/pages/Login/Login";
 import { showError } from "./useToast";
 import { api } from "@/lib/axios";
 import useUser from "./useUser";
-import { useUserInfo } from "@/store/UserInfosStore";
-import { useNavigate } from "react-router";
 
 interface TokenAnswer {
     access_token: string,
@@ -39,7 +37,7 @@ async function Authenticate({ email, password }: LoginCredentials) {
 
 // Essa função vai ser exportada e vai ser usada pra validar a autenticação
 export function validateAuth() {
-    console.trace("Vai tomar no cu");
+    console.trace("Veio validar");
     let token = sessionStorage.getItem("Token_TickDesk");
     console.log(sessionStorage.getItem("Token_TickDesk_ExpiresAt"))
     var decoded = useUser(token || "")
@@ -72,11 +70,3 @@ export default async function useAuth({ email, password }: LoginCredentials, rem
     console.log("Antes de ir pro validate")
     return validateAuth();
 }
-
-export function DisconnectUser() {
-        const {clearUser} = useUserInfo();
-        const navigate = useNavigate();
-        sessionStorage.removeItem("Token_TickDesk");
-        clearUser();
-        navigate("/Login");
-    }

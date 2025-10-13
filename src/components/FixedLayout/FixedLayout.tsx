@@ -2,15 +2,23 @@ import { Building, ChartNoAxesCombined, Home, LogOut, Network, Plus, Search, Use
 import { type JSX } from "react"
 import { useTabs } from "@/store/TabsStore";
 import HeaderCardTab from "../HeaderCardTab/HeaderCardTab";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { ScrollArea } from "../ui/scroll-area";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { AutoComplete } from "../Autocomplete/Autocomplete";
-import { DisconnectUser } from "@/hooks/useAuth";
+import { UserInfo } from "@/store/UserInfosStore";
 
 
 export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
-    const tabs = useTabs((state) => state.tabs);
+    const {tabs} = useTabs();
+    const {clearUser} = UserInfo();
+    const navigate = useNavigate();
+
+    function DisconnectUser() {
+        sessionStorage.removeItem("Token_TickDesk");
+        clearUser();
+        navigate("/Login");
+    }
 
     return (
         <div>
@@ -52,7 +60,7 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
                         }
                     </div>
                     <div className="flex flex-col w-full">
-                        <div onClick={DisconnectUser} className="flex justify-center items-center h-12 cursor-pointer hover:bg-red-200 hover:rounded-full">
+                        <div onClick={() => DisconnectUser()} className="flex justify-center items-center h-12 cursor-pointer hover:bg-red-200 hover:rounded-full">
                             <LogOut />
                         </div>
                     </div>
