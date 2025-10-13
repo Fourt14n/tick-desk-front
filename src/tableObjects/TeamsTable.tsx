@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Trash2 } from "lucide-react";
 
 export interface Team {
     id: string,
@@ -25,5 +25,13 @@ export const TeamColumns: ColumnDef<Team>[] = [
         </Button>
       )
     },
+  },
+  {
+    header: " ",
+    cell: () => {
+      return(
+        <Trash2 onClick={() => console.log("Teste")} color="red"/>
+      )
+    }
   }
 ]

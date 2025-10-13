@@ -9,6 +9,7 @@ import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { showError, showSucces } from "@/hooks/useToast";
 import { api } from "@/lib/axios";
 import { EAction, type Action } from "@/types/EAction/EAction";
+import type { ResponseTeams } from "@/types/ResponseTeams/ResponseTeams";
 import { userValidation } from "@/validations/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
@@ -19,52 +20,71 @@ import type z from "zod";
 
 type UserRegister = z.infer<typeof userValidation>;
 
-export default function User({action} : Action) {
+export default function User({ action }: Action) {
     const navigate = useNavigate();
     let { id = '' } = useParams();
     const [teams, setTeams] = useState<DropDownValues[]>([]);
-    const { register, handleSubmit, reset, control, formState: { isValid, isSubmitting } } = useForm<UserRegister>({
+    const { register, handleSubmit, reset, setValue, control, formState: { isValid, isSubmitting } } = useForm<UserRegister>({
         resolver: zodResolver(userValidation),
         defaultValues: {
             teamId: 0,
             role: "CLIENT"
         }
     });
-    function RegisterUser(user : UserRegister) {
+    function RegisterUser(user: UserRegister) {
         api.post("api/user/register", user)
-            .then(res => res.data)
+            .then(res => {
+                showSucces("Usuário criado com sucesso!");
+                setTimeout(() => navigate("/Listagem/Users"), 3000); // Redireciona para a tela de listagem de usuários
+            })
             .catch(erro => {
                 showError(erro.response.data.error)
             })
     }
-    function UpdateUser(user : UserRegister) {
-        api.post(`api/user/update/${id}`, user)
-            .then(res => res.data)
+    function UpdateUser(user: UserRegister) {
+        api.put(`api/user/update/${id}`, user)
+            .then(res => {
+                showSucces("Usuário atualizado com sucesso!");
+                setTimeout(() => navigate("/Listagem/Users"), 3000); // Redireciona para a tela de listagem de usuários
+            })
             .catch(erro => {
                 showError(erro.response.data.error)
             })
     }
 
-    async function SelectUser(){
+    async function SelectUser() {
         api.get(`api/user/get/${id}`)
-        .then(res => {
-            console.log(res.data)
-            reset(res.data)
-        }).catch(erro => {
-            showError(erro.response.data.error);
-        })
+            .then(res => {
+                console.log(res.data)
+                reset(res.data)
+                // Para o valor do time eu preciso fazer o set manual
+                // Porque o time vem dentro de aninhamentos de objetos
+                setValue("teamId", res.data.team.id);
+            }).catch(erro => {
+                showError(erro.response.data.error);
+            })
+    }
+    async function SelectTeams() {
+        api.get(`api/team/get`)
+            .then(res => {
+                console.log(res.data)
+                var equipes: DropDownValues[] = res.data.map((item: ResponseTeams) => {
+                    return { value: item.id, label: item.name }
+                })
+                setTeams(equipes)
+
+            }).catch(erro => {
+                showError(erro.response.data.error);
+            })
     }
 
-    function OnSubmit(data : UserRegister) {
+    function OnSubmit(data: UserRegister) {
         if (isValid) {
             console.log(data)
-            if(action === EAction.UPDATE)
+            if (action === EAction.UPDATE)
                 UpdateUser(data);
             else
                 RegisterUser(data);
-
-            showSucces("Usuário criado com sucesso!");
-            setTimeout(() => navigate("/Listagem/Users"), 3000); // Redireciona para a tela de listagem de usuários
         }
     }
 
@@ -88,8 +108,9 @@ export default function User({action} : Action) {
     })
 
     useEffect(() => {
-        if(action === EAction.UPDATE){
+        if (action === EAction.UPDATE) {
             SelectUser();
+            SelectTeams();
         }
     }, [])
 
@@ -117,7 +138,7 @@ export default function User({action} : Action) {
                         <div className="flex flex-col gap-4 lg:flex-row">
                             <div className="flex flex-col w-full gap-2">
                                 <Label htmlFor="txtEmail">E-mail</Label>
-                                <Input {...register("email")} maxLength={255} className="text-sm" placeholder="Digite seu email" type="mail" id="txtEmail"/>
+                                <Input {...register("email")} maxLength={255} className="text-sm" placeholder="Digite seu email" type="mail" id="txtEmail" />
                             </div>
                         </div>
                         <div className="flex flex-col gap-4 lg:flex-row">

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Trash2 } from "lucide-react";
 
 export interface User {
     id: string,
@@ -49,7 +49,15 @@ export const UsersColumns: ColumnDef<User>[] = [
       }
       return valorAlterado;
     }
-  },
+  },{
+    accessorKey: "id",
+    header: " ",
+    cell: () => {
+      return(
+        <Trash2 onClick={() => console.log("Teste")} color="red"/>
+      )
+    }
+  }
   // {
   //   accessorKey: "DataHoraUltimaEntrada",
   //   header: "Ultima Entrada",

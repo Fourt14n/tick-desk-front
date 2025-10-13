@@ -30,6 +30,10 @@ export default function Team({ action }: Action) {
         data: users,
         columns: UsersColumns,
         getCoreRowModel: getCoreRowModel(),
+        initialState: {
+            columnVisibility: {id: false}
+        }
+
     })
 
     function OnSubmit(data: Team) {
