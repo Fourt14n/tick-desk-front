@@ -76,22 +76,22 @@ export default function Home() {
     function GetUserTickets() {
         return api.get(`api/calls/user/${user?.id}`)
             .then(res => FormataChamados(GroupType.User, res.data))
-            .catch(erro => FormataChamados(GroupType.Error))
+            .catch(erro => FormataChamados(GroupType.Error, undefined, GroupType.User))
     }
 
     function GetTeamTickets() {
         return api.get(`api/calls/team/${user?.teamId}`)
             .then(res => FormataChamados(GroupType.Team, res.data))
-            .catch(erro => FormataChamados(GroupType.Error))
+            .catch(erro => FormataChamados(GroupType.Error, undefined, GroupType.Team))
     }
 
     function GetEnterpiseTickets() {
         return api.get(`api/calls/enterprise/${user?.enterpriseId}`)
             .then(res => FormataChamados(GroupType.Enterprise, res.data))
-            .catch(erro => FormataChamados(GroupType.Error))
+            .catch(erro => FormataChamados(GroupType.Error, undefined, GroupType.Enterprise))
     }
 
-    function FormataChamados(kind: GroupType, response?: any): TicketGroup {
+    function FormataChamados(kind: GroupType, response?: any, secundaryKind?: GroupType): TicketGroup {
         console.log(kind)
         console.log(response)
         let name = "ERRO AO RECUPERAR NOME DA EQUIPE";
@@ -100,9 +100,13 @@ export default function Home() {
             case GroupType.Team: name = response.at(0).team.name; break;
             case GroupType.Enterprise: name = response.at(0).team.enterpriseDto.fantasyName; break;
             case GroupType.Error: {
-                // Aqui vou fazer uma lógica de buscar pelo menos o nome da equipe pra conseguir popular
-                // Mas falta rota pra buscar equipe por id
-                name = "Teste"
+                // Caso não encontre ele vai vir aqui buscar o nome
+                if (secundaryKind === GroupType.Team)
+                    name = user?.enterpriseName || "Time não encontrado";
+                else if (secundaryKind === GroupType.Enterprise)
+                    name = user?.teamName || "Empresa não encontrada";
+                else
+                    name = "Meus Tickets";
                 break;
             }
         }
@@ -147,7 +151,7 @@ export default function Home() {
                     <Skeleton className="h-96 w-64 bg-[#c1cac1]"></Skeleton>
                     <Skeleton className="h-96 w-64 bg-[#c1cac1]"></Skeleton>
                     <Skeleton className="h-96 w-64 bg-[#c1cac1]"></Skeleton>
-                    
+
                 </div>
                 :
                 <>

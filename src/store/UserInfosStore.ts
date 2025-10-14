@@ -5,7 +5,9 @@ export interface UserInfo {
     id: number,
     username: string,
     teamId: number,
+    teamName: string,
     enterpriseId: number
+    enterpriseName: string,
 }
 
 interface UserInfos {

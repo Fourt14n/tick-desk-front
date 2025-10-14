@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { showError } from "@/hooks/useToast";
 import { api } from "@/lib/axios";
+import { UserInfo } from "@/store/UserInfosStore";
 import { TeamColumns, type Team } from "@/tableObjects/TeamsTable";
 import { TicketColumns, type Ticket } from "@/tableObjects/TicketsTable";
 import { UsersColumns, type User } from "@/tableObjects/UsersTable";
@@ -16,6 +17,7 @@ export default function Listagem() {
     const [dataTickets, setDataTickets] = useState<Ticket[]>([]);
     const [teams, setTeams] = useState<Team[]>([]);
     const [loading, setLoading] = useState(true);
+    const {user} = UserInfo();
 
     useEffect(() => {
         setLoading(true);
@@ -52,7 +54,7 @@ export default function Listagem() {
                 break;
             };
             case "Teams": {
-                endpoint = "api/team/get";
+                endpoint = `api/enterprise/${user?.enterpriseId}/teams`;
                 getData<Team[]>(endpoint)
                     .then(result => {
                         setTeams(result);
