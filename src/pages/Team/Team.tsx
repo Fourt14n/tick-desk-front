@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { onError } from "@/hooks/onError";
 import { showError, showSucces } from "@/hooks/useToast";
 import { api } from "@/lib/axios";
+import { UserInfo } from "@/store/UserInfosStore";
 import { UsersColumns, type User } from "@/tableObjects/UsersTable";
 import { EAction, type Action } from "@/types/EAction/EAction";
 import { team } from "@/validations/team";
@@ -21,9 +22,10 @@ type Team = z.infer<typeof team>;
 
 export default function Team({ action }: Action) {
     const [users, setUsers] = useState<User[]>([]);
+    const {user} = UserInfo();
     let { id = '' } = useParams();
     const navigate = useNavigate();
-    const { handleSubmit, register, reset, formState: { isValid, isSubmitting } } = useForm({
+    const { handleSubmit, register, reset, setValue, formState: { isValid, isSubmitting } } = useForm({
         resolver: zodResolver(team)
     });
     const table = useReactTable({
@@ -31,14 +33,18 @@ export default function Team({ action }: Action) {
         columns: UsersColumns,
         getCoreRowModel: getCoreRowModel(),
         initialState: {
-            columnVisibility: {id: false}
+            columnVisibility: { id: false }
         }
 
     })
 
     function OnSubmit(data: Team) {
-        if (isValid)
-            CreateTeam(data);
+        if (isValid) {
+            if (action === EAction.CREATE)
+                CreateTeam(data);
+            else if (action)
+                UpdateTeam(data);
+        }
     }
 
     function GetUsersByTeam() {
@@ -49,13 +55,15 @@ export default function Team({ action }: Action) {
             })
     }
 
-    // function GetTeamById() {
-    //     api.get(`api/team/get/${id}`)
-    //         .then(res => reset(res.data))
-    //         .catch(erro => {
-    //             showError(erro.response.data.error);
-    //         })
-    // }
+    function GetTeamById() {
+        api.get(`api/team/get/${id}`)
+            .then(res => {
+                reset(res.data)
+            })
+            .catch(erro => {
+                showError(erro.response.data.error);
+            })
+    }
 
     function CreateTeam(team: Team) {
         api.post("api/team/create", team)
@@ -64,11 +72,19 @@ export default function Team({ action }: Action) {
                 setTimeout(() => navigate("/Listagem/Teams"), 3000);
             }).catch(erro => showError(erro.response.data.error))
     }
+    function UpdateTeam(team: Team) {
+        api.put(`api/team/update/${id}`, team)
+            .then(res => {
+                showSucces("Equipe atualizada com sucesso!");
+                setTimeout(() => navigate("/Listagem/Teams"), 3000);
+            }).catch(erro => showError(erro.response.data.error))
+    }
 
     useEffect(() => {
+        setValue("enterpriseId", user?.enterpriseId!);
         if (action === EAction.UPDATE) {
             GetUsersByTeam();
-            // GetTeamById();
+            GetTeamById();
         }
     }, [])
 

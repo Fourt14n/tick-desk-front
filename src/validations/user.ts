@@ -9,7 +9,8 @@ export const userValidation = z.object({
     username: z.string("O apelido não pode ser vazio")
     .nonempty("O apelido não pode ser vazio")
     .max(60, "O máximo do apelido do usuário é de 60 caracteres!")
-    .nonoptional("O apelido do usuário é obrigatório!"),
+    .nonoptional("O apelido do usuário é obrigatório!")
+    .refine(name => !name.includes(" "), "O apelido não pode conter espaços!"),
 
     email: z.email("O e-mail precisa ser válido!")
     .nonempty("O email é obrigatório!")

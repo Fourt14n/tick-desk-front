@@ -7,7 +7,9 @@ import { Separator } from "@/components/ui/separator";
 import { onError } from "@/hooks/onError";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { showError, showSucces } from "@/hooks/useToast";
+import useUser from "@/hooks/useUser";
 import { api } from "@/lib/axios";
+import { UserInfo } from "@/store/UserInfosStore";
 import { EAction, type Action } from "@/types/EAction/EAction";
 import type { ResponseTeams } from "@/types/ResponseTeams/ResponseTeams";
 import { userValidation } from "@/validations/user";
@@ -22,6 +24,7 @@ type UserRegister = z.infer<typeof userValidation>;
 
 export default function User({ action }: Action) {
     const navigate = useNavigate();
+    const { user } = UserInfo();
     let { id = '' } = useParams();
     const [teams, setTeams] = useState<DropDownValues[]>([]);
     const { register, handleSubmit, reset, setValue, control, formState: { isValid, isSubmitting } } = useForm<UserRegister>({
@@ -65,7 +68,7 @@ export default function User({ action }: Action) {
             })
     }
     async function SelectTeams() {
-        api.get(`api/team/get`)
+        api.get(`api/enterprise/${user?.enterpriseId}/teams`)
             .then(res => {
                 console.log(res.data)
                 var equipes: DropDownValues[] = res.data.map((item: ResponseTeams) => {
@@ -108,10 +111,9 @@ export default function User({ action }: Action) {
     })
 
     useEffect(() => {
-        if (action === EAction.UPDATE) {
+        SelectTeams();
+        if (action === EAction.UPDATE)
             SelectUser();
-            SelectTeams();
-        }
     }, [])
 
     return (

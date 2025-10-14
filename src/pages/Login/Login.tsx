@@ -39,7 +39,9 @@ export default function Login() {
                     enterpriseId: userInfos.team.enterpriseDto.id,
                     teamId: userInfos.team.id,
                     id: userInfos.id,
-                    username: userInfos.username
+                    username: userInfos.username,
+                    teamName: userInfos.team.name,
+                    enterpriseName: userInfos.team.enterpriseDto.fantasyName
                 });
                 console.log(user)
             }).catch(erro => {
