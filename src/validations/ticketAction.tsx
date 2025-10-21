@@ -40,23 +40,25 @@ const fileSchema = z
     });
 
 export const ticketActionValidation = z.object({
-    idChamado: z.uuid("Tipo inválido do chamado!")
+    callId: z.int32("Tipo inválido do chamado!")
         .nonoptional("O chamado é obrigatório para o envio!"),
 
-    idUsuario: z.uuid("Tipo inválido pro usuário!")
+    userId: z.number("Tipo inválido pro usuário!")
         .nonoptional("É obrigatório um usuário a ação!"),
 
-    descricaoAcao: z.string("Tipo inválido pra ação!")
+    description: z.string("A ação não pode ser vazia!")
         .max(2500, "A ação não pode ultrapassar 2500 caracteres!")
         .nonempty("A ação não pode ser vazia!")
         .nonoptional("A ação é obrigatória!"),
 
-    publica: z.boolean("Tipo inválido pra definição de privacidade da ação!")
-        .default(true)
-        .nonoptional("A ação deve ser pública ou interna!"),
+    // Tá faltando essa parte aqui pra fazer a criação, depois coloco   
+    // publica: z.boolean("A ação deve ser pública ou interna!")
+    //     .default(true)
+    //     .nonoptional("A ação deve ser pública ou interna!"),
 
-    arquivos: z
-        .array(fileSchema)
-        .max(10, 'Máximo de 10 arquivos permitidos')
-        .optional()
+    // Vamos conversar depois sobre o envio de arquivos
+    // arquivos: z
+    //     .array(fileSchema)
+    //     .max(10, 'Máximo de 10 arquivos permitidos')
+    //     .optional()
 })

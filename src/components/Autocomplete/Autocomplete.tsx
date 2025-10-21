@@ -48,10 +48,6 @@ export function AutoComplete() {
     setResults([]);
   }
 
-  function BuscaChamado() {
-
-  }
-
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) {

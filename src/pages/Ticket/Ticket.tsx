@@ -10,18 +10,22 @@ import "@/index.css";
 import useConfirmation from "@/hooks/useConfirmation";
 import ActionHistory from "@/components/ActionHistory/ActionHistory";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Dropdown } from "@/components/Dropdown/Dropdown";
+import { Dropdown, type DropDownValues } from "@/components/Dropdown/Dropdown";
 import { Label } from "@/components/ui/label";
 import DatePicker from "@/components/DatePicker/DatePicker";
 import { Button } from "@/components/ui/button";
 import type z from "zod";
 import { ticketValidation } from "@/validations/ticket";
 import { ticketActionValidation } from "@/validations/ticketAction";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { onError } from "@/hooks/onError";
 import { useTabs } from "@/store/TabsStore";
+import useUser from "@/hooks/useUser";
+import { UserInfo } from "@/store/UserInfosStore";
+import { api } from "@/lib/axios";
+import type { ResponseTeams } from "@/types/ResponseTeams/ResponseTeams";
 
 function handleSelectedChange(event: React.MouseEvent<HTMLLabelElement, MouseEvent>, parentElement: string) {
     // Selecino o elemento anterior e removo a classe de selecionado
@@ -52,24 +56,39 @@ export default function Ticket() {
     let { id = '' } = useParams();
     const addTab = useTabs(tabs => tabs.addTab);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [teams, setTeams] = useState<DropDownValues[]>([]);
     const confirmDialog = useConfirmation();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const { register, handleSubmit, watch, control, formState: { isValid, isSubmitting } } = useForm<TicketAction>({
-        resolver: zodResolver(TicketThenAction)
+    const {user} = UserInfo();
+    const { register, handleSubmit, watch, setValue, control, formState: { isValid, isSubmitting } } = useForm<TicketAction>({
+        resolver: zodResolver(TicketThenAction),
+        defaultValues: {
+            userId: user?.id,
+            callId: Number(id) || 0
+        }
     });
 
-    if (!id) {
-        showError("Caminho inválido de ticket! Redirecionando a home...");
-        setTimeout(() => navigate("/Home"), 3000);
-    }
-
+    async function SelectTeams() {
+            api.get(`api/enterprise/${user?.enterpriseId}/teams`)
+                .then(res => {
+                    console.log(res.data)
+                    var equipes: DropDownValues[] = res.data.map((item: ResponseTeams) => {
+                        return { value: item.id, label: item.name }
+                    })
+                    setTeams(equipes)
+    
+                }).catch(erro => {
+                    showError(erro.response.data.error);
+                })
+        }
+    
     function handleIconClick() {
         fileInputRef.current?.click();
     }
-
+    
     function handleSendAction() {
         console.log("Teste")
-        if (watch("descricaoAcao").toUpperCase().includes("ANEXO") && fileInputRef.current?.files?.length === 0) {
+        if (watch("description").toUpperCase().includes("ANEXO") && fileInputRef.current?.files?.length === 0) {
             confirmDialog.open({
                 title: "Confirma envio sem anexo?",
                 description: "Você escreveu anexo na ação, mas não anexou nenhum arquivo, deseja enviar a ação assim mesmo?",
@@ -79,20 +98,29 @@ export default function Ticket() {
             });
         };
         if (isValid) {
-
+            
         }
     }
-
+    
     const ticket = Number.isInteger(parseInt(id)) ? parseInt(id) : 0;
-
+    
     useEffect(() => {
+        SelectTeams();
+        if (!id) {
+            showError("Caminho inválido de ticket! Redirecionando a home...");
+            setTimeout(() => navigate("/Home"), 3000);
+        }
+
         if(ticket > 0){
             var caminhoEspecifico = `/Ticket/${ticket}`;
             addTab(caminhoEspecifico);
         }
+
+
     }, [])
 
-    const {ref, ...registerProps} = register("arquivos")
+    // Lógica de arquivos que vamos precisar dar uma olhada depois
+    // const {ref, ...registerProps} = register("arquivos")
 
     return (
         <div className="grid grid-rows-7 w-full bg-(--bg-default) grid-cols-[1fr_25px] md:grid-cols-[1fr_2rem]">
@@ -106,8 +134,8 @@ export default function Ticket() {
                         </div>
 
                         <div className="flex flex-col gap-2">
-                            <Label htmlFor="tituloTicket">Título do Ticket</Label>
-                            <Input {...register("tituloTicket")} type="text" placeholder="Título do ticket" maxLength={255} className="bg-white w-full" />
+                            <Label htmlFor="title">Título do Ticket</Label>
+                            <Input {...register("title")} type="text" placeholder="Título do ticket" maxLength={255} className="bg-white w-full" />
                         </div>
 
                         {/* Textarea container */}
@@ -115,7 +143,7 @@ export default function Ticket() {
                             {/* Textarea com scroll */}
                             <form onSubmit={handleSubmit(handleSendAction, onError)} className="relative w-full">
                                 <textarea
-                                    {...register("descricaoAcao")}
+                                    {...register("description")}
                                     placeholder="Faça aqui e sua solicitação..."
                                     className="w-full p-3 pb-15 border-none outline-none resize-none placeholder-gray-400 rounded-lg overflow-y-auto"
                                     style={{
@@ -126,7 +154,7 @@ export default function Ticket() {
                                 <div className="absolute bottom-0 left-0 right-0 flex justify-between items-center p-1 md:p-3 bg-white border-t border-gray-100 rounded-b-lg">
                                     {/* Botões à esquerda */}
                                     <div className="flex min-[380px]:gap-3 items-center">
-                                        <RadioGroup defaultValue="true" {...register("publica")} id="privacyOptContainer" className="flex items-center space-x-2 max-[360px]:space-x-1">
+                                        <RadioGroup defaultValue="true" id="privacyOptContainer" className="flex items-center space-x-2 max-[360px]:space-x-1">
                                             <RadioGroupItem
                                                 value="true"
                                                 id="publico"
@@ -145,7 +173,7 @@ export default function Ticket() {
                                             </Label>
                                         </RadioGroup>
                                         <div>
-                                            <Input ref={(e) => {ref(e); fileInputRef.current = e}} {...registerProps} type="file" multiple accept=".jpg, .png, .zip, .rar, .pdf, .docx, .xls, .xlxs" style={{ display: "none" }} />
+                                            {/* <Input ref={(e) => {ref(e); fileInputRef.current = e}} {...registerProps} type="file" multiple accept=".jpg, .png, .zip, .rar, .pdf, .docx, .xls, .xlxs" style={{ display: "none" }} /> */}
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
                                                     <Paperclip size={20} color={"var(--grey)"} className="cursor-pointer" onClick={handleIconClick} />
@@ -190,38 +218,46 @@ export default function Ticket() {
                             <ScrollArea className="bg-(--bg-divs) pb-3">
                                 <div className="flex flex-col w-full p-2 gap-4">
                                     <Dropdown dados={{ keyDropdown: "exemplo", values: valoresDropdown, label: "Usuário Responsável", control: control, name: "idUsuarioResponsavel" }} />
-                                    <Dropdown dados={{ keyDropdown: "exemplo2", values: valoresDropdown, label: "Equipe Responsável", control: control, name: "idEquipe" }} />
+                                    <Dropdown dados={{ keyDropdown: "exemplo2", values: teams, label: "Equipe Responsável", control: control, name: "idEquipe" }} />
                                     <Dropdown dados={{ keyDropdown: "exemplo3", values: valoresDropdown, label: "Requisitante", control: control, name: "idUsuario" }} />
                                     <div id="urgencyOpts" className="flex flex-col gap-2">
                                         <Label htmlFor="urgencies">Urgência</Label>
-                                        <RadioGroup defaultValue="1" {...register("urgencia")} id="urgencies" className="flex justify-evenly">
-                                            <RadioGroupItem
-                                                value="1"
-                                                id="baixa"
-                                                className="sr-only peer"
-                                            />
+                                        <Controller 
+                                        control={control}
+                                        name="urgency"
+                                        render={({field}) => (
+                                            <RadioGroup value={field.value} onValueChange={field.onChange} id="urgencies" className="flex justify-evenly">
                                             <Label htmlFor="baixa" onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 rounded-md bg-(--weakGreen) hover:bg-(--mediumGreen) transition-colors cursor-pointer">
                                                 Baixa
                                             </Label>
                                             <RadioGroupItem
-                                                value="2"
-                                                id="media"
+                                                value="BAIXA"
+                                                id="baixa"
                                                 className="sr-only peer"
                                             />
-                                            <Label htmlFor="media" onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#f6ff0092] rounded-md hover:bg-[#f6ff00dc] transition-colors cursor-pointer selected">
+                                            <Label htmlFor="media" onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#f6ff0092] rounded-md hover:bg-[#f6ff00dc] transition-colors cursor-pointer">
                                                 Média
                                             </Label>
                                             <RadioGroupItem
-                                                value="3"
-                                                id="alta"
+                                                value="MEDIA"
+                                                id="media"
                                                 className="sr-only peer"
                                             />
                                             <Label htmlFor="alta" onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#ff080094] rounded-md hover:bg-[#ff0800b1] transition-colors cursor-pointer">
                                                 Alta
                                             </Label>
+                                            <RadioGroupItem
+                                                value="ALTA"
+                                                id="alta"
+                                                className="sr-only peer"
+                                            />
                                         </RadioGroup>
+                                        )}
+                                        />
+
+
                                     </div>
-                                    <DatePicker {...register("previsaoSolucao")} dados={{ label: "Previsão de Solução", disabledPastDays: true }} />
+                                    <DatePicker dados={{ label: "Previsão de Solução", disabledPastDays: true }} />
                                     <div className="flex flex-col gap-1.5 cursor-not-allowed">
                                         <Label>Fechamento do Chamado</Label>
                                         <Input className="bg-white" type="text" disabled></Input>
