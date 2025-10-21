@@ -60,11 +60,12 @@ export default function Ticket() {
     const confirmDialog = useConfirmation();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const {user} = UserInfo();
-    const { register, handleSubmit, watch, setValue, control, formState: { isValid, isSubmitting } } = useForm<TicketAction>({
+    const { register, handleSubmit, watch, control, formState: { isValid, isSubmitting } } = useForm<TicketAction>({
         resolver: zodResolver(TicketThenAction),
         defaultValues: {
             userId: user?.id,
-            callId: Number(id) || 0
+            callId: Number(id) || 0,
+            urgency: "MEDIA"
         }
     });
 
@@ -214,7 +215,7 @@ export default function Ticket() {
                             <div className="p-4">
                                 <ArrowRight cursor={"pointer"} onClick={() => setIsDialogOpen(false)} />
                             </div>
-
+                                
                             <ScrollArea className="bg-(--bg-divs) pb-3">
                                 <div className="flex flex-col w-full p-2 gap-4">
                                     <Dropdown dados={{ keyDropdown: "exemplo", values: valoresDropdown, label: "Usuário Responsável", control: control, name: "idUsuarioResponsavel" }} />
@@ -227,7 +228,7 @@ export default function Ticket() {
                                         name="urgency"
                                         render={({field}) => (
                                             <RadioGroup value={field.value} onValueChange={field.onChange} id="urgencies" className="flex justify-evenly">
-                                            <Label htmlFor="baixa" onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 rounded-md bg-(--weakGreen) hover:bg-(--mediumGreen) transition-colors cursor-pointer">
+                                            <Label htmlFor="baixa" className={`md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 rounded-md bg-(--weakGreen) hover:bg-(--mediumGreen) transition-colors cursor-pointer ${watch("urgency") === "BAIXA" && "selected"}`}>
                                                 Baixa
                                             </Label>
                                             <RadioGroupItem
@@ -235,7 +236,7 @@ export default function Ticket() {
                                                 id="baixa"
                                                 className="sr-only peer"
                                             />
-                                            <Label htmlFor="media" onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#f6ff0092] rounded-md hover:bg-[#f6ff00dc] transition-colors cursor-pointer">
+                                            <Label htmlFor="media" className={`md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#f6ff0092] rounded-md hover:bg-[#f6ff00dc] transition-colors cursor-pointer ${watch("urgency") === "MEDIA" && "selected"}`}>
                                                 Média
                                             </Label>
                                             <RadioGroupItem
@@ -243,7 +244,7 @@ export default function Ticket() {
                                                 id="media"
                                                 className="sr-only peer"
                                             />
-                                            <Label htmlFor="alta" onClick={(event) => handleSelectedChange(event, "urgencyOpts")} className="md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#ff080094] rounded-md hover:bg-[#ff0800b1] transition-colors cursor-pointer">
+                                            <Label htmlFor="alta" className={`md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#ff080094] rounded-md hover:bg-[#ff0800b1] transition-colors cursor-pointer ${watch("urgency") === "ALTA" && "selected"}`}>
                                                 Alta
                                             </Label>
                                             <RadioGroupItem
