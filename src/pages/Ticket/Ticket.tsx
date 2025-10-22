@@ -130,7 +130,7 @@ export default function Ticket() {
     }, [])
 
     // Lógica de arquivos que vamos precisar dar uma olhada depois
-    // const {ref, ...registerProps} = register("arquivos")
+    const {ref, ...registerProps} = register("arquivos")
 
     return (
         <div className="grid grid-rows-7 w-full bg-(--bg-default) grid-cols-[1fr_25px] md:grid-cols-[1fr_2rem]">
@@ -183,7 +183,7 @@ export default function Ticket() {
                                             </Label>
                                         </RadioGroup>
                                         <div>
-                                            {/* <Input ref={(e) => {ref(e); fileInputRef.current = e}} {...registerProps} type="file" multiple accept=".jpg, .png, .zip, .rar, .pdf, .docx, .xls, .xlxs" style={{ display: "none" }} /> */}
+                                            <Input ref={(e) => {ref(e); fileInputRef.current = e}} {...registerProps} type="file" multiple accept=".jpg, .png, .zip, .rar, .pdf, .docx, .xls, .xlxs" style={{ display: "none" }} />
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
                                                     <Paperclip size={20} color={"var(--grey)"} className="cursor-pointer" onClick={handleIconClick} />

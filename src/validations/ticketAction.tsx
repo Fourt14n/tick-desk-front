@@ -51,14 +51,15 @@ export const ticketActionValidation = z.object({
         .nonempty("A ação não pode ser vazia!")
         .nonoptional("A ação é obrigatória!"),
 
+    // Vamos conversar depois sobre o envio de arquivos
+    arquivos: z
+        .array(fileSchema)
+        .max(10, 'Máximo de 10 arquivos permitidos')
+        .optional()
+
     // Tá faltando essa parte aqui pra fazer a criação, depois coloco   
     // publica: z.boolean("A ação deve ser pública ou interna!")
     //     .default(true)
     //     .nonoptional("A ação deve ser pública ou interna!"),
 
-    // Vamos conversar depois sobre o envio de arquivos
-    // arquivos: z
-    //     .array(fileSchema)
-    //     .max(10, 'Máximo de 10 arquivos permitidos')
-    //     .optional()
 })
