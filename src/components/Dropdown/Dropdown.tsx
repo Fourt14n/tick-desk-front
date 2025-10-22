@@ -28,6 +28,7 @@ export interface DropDownValues {
 }
 
 export function Dropdown({ dados }: Data) {
+  {console.log(dados)}
   return (
     <div className="flex flex-col gap-1.5">
       <Label className="font-semibold" htmlFor={dados.keyDropdown}>{dados.label}</Label>
@@ -38,7 +39,7 @@ export function Dropdown({ dados }: Data) {
           <Select {...dados.control.register(dados.name)}
             key={field.value}
             onValueChange={field.onChange}
-            value={ dados.defaultValue || field.value || ""}
+            value={ field.value }
             defaultValue={field.value}>
             <SelectTrigger
               id={dados.keyDropdown}

@@ -26,6 +26,7 @@ import useUser from "@/hooks/useUser";
 import { UserInfo } from "@/store/UserInfosStore";
 import { api } from "@/lib/axios";
 import type { ResponseTeams } from "@/types/ResponseTeams/ResponseTeams";
+import { addDays } from "date-fns";
 
 function handleSelectedChange(event: React.MouseEvent<HTMLLabelElement, MouseEvent>, parentElement: string) {
     // Selecino o elemento anterior e removo a classe de selecionado
@@ -59,34 +60,44 @@ export default function Ticket() {
     const [teams, setTeams] = useState<DropDownValues[]>([]);
     const confirmDialog = useConfirmation();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const {user} = UserInfo();
-    const { register, handleSubmit, watch, control, formState: { isValid, isSubmitting } } = useForm<TicketAction>({
+    const { user } = UserInfo();
+    const { register, handleSubmit, watch, setValue, control, formState: { isValid, isSubmitting } } = useForm<TicketAction>({
         resolver: zodResolver(TicketThenAction),
         defaultValues: {
             userId: user?.id,
             callId: Number(id) || 0,
-            urgency: "MEDIA"
+            urgency: "MEDIA",
+            previsaoSolucao: returnDate("MEDIA")
         }
     });
 
     async function SelectTeams() {
-            api.get(`api/enterprise/${user?.enterpriseId}/teams`)
-                .then(res => {
-                    console.log(res.data)
-                    var equipes: DropDownValues[] = res.data.map((item: ResponseTeams) => {
-                        return { value: item.id, label: item.name }
-                    })
-                    setTeams(equipes)
-    
-                }).catch(erro => {
-                    showError(erro.response.data.error);
+        api.get(`api/enterprise/${user?.enterpriseId}/teams`)
+            .then(res => {
+                console.log(res.data)
+                var equipes: DropDownValues[] = res.data.map((item: ResponseTeams) => {
+                    return { value: item.id.toString(), label: item.name }
                 })
-        }
-    
+                setTeams(equipes)
+
+            }).catch(erro => {
+                showError(erro.response.data.error);
+            })
+    }
+
     function handleIconClick() {
         fileInputRef.current?.click();
     }
-    
+
+    function returnDate(urgencia: string) {
+        switch (urgencia) {
+            case "BAIXA": return addDays(new Date(), 4);
+            case "MEDIA": return addDays(new Date(), 3);
+            case "ALTA": return addDays(new Date(), 1);
+            default: return addDays(new Date(), 3);
+        }
+    }
+
     function handleSendAction() {
         console.log("Teste")
         if (watch("description").toUpperCase().includes("ANEXO") && fileInputRef.current?.files?.length === 0) {
@@ -99,12 +110,12 @@ export default function Ticket() {
             });
         };
         if (isValid) {
-            
+
         }
     }
-    
+
     const ticket = Number.isInteger(parseInt(id)) ? parseInt(id) : 0;
-    
+
     useEffect(() => {
         SelectTeams();
         if (!id) {
@@ -112,12 +123,10 @@ export default function Ticket() {
             setTimeout(() => navigate("/Home"), 3000);
         }
 
-        if(ticket > 0){
+        if (ticket > 0) {
             var caminhoEspecifico = `/Ticket/${ticket}`;
             addTab(caminhoEspecifico);
         }
-
-
     }, [])
 
     // Lógica de arquivos que vamos precisar dar uma olhada depois
@@ -188,7 +197,7 @@ export default function Ticket() {
 
                                     {/* Botão à direita */}
                                     <Button
-                                    disabled={isSubmitting}
+                                        disabled={isSubmitting}
                                         className="px-4 max-[360px]:px-2 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer" onClick={handleSendAction}>
                                         Enviar
                                     </Button>
@@ -215,50 +224,53 @@ export default function Ticket() {
                             <div className="p-4">
                                 <ArrowRight cursor={"pointer"} onClick={() => setIsDialogOpen(false)} />
                             </div>
-                                
+
                             <ScrollArea className="bg-(--bg-divs) pb-3">
                                 <div className="flex flex-col w-full p-2 gap-4">
-                                    <Dropdown dados={{ keyDropdown: "exemplo", values: valoresDropdown, label: "Usuário Responsável", control: control, name: "idUsuarioResponsavel" }} />
-                                    <Dropdown dados={{ keyDropdown: "exemplo2", values: teams, label: "Equipe Responsável", control: control, name: "idEquipe" }} />
+                                    <Dropdown dados={{ keyDropdown: "exemplo", values: valoresDropdown, label: "Usuário Responsável", control: control, name: "userResponsavelId" }} />
+                                    <Dropdown dados={{ keyDropdown: "exemplo2", values: teams, label: "Equipe Responsável", control: control, name: "teamId" }} />
                                     <Dropdown dados={{ keyDropdown: "exemplo3", values: valoresDropdown, label: "Requisitante", control: control, name: "idUsuario" }} />
                                     <div id="urgencyOpts" className="flex flex-col gap-2">
                                         <Label htmlFor="urgencies">Urgência</Label>
-                                        <Controller 
-                                        control={control}
-                                        name="urgency"
-                                        render={({field}) => (
-                                            <RadioGroup value={field.value} onValueChange={field.onChange} id="urgencies" className="flex justify-evenly">
-                                            <Label htmlFor="baixa" className={`md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 rounded-md bg-(--weakGreen) hover:bg-(--mediumGreen) transition-colors cursor-pointer ${watch("urgency") === "BAIXA" && "selected"}`}>
-                                                Baixa
-                                            </Label>
-                                            <RadioGroupItem
-                                                value="BAIXA"
-                                                id="baixa"
-                                                className="sr-only peer"
-                                            />
-                                            <Label htmlFor="media" className={`md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#f6ff0092] rounded-md hover:bg-[#f6ff00dc] transition-colors cursor-pointer ${watch("urgency") === "MEDIA" && "selected"}`}>
-                                                Média
-                                            </Label>
-                                            <RadioGroupItem
-                                                value="MEDIA"
-                                                id="media"
-                                                className="sr-only peer"
-                                            />
-                                            <Label htmlFor="alta" className={`md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#ff080094] rounded-md hover:bg-[#ff0800b1] transition-colors cursor-pointer ${watch("urgency") === "ALTA" && "selected"}`}>
-                                                Alta
-                                            </Label>
-                                            <RadioGroupItem
-                                                value="ALTA"
-                                                id="alta"
-                                                className="sr-only peer"
-                                            />
-                                        </RadioGroup>
-                                        )}
+                                        <Controller
+                                            control={control}
+                                            name="urgency"
+                                            render={({ field }) => (
+                                                <RadioGroup value={field.value} onValueChange={(value) => {
+                                                    field.onChange(value);
+                                                    setValue("previsaoSolucao", returnDate(value))
+                                                }} id="urgencies" className="flex justify-evenly">
+                                                    <Label htmlFor="baixa" className={`md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 rounded-md bg-(--weakGreen) hover:bg-(--mediumGreen) transition-colors cursor-pointer ${watch("urgency") === "BAIXA" && "selected"}`}>
+                                                        Baixa
+                                                    </Label>
+                                                    <RadioGroupItem
+                                                        value="BAIXA"
+                                                        id="baixa"
+                                                        className="sr-only peer"
+                                                    />
+                                                    <Label htmlFor="media" className={`md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#f6ff0092] rounded-md hover:bg-[#f6ff00dc] transition-colors cursor-pointer ${watch("urgency") === "MEDIA" && "selected"}`}>
+                                                        Média
+                                                    </Label>
+                                                    <RadioGroupItem
+                                                        value="MEDIA"
+                                                        id="media"
+                                                        className="sr-only peer"
+                                                    />
+                                                    <Label htmlFor="alta" className={`md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#ff080094] rounded-md hover:bg-[#ff0800b1] transition-colors cursor-pointer ${watch("urgency") === "ALTA" && "selected"}`}>
+                                                        Alta
+                                                    </Label>
+                                                    <RadioGroupItem
+                                                        value="ALTA"
+                                                        id="alta"
+                                                        className="sr-only peer"
+                                                    />
+                                                </RadioGroup>
+                                            )}
                                         />
 
 
                                     </div>
-                                    <DatePicker dados={{ label: "Previsão de Solução", disabledPastDays: true }} />
+                                    <DatePicker dados={{ label: "Previsão de Solução", disabledPastDays: true, control: control, name: "previsaoSolucao", date: watch("previsaoSolucao") }} />
                                     <div className="flex flex-col gap-1.5 cursor-not-allowed">
                                         <Label>Fechamento do Chamado</Label>
                                         <Input className="bg-white" type="text" disabled></Input>
@@ -269,6 +281,7 @@ export default function Ticket() {
                                     </div>
 
                                     {ticket > 0 && <Button disabled={isSubmitting} className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">Finalizar Ticket</Button>}
+                                    {ticket == 0 && <Button disabled={isSubmitting} className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">Criar Ticket</Button>}
                                 </div>
                             </ScrollArea>
                         </div>
