@@ -6,7 +6,6 @@ export interface Ticket {
     id: string,
     callNumber: number,
     title: string,
-    usernameEnvio: string,
     previsaoSolucao: Date,
     urgencia: number
 }
@@ -29,10 +28,6 @@ export const TicketColumns: ColumnDef<Ticket>[] = [
   {
     accessorKey: "title",
     header: "Titulo",
-  },
-  {
-    accessorKey: "usernameEnvio",
-    header: "Criador",
   },
   {
     accessorKey: "previsaoSolucao",
