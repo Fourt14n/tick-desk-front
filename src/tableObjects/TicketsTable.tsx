@@ -37,6 +37,9 @@ export const TicketColumns: ColumnDef<Ticket>[] = [
   {
     accessorKey: "previsaoSolucao",
     header: "Previsão de Solução",
+    cell: ({row}) => {
+      return new Date(row.original.previsaoSolucao).toLocaleDateString();
+    }
   },
   {
     accessorKey: "urgencia",

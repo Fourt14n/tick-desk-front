@@ -229,7 +229,6 @@ export default function Ticket() {
                                 <div className="flex flex-col w-full p-2 gap-4">
                                     <Dropdown dados={{ keyDropdown: "exemplo", values: valoresDropdown, label: "Usuário Responsável", control: control, name: "userResponsavelId" }} />
                                     <Dropdown dados={{ keyDropdown: "exemplo2", values: teams, label: "Equipe Responsável", control: control, name: "teamId" }} />
-                                    <Dropdown dados={{ keyDropdown: "exemplo3", values: valoresDropdown, label: "Requisitante", control: control, name: "idUsuario" }} />
                                     <div id="urgencyOpts" className="flex flex-col gap-2">
                                         <Label htmlFor="urgencies">Urgência</Label>
                                         <Controller
@@ -281,7 +280,6 @@ export default function Ticket() {
                                     </div>
 
                                     {ticket > 0 && <Button disabled={isSubmitting} className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">Finalizar Ticket</Button>}
-                                    {ticket == 0 && <Button disabled={isSubmitting} className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">Criar Ticket</Button>}
                                 </div>
                             </ScrollArea>
                         </div>

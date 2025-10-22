@@ -1,17 +1,6 @@
 import z from "zod";
 
-export const ticketValidation = z.object({
-    // Vai ficar pro usuário externo, depois olhamos melhor
-    // nomeEnvio: z.string("O nome de envio não pode ser vazio!")
-    // .max(255, "Nome muito longo para envio, máximo de 255 caracteres")
-    // .nonempty("Nome para envio não pode ser vazio!")
-    // .nonoptional("Nome de envio é obrigatório"),
-    
-    // Vai ficar pro usuário externo, depois olhamos melhor
-    // emailEnvio: z.email("O e-mail não pode ser vazio!")
-    // .nonempty("E-mail de envio não pode ser vazio!")
-    // .nonoptional("E-mail de envio é obrigatório!"),
-    
+export const ticketValidation = z.object({    
     title: z.string("O título não pode ser vazio")
     .max(255, "Nome muito longo do título, máximo de 255 caracteres!")
     .nonempty("Título do ticket não pode ser vazio!")
@@ -27,8 +16,7 @@ export const ticketValidation = z.object({
     userResponsavelId: z.string("Selecione um usuário responsável!")
     .refine((valor) => valor !== "0", {
             message: "Selecione um usuário responsável"
-        })
-    .nonoptional("Usuário responsável é obrigatório!"),
+        }),
 
     urgency: z.string("Selecione uma urgência!")
     .nonoptional("A urgência é obrigatória!"),
