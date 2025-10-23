@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { showError } from "@/hooks/useToast";
+import { showError, showSucces } from "@/hooks/useToast";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { ArrowLeft, ArrowRight, Paperclip } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -22,11 +22,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { onError } from "@/hooks/onError";
 import { useTabs } from "@/store/TabsStore";
-import useUser from "@/hooks/useUser";
 import { UserInfo } from "@/store/UserInfosStore";
 import { api } from "@/lib/axios";
 import type { ResponseTeams } from "@/types/ResponseTeams/ResponseTeams";
 import { addDays } from "date-fns";
+import type { ResponseUser } from "@/types/ResponseUser/ResponseUser";
 
 function handleSelectedChange(event: React.MouseEvent<HTMLLabelElement, MouseEvent>, parentElement: string) {
     // Selecino o elemento anterior e removo a classe de selecionado
@@ -41,23 +41,13 @@ function handleSelectedChange(event: React.MouseEvent<HTMLLabelElement, MouseEve
 const TicketThenAction = ticketValidation.and(ticketActionValidation);
 type TicketAction = z.infer<typeof TicketThenAction>;
 
-const valoresDropdown = [{
-    label: "Teste1",
-    value: "1"
-}, {
-    label: "Teste2",
-    value: "2"
-}, {
-    label: "Teste3",
-    value: "3"
-},]
-
 export default function Ticket() {
     const navigate = useNavigate();
     let { id = '' } = useParams();
     const addTab = useTabs(tabs => tabs.addTab);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [teams, setTeams] = useState<DropDownValues[]>([]);
+    const [users, setUsers] = useState<DropDownValues[]>([]);
     const confirmDialog = useConfirmation();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const { user } = UserInfo();
@@ -67,7 +57,9 @@ export default function Ticket() {
             userId: user?.id,
             callId: Number(id) || 0,
             urgency: "MEDIA",
-            previsaoSolucao: returnDate("MEDIA")
+            previsaoSolucao: returnDate("MEDIA"),
+            userResponsavelId: user?.id.toString(),
+            teamId: user?.teamId.toString()
         }
     });
 
@@ -85,6 +77,42 @@ export default function Ticket() {
             })
     }
 
+    function SelectUsersByEnterprise(){
+        api.get(`api/enterprise/${user?.enterpriseId}/users`)
+            .then(res => {
+                var usuarios: DropDownValues[] = res.data.map((item: ResponseUser) => {
+                    return { value: item.id.toString(), label: item.name }
+                })
+                setUsers(usuarios)
+            })
+            .catch(erro => {
+                showError(erro.response.data.error);
+            })
+    }
+
+    // Por eu juntar as duas entidades dentro da mesma validação nessa tela
+    // Eu preciso montar seus objetos manualmente
+    function InsertTicket(data: TicketAction) {
+        return api.post(`api/calls`, {
+            title: data.title,
+            userResponsavelId: data.userResponsavelId,
+            teamId: data.teamId,
+            urgency: data.urgency,
+            status: true,
+            userExternoId: 1
+        }).then(res => res.data)
+            .catch(erro => showError(erro.response.data.error))
+    }
+
+    function InsertAction(data: TicketAction, callId: number) {
+        return api.post("api/actions/", {
+            description: data.description,
+            userId: data.userId,
+            callId: callId
+        }).then(res => res.data)
+            .catch(erro => showError(erro.responde.data.error))
+    }
+
     function handleIconClick() {
         fileInputRef.current?.click();
     }
@@ -98,26 +126,35 @@ export default function Ticket() {
         }
     }
 
-    function handleSendAction() {
-        console.log("Teste")
-        if (watch("description").toUpperCase().includes("ANEXO") && fileInputRef.current?.files?.length === 0) {
-            confirmDialog.open({
-                title: "Confirma envio sem anexo?",
-                description: "Você escreveu anexo na ação, mas não anexou nenhum arquivo, deseja enviar a ação assim mesmo?",
-                onConfirm: () => console.log("Confirmado"),
-                cancelText: "Não",
-                confirmText: "Sim",
-            });
-        };
-        if (isValid) {
+    async function handleCreate(data: TicketAction) {
+        const ticketCreated = await InsertTicket(data);
+        await InsertAction(data, ticketCreated.id);
+        setTimeout(() => showSucces("Ticket criado com sucesso!"), 2000);
+        navigate(`/Ticket/${ticketCreated.id}`);
+    }
 
+    function handleSendAction(data: TicketAction) {
+        if (isValid) {
+            if (watch("description").toUpperCase().includes("ANEXO") && fileInputRef.current?.files?.length === 0) {
+                confirmDialog.open({
+                    title: "Confirma envio sem anexo?",
+                    description: "Você escreveu anexo na ação, mas não anexou nenhum arquivo, deseja enviar a ação assim mesmo?",
+                    onConfirm: () => handleCreate(data),
+                    cancelText: "Não",
+                    confirmText: "Sim",
+                });
+            }else
+                handleCreate(data);
         }
     }
 
     const ticket = Number.isInteger(parseInt(id)) ? parseInt(id) : 0;
 
     useEffect(() => {
+        // Aqui eu seleciono os dados que eu preciso de equipes e usuários da equipe
+        // Por eles precisarem serem transformados eu preciso fazer diferenciado
         SelectTeams();
+        SelectUsersByEnterprise();
         if (!id) {
             showError("Caminho inválido de ticket! Redirecionando a home...");
             setTimeout(() => navigate("/Home"), 3000);
@@ -127,10 +164,10 @@ export default function Ticket() {
             var caminhoEspecifico = `/Ticket/${ticket}`;
             addTab(caminhoEspecifico);
         }
-    }, [])
+    }, [id])
 
     // Lógica de arquivos que vamos precisar dar uma olhada depois
-    const {ref, ...registerProps} = register("arquivos")
+    // const {ref, ...registerProps} = register("arquivos")
 
     return (
         <div className="grid grid-rows-7 w-full bg-(--bg-default) grid-cols-[1fr_25px] md:grid-cols-[1fr_2rem]">
@@ -183,7 +220,7 @@ export default function Ticket() {
                                             </Label>
                                         </RadioGroup>
                                         <div>
-                                            <Input ref={(e) => {ref(e); fileInputRef.current = e}} {...registerProps} type="file" multiple accept=".jpg, .png, .zip, .rar, .pdf, .docx, .xls, .xlxs" style={{ display: "none" }} />
+                                            {/* <Input ref={(e) => {ref(e); fileInputRef.current = e}} {...registerProps} type="file" multiple accept=".jpg, .png, .zip, .rar, .pdf, .docx, .xls, .xlxs" style={{ display: "none" }} /> */}
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
                                                     <Paperclip size={20} color={"var(--grey)"} className="cursor-pointer" onClick={handleIconClick} />
@@ -197,8 +234,10 @@ export default function Ticket() {
 
                                     {/* Botão à direita */}
                                     <Button
+                                        type="submit"
                                         disabled={isSubmitting}
-                                        className="px-4 max-[360px]:px-2 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer" onClick={handleSendAction}>
+                                        onClick={() => handleSubmit(handleSendAction, onError)}
+                                        className="px-4 max-[360px]:px-2 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer">
                                         Enviar
                                     </Button>
                                 </div>
@@ -206,13 +245,13 @@ export default function Ticket() {
                         </div>
 
                         <div className="w-full">
-                            {ticket > 0 ? <ActionHistory /> : <div></div>}
+                            {ticket > 0 ? <ActionHistory ticket={ticket} /> : <div></div>}
                         </div>
                     </div>
                 </ScrollArea>
             </div>
 
-            <form className="flex row-span-7 h-full">
+            <form className="flex row-span-7 h-full" onSubmit={() => handleSubmit(handleSendAction, onError)}>
                 <Sheet open={isDialogOpen} onOpenChange={setIsDialogOpen} modal={false}>
                     <SheetTrigger className="flex justify-end items-end h-(--height-mobile) bg-(--bg-divs)">
                         <div className="flex h-full w-full justify-center cursor-pointer pt-4">
@@ -227,7 +266,7 @@ export default function Ticket() {
 
                             <ScrollArea className="bg-(--bg-divs) pb-3">
                                 <div className="flex flex-col w-full p-2 gap-4">
-                                    <Dropdown dados={{ keyDropdown: "exemplo", values: valoresDropdown, label: "Usuário Responsável", control: control, name: "userResponsavelId" }} />
+                                    <Dropdown dados={{ keyDropdown: "exemplo", values: users, label: "Usuário Responsável", control: control, name: "userResponsavelId" }} />
                                     <Dropdown dados={{ keyDropdown: "exemplo2", values: teams, label: "Equipe Responsável", control: control, name: "teamId" }} />
                                     <div id="urgencyOpts" className="flex flex-col gap-2">
                                         <Label htmlFor="urgencies">Urgência</Label>
