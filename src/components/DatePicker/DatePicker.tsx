@@ -6,6 +6,7 @@ import React from "react"
 import { Label } from "../ui/label"
 import { ptBR } from "date-fns/locale"
 import { Controller, type Control } from "react-hook-form"
+import { formatarData } from "@/utils/utils"
 
 interface Data {
     dados: DatePickerProperties
@@ -18,12 +19,12 @@ interface DatePickerProperties {
     noPlaceholder?: boolean
     control: Control<any>, // Passa o control ao invés do register
     name: string, // Nome do campo no formulário
-    date: Date,
+    date?: Date,
     defaultValue?: any
 }
 export default function DatePicker({ dados }: Data) {
     const [open, setOpen] = React.useState(false)
-
+    console.log(dados)
     return (
         <div className="flex flex-col gap-1.5">
             <Label className="font-semibold">{dados.label}</Label>
@@ -35,7 +36,7 @@ export default function DatePicker({ dados }: Data) {
                         disabled={dados.disabledButton}
                         className="w-full justify-between cursor-pointer font-normal text-muted-foreground hover:text-muted-foreground hover:bg-white"
                     >
-                        {dados.date ? dados.date.toLocaleDateString() : dados.noPlaceholder ? "" : "Selecione"}
+                        {dados.date ? formatarData(dados.date) : dados.noPlaceholder ? "" : "Selecione"}
                         {!dados.noPlaceholder && <ChevronDownIcon color="#A6B0BF" />}
                     </Button>
                 </PopoverTrigger>

@@ -22,8 +22,8 @@ export const ticketValidation = z.object({
     .nonoptional("A urgência é obrigatória!"),
 
     // Tá sendo definido pelo back
-    previsaoSolucao: z.date("A previsão de solução precisa ser válida!")
-    .refine((data) => data > new Date(), {
+    previsaoSolucao: z.date("A previsão de solução precisa ser válida!").optional()
+    .refine((data) => data && data > new Date(), {
         message: "A data de previsão de solução não pode ser menor que a data atual!",
     }),
 

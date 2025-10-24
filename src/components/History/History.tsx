@@ -14,8 +14,8 @@ export default function History({acao}: AcaoReturn) {
             </div>
 
             <div className={`${true ? "bg-white" : "bg-(--weakGreen)"} w-full p-2 rounded-2xl flex flex-col gap-2`}>
-                <div>
-                    <p>{acao.description}</p>
+                <div className=" break-all">
+                    {acao.description}
                 </div>
                 <div className="flex justify-between p-1">
                     <div>

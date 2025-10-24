@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/select"
 import { Label } from "../ui/label"
 import { Controller, type Control } from "react-hook-form"
+import { useEffect } from "react"
 
 interface Data {
   dados: DropdownProperties
@@ -28,7 +29,6 @@ export interface DropDownValues {
 }
 
 export function Dropdown({ dados }: Data) {
-  {console.log(dados)}
   return (
     <div className="flex flex-col gap-1.5">
       <Label className="font-semibold" htmlFor={dados.keyDropdown}>{dados.label}</Label>
@@ -40,7 +40,7 @@ export function Dropdown({ dados }: Data) {
             key={field.value}
             onValueChange={field.onChange}
             value={ field.value }
-            defaultValue={field.value}>
+            defaultValue={dados.defaultValue}>
             <SelectTrigger
               id={dados.keyDropdown}
               className={`${dados.classes} cursor-pointer bg-white w-full`}

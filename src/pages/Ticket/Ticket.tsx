@@ -27,6 +27,9 @@ import { api } from "@/lib/axios";
 import type { ResponseTeams } from "@/types/ResponseTeams/ResponseTeams";
 import { addDays } from "date-fns";
 import type { ResponseUser } from "@/types/ResponseUser/ResponseUser";
+import type { ResponseCall } from "@/types/ResponseCall/ResponseCall";
+import { useQuery } from "@tanstack/react-query";
+
 
 function handleSelectedChange(event: React.MouseEvent<HTMLLabelElement, MouseEvent>, parentElement: string) {
     // Selecino o elemento anterior e removo a classe de selecionado
@@ -51,17 +54,47 @@ export default function Ticket() {
     const confirmDialog = useConfirmation();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const { user } = UserInfo();
-    const { register, handleSubmit, watch, setValue, control, formState: { isValid, isSubmitting } } = useForm<TicketAction>({
+
+  interface CallType  {
+        title: string
+    }
+    const { data: call } = useQuery<TicketAction>({
+        queryKey: ["keys", id],
+        queryFn: () => SelectCallById()
+    })
+
+
+    const { register, handleSubmit, reset, watch, getValues, setValue, control, formState: { isValid, isSubmitting } } = useForm<TicketAction>({
         resolver: zodResolver(TicketThenAction),
-        defaultValues: {
-            userId: user?.id,
-            callId: Number(id) || 0,
-            urgency: "MEDIA",
-            previsaoSolucao: returnDate("MEDIA"),
-            userResponsavelId: user?.id.toString(),
-            teamId: user?.teamId.toString()
-        }
+        values: {
+            title: call?.title || "",
+            callId: call?.callId || 0,
+            description: call?.description || "",
+            previsaoSolucao: call?.previsaoSolucao || undefined,
+            teamId: call?.teamId || "",
+            urgency: call?.urgency || "",
+            userId: call?.callId || 0,
+            userResponsavelId: call?.userResponsavelId || "",
+        },
+     
     });
+
+
+
+    async function SelectTeamss() {
+        return api.get(`api/enterprise/${user?.enterpriseId}/teams`)
+            .then(res => {
+                console.log(res.data)
+                var equipes: DropDownValues[] = res.data.map((item: ResponseTeams) => {
+                    return { value: item.id.toString(), label: item.name }
+                })
+                setTeams(equipes)
+
+            }).catch(erro => {
+                showError(erro.response.data.error);
+            })
+    }
+
 
     async function SelectTeams() {
         api.get(`api/enterprise/${user?.enterpriseId}/teams`)
@@ -77,7 +110,7 @@ export default function Ticket() {
             })
     }
 
-    function SelectUsersByEnterprise(){
+    function SelectUsersByEnterprise() {
         api.get(`api/enterprise/${user?.enterpriseId}/users`)
             .then(res => {
                 var usuarios: DropDownValues[] = res.data.map((item: ResponseUser) => {
@@ -88,6 +121,13 @@ export default function Ticket() {
             .catch(erro => {
                 showError(erro.response.data.error);
             })
+    }
+
+  
+
+    async function SelectCallById() : Promise<TicketAction>{
+        const response = await api.get(`api/calls/${ticket}`)
+        return response.data
     }
 
     // Por eu juntar as duas entidades dentro da mesma validação nessa tela
@@ -143,28 +183,36 @@ export default function Ticket() {
                     cancelText: "Não",
                     confirmText: "Sim",
                 });
-            }else
+            } else
                 handleCreate(data);
         }
     }
 
     const ticket = Number.isInteger(parseInt(id)) ? parseInt(id) : 0;
 
-    useEffect(() => {
-        // Aqui eu seleciono os dados que eu preciso de equipes e usuários da equipe
-        // Por eles precisarem serem transformados eu preciso fazer diferenciado
-        SelectTeams();
-        SelectUsersByEnterprise();
-        if (!id) {
-            showError("Caminho inválido de ticket! Redirecionando a home...");
-            setTimeout(() => navigate("/Home"), 3000);
-        }
+    console.log("id", id)
 
-        if (ticket > 0) {
-            var caminhoEspecifico = `/Ticket/${ticket}`;
-            addTab(caminhoEspecifico);
-        }
-    }, [id])
+    // useEffect(() => {
+
+        
+
+    //     console.log("Depois do reset", getValues())
+    //     // Aqui eu seleciono os dados que eu preciso de equipes e usuários da equipe
+    //     // Por eles precisarem serem transformados eu preciso fazer diferenciado
+    //     SelectTeams();
+    //     SelectUsersByEnterprise();
+    //     if (!id) {
+    //         showError("Caminho inválido de ticket! Redirecionando a home...");
+    //         setTimeout(() => navigate("/Home"), 3000);
+    //     }
+
+    //     if (ticket > 0) {
+    //         var caminhoEspecifico = `/Ticket/${ticket}`;
+    //         addTab(caminhoEspecifico);
+    //         SelectCallById();
+    //     }
+
+    // }, [id])
 
     // Lógica de arquivos que vamos precisar dar uma olhada depois
     // const {ref, ...registerProps} = register("arquivos")
