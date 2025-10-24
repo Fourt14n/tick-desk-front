@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import History from "../History/History";
 import { Separator } from "../ui/separator";
 import { api } from "@/lib/axios";
@@ -6,19 +5,21 @@ import { showError } from "@/hooks/useToast";
 import { UserInfo } from "@/store/UserInfosStore";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import type { ResponseAction } from "@/types/ResponseAction/ResponseAction";
+import { useQuery } from "@tanstack/react-query";
 
 type ActionHistoryInfos = {
     ticket: number
 }
 
 export default function ActionHistory({ticket} : ActionHistoryInfos) {
-    const [acoesChamado, setAcoesChamado] = useState<ResponseAction[]>([]);
     const {user} = UserInfo();
-    // Pra fins educativos vou criar um array de objetos pra gente testar já dinamicamente
-    // const acoesChamado = [
-    //     { nomeUsuario: "Gabriel Constantin", descricao: "Foi criada uma tela de edição de tickets para o sistema, verificar o Figma do projeto para a revisão e análise", isPublic: true, dtHrCadastro: "17/08/2025 11:55" },
-    //     { nomeUsuario: "Hebert Lopes", descricao: "Prototipar uma tela de edição e criação de tickets no Figma.", isPublic: false, dtHrCadastro: "11/08/2025 19:35" },
-    // ]
+
+    const { data: acoesChamado } = useQuery<ResponseAction[]>({
+        queryKey: ["acoesChamado", ticket],
+        refetchOnWindowFocus: false,
+        staleTime: 1000 * 60 * 1, // Refaz a busca dos tickets a cada 1 minuto
+        queryFn: () => setActionsFiltered()
+    })
 
     function SelectAllActions() {
         return api.get(`api/actions/call/${ticket}`)
@@ -32,20 +33,15 @@ export default function ActionHistory({ticket} : ActionHistoryInfos) {
             .catch(erro => showError(erro.response.data.error))
     }
 
-    async function setActionsFiltered(){
+    async function setActionsFiltered() : Promise<ResponseAction[]>{
         var actions : ResponseAction[] = [];
         if(usePermission({minPermission: PermissionsRoles.SUPORT}))
             actions = await SelectAllActions();
         else
             actions = await SelectActionByUser();
 
-        setAcoesChamado(actions);
-
+        return actions;
     }
-
-    useEffect(() => {
-        setActionsFiltered();
-    }, [ticket])
 
     return (
         <div className="pt-4 h-full">
@@ -55,7 +51,7 @@ export default function ActionHistory({ticket} : ActionHistoryInfos) {
             </div>
 
             <div className="flex flex-col gap-4 pt-4">
-                {acoesChamado.map(item => <History acao={item} />)}
+                {acoesChamado?.map(item => <History acao={item} />)}
             </div>
         </div>
     )
