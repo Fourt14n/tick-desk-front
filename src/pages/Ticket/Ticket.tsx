@@ -4,7 +4,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { showError, showSucces } from "@/hooks/useToast";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { ArrowLeft, ArrowRight, Paperclip } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import "@/index.css";
 import useConfirmation from "@/hooks/useConfirmation";
@@ -21,13 +21,11 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { onError } from "@/hooks/onError";
-import { useTabs } from "@/store/TabsStore";
 import { UserInfo } from "@/store/UserInfosStore";
 import { api } from "@/lib/axios";
 import type { ResponseTeams } from "@/types/ResponseTeams/ResponseTeams";
 import { addDays } from "date-fns";
 import type { ResponseUser } from "@/types/ResponseUser/ResponseUser";
-import type { ResponseCall } from "@/types/ResponseCall/ResponseCall";
 import { useQuery } from "@tanstack/react-query";
 
 
@@ -47,24 +45,35 @@ type TicketAction = z.infer<typeof TicketThenAction>;
 export default function Ticket() {
     const navigate = useNavigate();
     let { id = '' } = useParams();
-    const addTab = useTabs(tabs => tabs.addTab);
+    const ticket = Number.isInteger(parseInt(id)) ? parseInt(id) : 0; // Pra conseguir fazer operações baseada em number eu converto aqui
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [teams, setTeams] = useState<DropDownValues[]>([]);
-    const [users, setUsers] = useState<DropDownValues[]>([]);
     const confirmDialog = useConfirmation();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const { user } = UserInfo();
 
-  interface CallType  {
-        title: string
-    }
     const { data: call } = useQuery<TicketAction>({
-        queryKey: ["keys", id],
+        queryKey: ["call", id],
+        refetchOnWindowFocus: false,
+        staleTime: 1000 * 60 * 4,
         queryFn: () => SelectCallById()
     })
 
+    const { data: users } = useQuery<DropDownValues[]>({
+        queryKey: ["usersByEnterprise", id],
+        refetchOnWindowFocus: false,
+        staleTime: 1000 * 60 * 5, // 5 minutos, 1000 milisegundos * 60 pra dar 1 minuto e * 5 pra dar 5 minutos
+        queryFn: () => SelectUsersByEnterprise()
+    })
 
-    const { register, handleSubmit, reset, watch, getValues, setValue, control, formState: { isValid, isSubmitting } } = useForm<TicketAction>({
+    const { data: teams } = useQuery<DropDownValues[]>({
+        queryKey: ["teamsByEnterprise", id],
+        refetchOnWindowFocus: false,
+        staleTime: 1000 * 60 * 5, // 5 minutos, 1000 milisegundos * 60 pra dar 1 minuto e * 5 pra dar 5 minutos
+        queryFn: () => SelectTeams()
+    })
+
+
+    const { register, handleSubmit, watch, setValue, control, formState: { isValid, isSubmitting } } = useForm<TicketAction>({
         resolver: zodResolver(TicketThenAction),
         values: {
             title: call?.title || "",
@@ -76,56 +85,28 @@ export default function Ticket() {
             userId: call?.callId || 0,
             userResponsavelId: call?.userResponsavelId || "",
         },
-     
+
     });
 
+    async function SelectTeams(): Promise<DropDownValues[]> {
+        var response = await api.get(`api/enterprise/${user?.enterpriseId}/teams`);
+        var equipes: DropDownValues[] = response.data.map((item: ResponseTeams) => {
+            return { value: item.id.toString(), label: item.name }
+        });
+        return equipes;
+    }
 
-
-    async function SelectTeamss() {
-        return api.get(`api/enterprise/${user?.enterpriseId}/teams`)
-            .then(res => {
-                console.log(res.data)
-                var equipes: DropDownValues[] = res.data.map((item: ResponseTeams) => {
-                    return { value: item.id.toString(), label: item.name }
-                })
-                setTeams(equipes)
-
-            }).catch(erro => {
-                showError(erro.response.data.error);
-            })
+    async function SelectUsersByEnterprise(): Promise<DropDownValues[]> {
+        var response = await api.get(`api/enterprise/${user?.enterpriseId}/users`);
+        var usuarios: DropDownValues[] = response.data.map((item: ResponseUser) => {
+            return { value: item.id.toString(), label: item.name };
+        })
+        return usuarios;
     }
 
 
-    async function SelectTeams() {
-        api.get(`api/enterprise/${user?.enterpriseId}/teams`)
-            .then(res => {
-                console.log(res.data)
-                var equipes: DropDownValues[] = res.data.map((item: ResponseTeams) => {
-                    return { value: item.id.toString(), label: item.name }
-                })
-                setTeams(equipes)
 
-            }).catch(erro => {
-                showError(erro.response.data.error);
-            })
-    }
-
-    function SelectUsersByEnterprise() {
-        api.get(`api/enterprise/${user?.enterpriseId}/users`)
-            .then(res => {
-                var usuarios: DropDownValues[] = res.data.map((item: ResponseUser) => {
-                    return { value: item.id.toString(), label: item.name }
-                })
-                setUsers(usuarios)
-            })
-            .catch(erro => {
-                showError(erro.response.data.error);
-            })
-    }
-
-  
-
-    async function SelectCallById() : Promise<TicketAction>{
+    async function SelectCallById(): Promise<TicketAction> {
         const response = await api.get(`api/calls/${ticket}`)
         return response.data
     }
@@ -166,10 +147,11 @@ export default function Ticket() {
         }
     }
 
+
     async function handleCreate(data: TicketAction) {
-        const ticketCreated = await InsertTicket(data);
-        await InsertAction(data, ticketCreated.id);
-        setTimeout(() => showSucces("Ticket criado com sucesso!"), 2000);
+        const ticketCreated = await InsertTicket(data); // Primeiramente eu crio o ticket
+        await InsertAction(data, ticketCreated.id); // Pra então conseguir adicionar a ação no ticket
+        showSucces("Ticket criado com sucesso!")
         navigate(`/Ticket/${ticketCreated.id}`);
     }
 
@@ -187,32 +169,6 @@ export default function Ticket() {
                 handleCreate(data);
         }
     }
-
-    const ticket = Number.isInteger(parseInt(id)) ? parseInt(id) : 0;
-
-    console.log("id", id)
-
-    // useEffect(() => {
-
-        
-
-    //     console.log("Depois do reset", getValues())
-    //     // Aqui eu seleciono os dados que eu preciso de equipes e usuários da equipe
-    //     // Por eles precisarem serem transformados eu preciso fazer diferenciado
-    //     SelectTeams();
-    //     SelectUsersByEnterprise();
-    //     if (!id) {
-    //         showError("Caminho inválido de ticket! Redirecionando a home...");
-    //         setTimeout(() => navigate("/Home"), 3000);
-    //     }
-
-    //     if (ticket > 0) {
-    //         var caminhoEspecifico = `/Ticket/${ticket}`;
-    //         addTab(caminhoEspecifico);
-    //         SelectCallById();
-    //     }
-
-    // }, [id])
 
     // Lógica de arquivos que vamos precisar dar uma olhada depois
     // const {ref, ...registerProps} = register("arquivos")

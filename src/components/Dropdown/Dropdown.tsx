@@ -17,7 +17,7 @@ export interface DropdownProperties {
   classes?: string,
   keyDropdown: string,
   label: string,
-  values: Array<DropDownValues>,
+  values: Array<DropDownValues> | undefined,
   control: Control<any>, // Passa o control ao invés do register
   name: string, // Nome do campo no formulário
   defaultValue?: any
@@ -48,7 +48,7 @@ export function Dropdown({ dados }: Data) {
               <SelectValue placeholder="Selecione" />
             </SelectTrigger>
             <SelectContent>
-              {dados.values.map((item) => (
+              {dados.values?.map((item) => (
                 <SelectItem key={item.value} value={item.value}>
                   {item.label}
                 </SelectItem>
