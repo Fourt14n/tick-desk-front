@@ -73,17 +73,18 @@ export default function Ticket() {
     })
 
 
-    const { register, handleSubmit, watch, setValue, control, formState: { isValid, isSubmitting } } = useForm<TicketAction>({
+    const { register, handleSubmit, watch, setValue, control, formState: { isSubmitting } } = useForm<TicketAction>({
         resolver: zodResolver(TicketThenAction),
         values: {
             title: call?.title || "",
             callId: call?.callId || 0,
             description: call?.description || "",
-            previsaoSolucao: call?.previsaoSolucao || undefined,
-            teamId: call?.teamId || "",
-            urgency: call?.urgency || "",
-            userId: call?.callId || 0,
-            userResponsavelId: call?.userResponsavelId || "",
+            previsaoSolucao: call?.previsaoSolucao || returnDate("MEDIA"),
+            teamId: call?.teamId || user?.teamId.toString() || "",
+            urgency: call?.urgency || "MEDIA",
+            userId: call?.callId || user?.id || 0,
+            userResponsavelId: call?.userResponsavelId || user?.id.toString() || "",
+            status: call?.status || true
         },
 
     });
@@ -131,7 +132,7 @@ export default function Ticket() {
             userId: data.userId,
             callId: callId
         }).then(res => res.data)
-            .catch(erro => showError(erro.responde.data.error))
+            .catch(erro => showError(erro.response.data.error))
     }
 
     function handleIconClick() {
@@ -156,7 +157,7 @@ export default function Ticket() {
     }
 
     function handleSendAction(data: TicketAction) {
-        if (isValid) {
+        console.log("Teste")
             if (watch("description").toUpperCase().includes("ANEXO") && fileInputRef.current?.files?.length === 0) {
                 confirmDialog.open({
                     title: "Confirma envio sem anexo?",
@@ -167,7 +168,6 @@ export default function Ticket() {
                 });
             } else
                 handleCreate(data);
-        }
     }
 
     // Lógica de arquivos que vamos precisar dar uma olhada depois

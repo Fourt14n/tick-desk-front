@@ -27,6 +27,9 @@ export const ticketValidation = z.object({
         message: "A data de previsão de solução não pode ser menor que a data atual!",
     }),
 
+    status: z.boolean("O status do chamado precisa ser booleano")
+    ,
+
     dataHoraFechamento: z.date("Tipo inválido da data e hora de fechamento!")
     .optional(),
 
