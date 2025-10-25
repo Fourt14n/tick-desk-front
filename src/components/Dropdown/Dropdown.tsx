@@ -16,6 +16,7 @@ interface Data {
 export interface DropdownProperties {
   classes?: string,
   keyDropdown: string,
+  autoSaveFunc?: (campo : string, value : string) => void,
   label: string,
   values: Array<DropDownValues> | undefined,
   control: Control<any>, // Passa o control ao invés do register
@@ -38,7 +39,11 @@ export function Dropdown({ dados }: Data) {
         render={({ field }) => (
           <Select {...dados.control.register(dados.name)}
             key={field.value}
-            onValueChange={field.onChange}
+            onValueChange={(value) => {
+              field.onChange(value)
+              if(dados.autoSaveFunc)
+                dados.autoSaveFunc(dados.name, value);
+            }}
             value={ field.value }
             defaultValue={dados.defaultValue}>
             <SelectTrigger

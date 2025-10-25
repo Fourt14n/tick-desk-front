@@ -11,31 +11,32 @@ type ActionHistoryInfos = {
     ticket: number
 }
 
-export default function ActionHistory({ticket} : ActionHistoryInfos) {
-    const {user} = UserInfo();
+export default function ActionHistory({ ticket }: ActionHistoryInfos) {
+    const { user } = UserInfo();
+    const hasPermission = usePermission({ minPermission: PermissionsRoles.SUPORT });
 
     const { data: acoesChamado } = useQuery<ResponseAction[]>({
-        queryKey: ["acoesChamado", ticket],
+        queryKey: ["acoesChamado", ticket, hasPermission],
         refetchOnWindowFocus: false,
         staleTime: 1000 * 60 * 1, // Refaz a busca dos tickets a cada 1 minuto
         queryFn: () => setActionsFiltered()
     })
 
-    function SelectAllActions() {
-        return api.get(`api/actions/call/${ticket}`)
+    async function SelectAllActions() {
+        return await api.get(`api/actions/call/${ticket}`)
             .then(res => res.data)
             .catch(erro => showError(erro.response.data.error))
     }
 
-    function SelectActionByUser() {
-        return api.get(`api/actions/user/${user?.id}`)
+    async function SelectActionByUser() {
+        return await api.get(`api/actions/user/${user?.id}`)
             .then(res => res.data)
             .catch(erro => showError(erro.response.data.error))
     }
 
-    async function setActionsFiltered() : Promise<ResponseAction[]>{
-        var actions : ResponseAction[] = [];
-        if(usePermission({minPermission: PermissionsRoles.SUPORT}))
+    async function setActionsFiltered(): Promise<ResponseAction[]> {
+        var actions: ResponseAction[] = [];
+        if (hasPermission)
             actions = await SelectAllActions();
         else
             actions = await SelectActionByUser();

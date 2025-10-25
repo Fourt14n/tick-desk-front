@@ -4,7 +4,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { showError, showSucces } from "@/hooks/useToast";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { ArrowLeft, ArrowRight, Paperclip } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import "@/index.css";
 import useConfirmation from "@/hooks/useConfirmation";
@@ -55,7 +55,8 @@ export default function Ticket() {
         queryKey: ["call", id],
         refetchOnWindowFocus: false,
         staleTime: 1000 * 60 * 4,
-        queryFn: () => SelectCallById()
+        queryFn: () => SelectCallById(),
+        enabled: ticket > 0 // Só faço a chamada se o ticket for maior que 0
     })
 
     const { data: users } = useQuery<DropDownValues[]>({
@@ -72,20 +73,26 @@ export default function Ticket() {
         queryFn: () => SelectTeams()
     })
 
+    // Tô usando esse useMemo porque definindo o value direto ele acaba criando loop infinito
+    const formValues = useMemo(() => {
+        console.log(call);
+        return ({
+        title: call?.title || "",
+        callId: call?.callId || 0,
+        description: call?.description || "",
+        previsaoSolucao: call?.previsaoSolucao || returnDate("MEDIA"),
+        teamId: call?.teamId || user?.teamId.toString() || "",
+        urgency: call?.urgency || "MEDIA",
+        userId: call?.userId || user?.id || 0,
+        userResponsavelId: call?.userResponsavelId || user?.id.toString() || "",
+        status: call?.status ?? true,
+        statusAction: "PUBLIC"
+    })
+    }, [call]);
 
-    const { register, handleSubmit, watch, setValue, control, formState: { isSubmitting } } = useForm<TicketAction>({
+    const { register, handleSubmit, watch, setValue, reset, control, formState: { isSubmitting } } = useForm<TicketAction>({
         resolver: zodResolver(TicketThenAction),
-        values: {
-            title: call?.title || "",
-            callId: call?.callId || 0,
-            description: call?.description || "",
-            previsaoSolucao: call?.previsaoSolucao || returnDate("MEDIA"),
-            teamId: call?.teamId || user?.teamId.toString() || "",
-            urgency: call?.urgency || "MEDIA",
-            userId: call?.callId || user?.id || 0,
-            userResponsavelId: call?.userResponsavelId || user?.id.toString() || "",
-            status: call?.status || true
-        },
+        values: formValues,
 
     });
 
@@ -99,13 +106,13 @@ export default function Ticket() {
 
     async function SelectUsersByEnterprise(): Promise<DropDownValues[]> {
         var response = await api.get(`api/enterprise/${user?.enterpriseId}/users`);
+        console.log(response.data);
         var usuarios: DropDownValues[] = response.data.map((item: ResponseUser) => {
             return { value: item.id.toString(), label: item.name };
         })
+        console.log(usuarios);
         return usuarios;
     }
-
-
 
     async function SelectCallById(): Promise<TicketAction> {
         const response = await api.get(`api/calls/${ticket}`)
@@ -130,10 +137,24 @@ export default function Ticket() {
         return api.post("api/actions/", {
             description: data.description,
             userId: data.userId,
-            callId: callId
+            callId: callId,
+            statusAction: data.statusAction
         }).then(res => res.data)
             .catch(erro => showError(erro.response.data.error))
     }
+
+    const UpdateTicket = async (field: string, value?: any) => {
+        if (!call) return; // Só atualiza se já tiver carregado
+        if(value){
+            try {
+                await api.put(`api/calls/${ticket}`, {
+                    [field]: value
+                });
+            } catch (erro) {
+                showError(`Erro ao atualizar: ${erro}`);
+            }
+        }
+    };
 
     function handleIconClick() {
         fileInputRef.current?.click();
@@ -149,26 +170,35 @@ export default function Ticket() {
     }
 
 
-    async function handleCreate(data: TicketAction) {
-        const ticketCreated = await InsertTicket(data); // Primeiramente eu crio o ticket
-        await InsertAction(data, ticketCreated.id); // Pra então conseguir adicionar a ação no ticket
-        showSucces("Ticket criado com sucesso!")
-        navigate(`/Ticket/${ticketCreated.id}`);
+    async function handleInserting(data: TicketAction) {
+        if (data.callId > 0) {
+            await InsertAction(data, data.callId); // Caso já exista o chamado eu vou adicionar só a ação
+        }
+        else {
+            const ticketCreated = await InsertTicket(data); // Primeiramente eu crio o ticket
+            await InsertAction(data, ticketCreated.id); // Pra então conseguir adicionar a ação no ticket
+            showSucces("Ticket criado com sucesso!")
+            navigate(`/Ticket/${ticketCreated.id}`);
+        }
     }
 
     function handleSendAction(data: TicketAction) {
-        console.log("Teste")
-            if (watch("description").toUpperCase().includes("ANEXO") && fileInputRef.current?.files?.length === 0) {
-                confirmDialog.open({
-                    title: "Confirma envio sem anexo?",
-                    description: "Você escreveu anexo na ação, mas não anexou nenhum arquivo, deseja enviar a ação assim mesmo?",
-                    onConfirm: () => handleCreate(data),
-                    cancelText: "Não",
-                    confirmText: "Sim",
-                });
-            } else
-                handleCreate(data);
+        if (watch("description").toUpperCase().includes("ANEXO") && fileInputRef.current?.files?.length === 0) {
+            confirmDialog.open({
+                title: "Confirma envio sem anexo?",
+                description: "Você escreveu anexo na ação, mas não anexou nenhum arquivo, deseja enviar a ação assim mesmo?",
+                onConfirm: () => handleInserting(data),
+                cancelText: "Não",
+                confirmText: "Sim",
+            });
+        } else
+            handleInserting(data);
     }
+
+    useEffect(() => {
+        if(call)
+            reset(formValues);
+    },[formValues, call]);
 
     // Lógica de arquivos que vamos precisar dar uma olhada depois
     // const {ref, ...registerProps} = register("arquivos")
@@ -205,24 +235,38 @@ export default function Ticket() {
                                 <div className="absolute bottom-0 left-0 right-0 flex justify-between items-center p-1 md:p-3 bg-white border-t border-gray-100 rounded-b-lg">
                                     {/* Botões à esquerda */}
                                     <div className="flex min-[380px]:gap-3 items-center">
-                                        <RadioGroup defaultValue="true" id="privacyOptContainer" className="flex items-center space-x-2 max-[360px]:space-x-1">
-                                            <RadioGroupItem
-                                                value="true"
-                                                id="publico"
-                                                className="sr-only peer"
-                                            />
-                                            <Label htmlFor="publico" onClick={(event) => handleSelectedChange(event, "privacyOptContainer")} className="px-3 max-[360px]:px-1 py-1.5 text-xs md:text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors cursor-pointer selected">
-                                                Público
-                                            </Label>
-                                            <RadioGroupItem
-                                                value="false"
-                                                id="interno"
-                                                className="sr-only peer"
-                                            />
-                                            <Label htmlFor="interno" onClick={(event) => handleSelectedChange(event, "privacyOptContainer")} className="px-3 max-[360px]:px-1 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) border border-gray-300 rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer">
-                                                Interno
-                                            </Label>
-                                        </RadioGroup>
+                                        <Controller
+                                            control={control}
+                                            name="statusAction"
+                                            render={({ field }) => (
+                                                <RadioGroup
+                                                    value={field.value}
+                                                    onValueChange={() => {
+                                                        field.onChange()
+                                                        setValue("statusAction", field.value)
+                                                    }}
+                                                    defaultValue="PUBLIC"
+                                                    id="privacyOptContainer"
+                                                    className="flex items-center space-x-2 max-[360px]:space-x-1">
+                                                    <RadioGroupItem
+                                                        value="PUBLIC"
+                                                        id="publico"
+                                                        className="sr-only peer"
+                                                    />
+                                                    <Label htmlFor="publico" onClick={(event) => handleSelectedChange(event, "privacyOptContainer")} className="px-3 max-[360px]:px-1 py-1.5 text-xs md:text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors cursor-pointer selected">
+                                                        Público
+                                                    </Label>
+                                                    <RadioGroupItem
+                                                        value="PRIVAT"
+                                                        id="interno"
+                                                        className="sr-only peer"
+                                                    />
+                                                    <Label htmlFor="interno" onClick={(event) => handleSelectedChange(event, "privacyOptContainer")} className="px-3 max-[360px]:px-1 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) border border-gray-300 rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer">
+                                                        Interno
+                                                    </Label>
+                                                </RadioGroup>
+                                            )}
+                                        />
                                         <div>
                                             {/* <Input ref={(e) => {ref(e); fileInputRef.current = e}} {...registerProps} type="file" multiple accept=".jpg, .png, .zip, .rar, .pdf, .docx, .xls, .xlxs" style={{ display: "none" }} /> */}
                                             <Tooltip>
@@ -270,8 +314,8 @@ export default function Ticket() {
 
                             <ScrollArea className="bg-(--bg-divs) pb-3">
                                 <div className="flex flex-col w-full p-2 gap-4">
-                                    <Dropdown dados={{ keyDropdown: "exemplo", values: users, label: "Usuário Responsável", control: control, name: "userResponsavelId" }} />
-                                    <Dropdown dados={{ keyDropdown: "exemplo2", values: teams, label: "Equipe Responsável", control: control, name: "teamId" }} />
+                                    <Dropdown dados={{ keyDropdown: "exemplo", values: users, label: "Usuário Responsável", control: control, name: "userResponsavelId", autoSaveFunc: UpdateTicket }} />
+                                    <Dropdown dados={{ keyDropdown: "exemplo2", values: teams, label: "Equipe Responsável", control: control, name: "teamId", autoSaveFunc: UpdateTicket }} />
                                     <div id="urgencyOpts" className="flex flex-col gap-2">
                                         <Label htmlFor="urgencies">Urgência</Label>
                                         <Controller
@@ -280,7 +324,8 @@ export default function Ticket() {
                                             render={({ field }) => (
                                                 <RadioGroup value={field.value} onValueChange={(value) => {
                                                     field.onChange(value);
-                                                    setValue("previsaoSolucao", returnDate(value))
+                                                    setValue("urgency", value)
+                                                    UpdateTicket("urgency", value);
                                                 }} id="urgencies" className="flex justify-evenly">
                                                     <Label htmlFor="baixa" className={`md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 rounded-md bg-(--weakGreen) hover:bg-(--mediumGreen) transition-colors cursor-pointer ${watch("urgency") === "BAIXA" && "selected"}`}>
                                                         Baixa
@@ -312,7 +357,7 @@ export default function Ticket() {
 
 
                                     </div>
-                                    <DatePicker dados={{ label: "Previsão de Solução", disabledPastDays: true, control: control, name: "previsaoSolucao", date: watch("previsaoSolucao") }} />
+                                    <DatePicker dados={{ label: "Previsão de Solução", disabledPastDays: true, control: control, name: "previsaoSolucao", date: watch("previsaoSolucao"), autoSaveFunc: UpdateTicket }} />
                                     <div className="flex flex-col gap-1.5 cursor-not-allowed">
                                         <Label>Fechamento do Chamado</Label>
                                         <Input className="bg-white" type="text" disabled></Input>

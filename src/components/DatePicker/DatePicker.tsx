@@ -21,6 +21,7 @@ interface DatePickerProperties {
     name: string, // Nome do campo no formulário
     date?: Date,
     defaultValue?: any
+    autoSaveFunc?: (campo : string, value: string) => void
 }
 export default function DatePicker({ dados }: Data) {
     const [open, setOpen] = React.useState(false)
@@ -57,6 +58,8 @@ export default function DatePicker({ dados }: Data) {
                         onSelect={(date) => {
                             field.onChange(date);
                             setOpen(false)
+                            if(dados.autoSaveFunc && date)
+                                dados.autoSaveFunc(dados.name, date.toString())
                         }}                        
                     />
                     )}
