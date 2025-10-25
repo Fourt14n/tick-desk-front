@@ -1,15 +1,12 @@
 import HomeCard, { type TicketGroup } from "@/components/HomeCard/HomeCard";
 import { Clock } from "@/components/HomeClock/HomeClock";
 import { Skeleton } from "@/components/ui/skeleton";
-import { validateAuth } from "@/hooks/useAuth";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
-import { showError } from "@/hooks/useToast";
 import { api } from "@/lib/axios";
 import { capitalizeFirstWord } from "@/lib/utils";
 import { UserInfo } from "@/store/UserInfosStore";
 import { isPast, isToday } from "date-fns";
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router";
 
 enum GroupType {
     User,
@@ -24,45 +21,38 @@ export default function Home() {
     // Penso em criar um Skeleton pra ficar bonitinho enquanto carrega
     // Mas é frescura isso aqui do loading
     const [loading, setLoading] = useState(true);
-    console.log("Carregou a home")
     const { user } = UserInfo();
 
     async function PopularHome() {
-        let equipesTemp = [];
+        const [resultadoUsuario, resultadoEquipe, resultadoEmpresa] = await Promise.all([
+            GetUserTickets(),
+            usePermission({ minPermission: PermissionsRoles.SUPORT }) && GetTeamTickets(),
+            usePermission({ minPermission: PermissionsRoles.SUPORT }) && GetEnterpiseTickets()
+        ])
 
-        let resultadoUsuario = await GetUserTickets();
-        equipesTemp.push(resultadoUsuario)
-
-        // Dessa forma eu consigo usar o usePermission pra evitar de carregar dados
-        // Pra usuários que forem por exemplo do perfil cliente
-        if (usePermission({ minPermission: PermissionsRoles.SUPORT })) {
-            let resultadoEquipe = await GetTeamTickets();
-            equipesTemp.push(resultadoEquipe)
-
-            let resultadoEmpresa = await GetEnterpiseTickets();
-            equipesTemp.push(resultadoEmpresa)
-        }
-
-        setEquipes(equipesTemp);
+        if(typeof resultadoEquipe !== typeof true)
+            setEquipes([resultadoUsuario, resultadoEquipe as TicketGroup, resultadoEmpresa as TicketGroup]);
+        else
+            setEquipes([resultadoUsuario]);
         setLoading(false);
     }
 
     function GetUserTickets() {
         return api.get(`api/calls/user/${user?.id}`)
             .then(res => FormataChamados(GroupType.User, res.data))
-            .catch(erro => FormataChamados(GroupType.Error, undefined, GroupType.User))
+            .catch(() => FormataChamados(GroupType.Error, undefined, GroupType.User))
     }
 
     function GetTeamTickets() {
         return api.get(`api/calls/team/${user?.teamId}`)
             .then(res => FormataChamados(GroupType.Team, res.data))
-            .catch(erro => FormataChamados(GroupType.Error, undefined, GroupType.Team))
+            .catch(() => FormataChamados(GroupType.Error, undefined, GroupType.Team))
     }
 
     function GetEnterpiseTickets() {
         return api.get(`api/calls/enterprise/${user?.enterpriseId}`)
             .then(res => FormataChamados(GroupType.Enterprise, res.data))
-            .catch(erro => FormataChamados(GroupType.Error, undefined, GroupType.Enterprise))
+            .catch(() => FormataChamados(GroupType.Error, undefined, GroupType.Enterprise))
     }
 
     function FormataChamados(kind: GroupType, response?: any, secundaryKind?: GroupType): TicketGroup {
@@ -100,9 +90,9 @@ export default function Home() {
             else if (isPast(previsao)) // Vencidos
                 vencidos++;
 
-            if(isToday(abertura))
+            if (isToday(abertura))
                 abertosHoje++;
-            
+
             total++;
         })
 
@@ -141,8 +131,6 @@ export default function Home() {
                     <div className="flex flex-col gap-5 pb-10 lg:flex-row lg:pb:0 md-pb-5 lg:justify-center lg:items-center xl:justify-between">
                         {
                             equipes.map(item => {
-                                console.log("SENTA NO BUGALU, SENTA NO BUGALU")
-                                console.log(equipes)
                                 return <HomeCard group={item} />
                             })
                         }
