@@ -8,6 +8,8 @@ import {
 import { Label } from "../ui/label"
 import { Controller, type Control } from "react-hook-form"
 import { useEffect } from "react"
+import { useQuery } from "@tanstack/react-query"
+import type { TicketAction } from "@/pages/Ticket/Ticket"
 
 interface Data {
   dados: DropdownProperties
@@ -30,6 +32,12 @@ export interface DropDownValues {
 }
 
 export function Dropdown({ dados }: Data) {
+  console.log("Veio pro dropdown", dados);
+  const { data: call } = useQuery<TicketAction>({
+        queryKey: ["call", dados.autoSaveFunc],
+        refetchOnWindowFocus: false,
+        staleTime: 1000 * 60 * 4,
+    })
   return (
     <div className="flex flex-col gap-1.5">
       <Label className="font-semibold" htmlFor={dados.keyDropdown}>{dados.label}</Label>

@@ -27,6 +27,7 @@ import type { ResponseTeams } from "@/types/ResponseTeams/ResponseTeams";
 import { addDays } from "date-fns";
 import type { ResponseUser } from "@/types/ResponseUser/ResponseUser";
 import { useQuery } from "@tanstack/react-query";
+import type { ResponseCall } from "@/types/ResponseCall/ResponseCall";
 
 
 function handleSelectedChange(event: React.MouseEvent<HTMLLabelElement, MouseEvent>, parentElement: string) {
@@ -40,7 +41,7 @@ function handleSelectedChange(event: React.MouseEvent<HTMLLabelElement, MouseEve
 }
 
 const TicketThenAction = ticketValidation.and(ticketActionValidation);
-type TicketAction = z.infer<typeof TicketThenAction>;
+export type TicketAction = z.infer<typeof TicketThenAction>;
 
 export default function Ticket() {
     const navigate = useNavigate();
@@ -51,7 +52,7 @@ export default function Ticket() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const { user } = UserInfo();
 
-    const { data: call } = useQuery<TicketAction>({
+    const { data: call, refetch } = useQuery<ResponseCall>({
         queryKey: ["call", id],
         refetchOnWindowFocus: false,
         staleTime: 1000 * 60 * 4,
@@ -75,25 +76,24 @@ export default function Ticket() {
 
     // Tô usando esse useMemo porque definindo o value direto ele acaba criando loop infinito
     const formValues = useMemo(() => {
-        console.log(call);
+        console.log(call)
         return ({
         title: call?.title || "",
-        callId: call?.callId || 0,
-        description: call?.description || "",
+        callId: ticket,
+        description: "",
         previsaoSolucao: call?.previsaoSolucao || returnDate("MEDIA"),
-        teamId: call?.teamId || user?.teamId.toString() || "",
+        teamId: call?.team.id.toString() || user?.teamId.toString() || "",
         urgency: call?.urgency || "MEDIA",
-        userId: call?.userId || user?.id || 0,
-        userResponsavelId: call?.userResponsavelId || user?.id.toString() || "",
+        userId: user?.id || user?.id || 0,
+        userResponsavelId: call?.userResponsavel.id.toString() || user?.id.toString() || "",
         status: call?.status ?? true,
-        statusAction: "PUBLIC"
+        statusAction: "PUBLIC",
     })
     }, [call]);
 
-    const { register, handleSubmit, watch, setValue, reset, control, formState: { isSubmitting } } = useForm<TicketAction>({
+    const { register, handleSubmit, watch, setValue, control, formState: { isSubmitting } } = useForm<TicketAction>({
         resolver: zodResolver(TicketThenAction),
         values: formValues,
-
     });
 
     async function SelectTeams(): Promise<DropDownValues[]> {
@@ -106,15 +106,13 @@ export default function Ticket() {
 
     async function SelectUsersByEnterprise(): Promise<DropDownValues[]> {
         var response = await api.get(`api/enterprise/${user?.enterpriseId}/users`);
-        console.log(response.data);
         var usuarios: DropDownValues[] = response.data.map((item: ResponseUser) => {
             return { value: item.id.toString(), label: item.name };
         })
-        console.log(usuarios);
         return usuarios;
     }
 
-    async function SelectCallById(): Promise<TicketAction> {
+    async function SelectCallById(): Promise<ResponseCall> {
         const response = await api.get(`api/calls/${ticket}`)
         return response.data
     }
@@ -150,6 +148,7 @@ export default function Ticket() {
                 await api.put(`api/calls/${ticket}`, {
                     [field]: value
                 });
+                await refetch();
             } catch (erro) {
                 showError(`Erro ao atualizar: ${erro}`);
             }
@@ -194,12 +193,7 @@ export default function Ticket() {
         } else
             handleInserting(data);
     }
-
-    useEffect(() => {
-        if(call)
-            reset(formValues);
-    },[formValues, call]);
-
+    
     // Lógica de arquivos que vamos precisar dar uma olhada depois
     // const {ref, ...registerProps} = register("arquivos")
 
@@ -357,7 +351,7 @@ export default function Ticket() {
 
 
                                     </div>
-                                    <DatePicker dados={{ label: "Previsão de Solução", disabledPastDays: true, control: control, name: "previsaoSolucao", date: watch("previsaoSolucao"), autoSaveFunc: UpdateTicket }} />
+                                    <DatePicker dados={{ label: "Previsão de Solução", disabledPastDays: true, control: control, name: "previsaoSolucao", date: formValues.previsaoSolucao, autoSaveFunc: UpdateTicket }} />
                                     <div className="flex flex-col gap-1.5 cursor-not-allowed">
                                         <Label>Fechamento do Chamado</Label>
                                         <Input className="bg-white" type="text" disabled></Input>

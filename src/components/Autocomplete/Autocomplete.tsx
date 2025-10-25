@@ -72,7 +72,7 @@ export function AutoComplete() {
 
         if (value.target.value) {
           timeoutRef.current = setTimeout(() => {
-            api.get(`api/calls/search/?query=${value.target.value}`)
+            api.get(`api/calls/search?query=${value.target.value}`)
               .then(res => setResults(res.data))
               .catch(erro => showError(erro.response.data.error))
           }, 1500)
