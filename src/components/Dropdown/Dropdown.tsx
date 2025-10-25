@@ -7,6 +7,9 @@ import {
 } from "@/components/ui/select"
 import { Label } from "../ui/label"
 import { Controller, type Control } from "react-hook-form"
+import { useEffect } from "react"
+import { useQuery } from "@tanstack/react-query"
+import type { TicketAction } from "@/pages/Ticket/Ticket"
 
 interface Data {
   dados: DropdownProperties
@@ -15,8 +18,9 @@ interface Data {
 export interface DropdownProperties {
   classes?: string,
   keyDropdown: string,
+  autoSaveFunc?: (campo : string, value : string) => void,
   label: string,
-  values: Array<DropDownValues>,
+  values: Array<DropDownValues> | undefined,
   control: Control<any>, // Passa o control ao invés do register
   name: string, // Nome do campo no formulário
   defaultValue?: any
@@ -37,9 +41,13 @@ export function Dropdown({ dados }: Data) {
         render={({ field }) => (
           <Select {...dados.control.register(dados.name)}
             key={field.value}
-            onValueChange={field.onChange}
-            value={ dados.defaultValue || field.value || ""}
-            defaultValue={field.value}>
+            onValueChange={(value) => {
+              field.onChange(value)
+              if(dados.autoSaveFunc)
+                dados.autoSaveFunc(dados.name, value);
+            }}
+            value={ field.value }
+            defaultValue={dados.defaultValue}>
             <SelectTrigger
               id={dados.keyDropdown}
               className={`${dados.classes} cursor-pointer bg-white w-full`}
@@ -47,7 +55,7 @@ export function Dropdown({ dados }: Data) {
               <SelectValue placeholder="Selecione" />
             </SelectTrigger>
             <SelectContent>
-              {dados.values.map((item) => (
+              {dados.values?.map((item) => (
                 <SelectItem key={item.value} value={item.value}>
                   {item.label}
                 </SelectItem>

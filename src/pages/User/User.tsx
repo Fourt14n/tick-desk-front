@@ -14,6 +14,7 @@ import { EAction, type Action } from "@/types/EAction/EAction";
 import type { ResponseTeams } from "@/types/ResponseTeams/ResponseTeams";
 import { userValidation } from "@/validations/user";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router";
@@ -153,7 +154,15 @@ export default function User({ action }: Action) {
                         </div>
                     </div>
                     <div className="flex w-full justify-end gap-2 flex-col py-2 lg:flex-row">
-                        <Button disabled={isSubmitting} type="submit" className="bg-(--weakGreen) w-full lg:w-42 text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">{action === EAction.CREATE ? "Cadastrar" : "Atualizar"}</Button>
+                        <Button
+                            disabled={isSubmitting}
+                            type="submit"
+                            className="bg-(--weakGreen) w-full lg:w-42 text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">
+                            {
+                                isSubmitting && <Loader />
+                            }
+                            {action === EAction.CREATE ? "Cadastrar" : "Atualizar"}
+                        </Button>
                         <Link to="/Listagem/Users">
                             <Button variant={"destructive"} type="submit" className="w-full lg:w-42 cursor-pointer">Voltar</Button>
                         </Link>

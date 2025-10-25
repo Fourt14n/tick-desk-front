@@ -88,14 +88,6 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
 
                             <div className="relative w-3/4 md:w-2/5 mr-2 lg:w-1/3 xl:w-2/6">
                             <AutoComplete/>
-                            {/* <AutoComplete
-                                items={[{value: "1", label: "Teste"}, {value: "2", label: "Bulbasauro"}, {value: "3", label: "Charmandinho"}]}
-                                selectedValue=""
-                                onSearchValueChange={() => {}}
-                                onSelectedValueChange={() => {}}
-                                searchValue=""
-                            /> */}
-                                {/* */}
                                 <Search size={20} className="absolute top-2 right-2 cursor-pointer" />
                             </div>
                         </div>

@@ -6,7 +6,6 @@ export interface Ticket {
     id: string,
     callNumber: number,
     title: string,
-    usernameEnvio: string,
     previsaoSolucao: Date,
     urgencia: number
 }
@@ -31,12 +30,11 @@ export const TicketColumns: ColumnDef<Ticket>[] = [
     header: "Titulo",
   },
   {
-    accessorKey: "usernameEnvio",
-    header: "Criador",
-  },
-  {
     accessorKey: "previsaoSolucao",
     header: "Previsão de Solução",
+    cell: ({row}) => {
+      return new Date(row.original.previsaoSolucao).toLocaleDateString();
+    }
   },
   {
     accessorKey: "urgencia",

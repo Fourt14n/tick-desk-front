@@ -21,42 +21,51 @@ const getFileExtension = (fileName: string): string => {
     return fileName.toLowerCase().substring(fileName.lastIndexOf('.'));
 };
 
-// Schema para validação de um arquivo individual
-const fileSchema = z
-    .instanceof(File)
-    .refine((file) => file.size <= MAX_FILE_SIZE, {
-        message: `Arquivo muito grande. Tamanho máximo: ${MAX_FILE_SIZE / 1024 / 1024}MB`,
-    })
-    .refine((file) => {
-        // Verifica tipo MIME primeiro
-        if (ACCEPTED_FILE_TYPES.includes(file.type)) {
-            return true;
-        }
-        // Se tipo MIME não for reconhecido, verifica extensão
-        const extension = getFileExtension(file.name);
-        return ACCEPTED_EXTENSIONS.includes(extension);
-    }, {
-        message: 'Formato de arquivo não suportado. Formatos aceitos: .jpg, .png, .zip, .rar, .pdf, .docx, .xls, .xlsx',
-    });
 
 export const ticketActionValidation = z.object({
-    idChamado: z.uuid("Tipo inválido do chamado!")
+    callId: z.int32("Tipo inválido do chamado!")
         .nonoptional("O chamado é obrigatório para o envio!"),
 
-    idUsuario: z.uuid("Tipo inválido pro usuário!")
+    userId: z.number("Tipo inválido pro usuário!")
         .nonoptional("É obrigatório um usuário a ação!"),
 
-    descricaoAcao: z.string("Tipo inválido pra ação!")
+    description: z.string("A ação não pode ser vazia!")
         .max(2500, "A ação não pode ultrapassar 2500 caracteres!")
         .nonempty("A ação não pode ser vazia!")
         .nonoptional("A ação é obrigatória!"),
 
-    publica: z.boolean("Tipo inválido pra definição de privacidade da ação!")
-        .default(true)
+    arquivos: z
+        .instanceof(FileList)
+        .refine((file) => {
+            for (let i = 0; i < file.length; i++) {
+                var arquivo = file.item(i);
+                if (arquivo) {
+                    if (arquivo.size > MAX_FILE_SIZE) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }, {
+            message: `Um ou mais arquivos excede o limite máximo de envio. Tamanho máximo: ${MAX_FILE_SIZE / 1024 / 1024}MB`,
+        })
+        .refine((file) => {
+            for (let i = 0; i < file.length; i++) {
+                var arquivo = file.item(i);
+                if (arquivo) {
+                    if (ACCEPTED_FILE_TYPES.includes(arquivo.type)) {
+                        return true;
+                    }
+                    const extension = getFileExtension(arquivo.name);
+                    return ACCEPTED_EXTENSIONS.includes(extension);
+                }
+            }
+        }, {
+            message: 'Formato de arquivo não suportado. Formatos aceitos: .jpg, .png, .zip, .rar, .pdf, .docx, .xls, .xlsx',
+        })
+        .optional(),
+
+    statusAction: z.string("A ação deve ser pública ou interna!")
         .nonoptional("A ação deve ser pública ou interna!"),
 
-    arquivos: z
-        .array(fileSchema)
-        .max(10, 'Máximo de 10 arquivos permitidos')
-        .optional()
 })

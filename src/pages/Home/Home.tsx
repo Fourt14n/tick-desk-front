@@ -18,32 +18,6 @@ enum GroupType {
     Error
 }
 
-// Para fins educativos eu vou criar aqui um array do bagulho pra nós ver funcionando
-// var equipes = [{
-//     GroupName: "Meus Tickets",
-//     GroupId: 1,
-//     Total: 11,
-//     OpenedToday: 7,
-//     ExpiresToday: 2,
-//     Expired: 2
-// },
-// {
-//     GroupName: "Desenvolvimento",
-//     GroupId: 2,
-//     Total: 21,
-//     OpenedToday: 7,
-//     ExpiresToday: 2,
-//     Expired: 12
-// },
-// {
-//     GroupName: "TickDesk Sistemas LTDA",
-//     GroupId: 3,
-//     Total: 12,
-//     OpenedToday: 4,
-//     ExpiresToday: 5,
-//     Expired: 3
-// }]
-
 export default function Home() {
     const [equipes, setEquipes] = useState<TicketGroup[]>([]);
     // Isso aqui já é capricho
@@ -119,12 +93,16 @@ export default function Home() {
         response?.forEach((chamado: any) => {
             console.log("Entrou no foreach")
             const previsao = new Date(chamado.previsaoSolucao);
+            const abertura = new Date(chamado.dataAbertura);
 
             if (isToday(previsao)) // Vence hoje
                 venceHoje++;
             else if (isPast(previsao)) // Vencidos
                 vencidos++;
 
+            if(isToday(abertura))
+                abertosHoje++;
+            
             total++;
         })
 
