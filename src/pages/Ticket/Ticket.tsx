@@ -26,7 +26,7 @@ import { api } from "@/lib/axios";
 import type { ResponseTeams } from "@/types/ResponseTeams/ResponseTeams";
 import { addDays } from "date-fns";
 import type { ResponseUser } from "@/types/ResponseUser/ResponseUser";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { ResponseCall } from "@/types/ResponseCall/ResponseCall";
 import { TrataDataBackEnd } from "@/utils/utils";
 import type { ResponseAction } from "@/types/ResponseAction/ResponseAction";
@@ -46,9 +46,9 @@ const TicketThenAction = ticketValidation.and(ticketActionValidation);
 export type TicketAction = z.infer<typeof TicketThenAction>;
 
 export default function Ticket() {
+    const queryClient = useQueryClient();
     const navigate = useNavigate();
     let { id = '' } = useParams();
-    const [historyKey, setHistoryKey] = useState(0); // Vou usar isso aqui pra conseguir ficar re-renderizando o que eu quiser
     const ticket = Number.isInteger(parseInt(id)) ? parseInt(id) : 0; // Pra conseguir fazer operações baseada em number eu converto aqui
     const fileInputRef = useRef<HTMLInputElement>(null);
     const confirmDialog = useConfirmation();
@@ -184,8 +184,10 @@ export default function Ticket() {
             showSucces("Ticket criado com sucesso!")
             navigate(`/Ticket/${ticketCreated.id}`);
         }
-        // Aqui eu aumento o valor desse estado pra re-renderizar o Action History
-        setHistoryKey(prev => prev++);
+        
+        // Invalida a query das ações para refazer automaticamente
+        queryClient.invalidateQueries({ queryKey: ["acoesChamado"] });
+
         setValue("description", "");
     }
 
@@ -295,7 +297,7 @@ export default function Ticket() {
                         </div>
 
                         <div className="w-full">
-                            {ticket > 0 ? <ActionHistory key={historyKey} ticket={ticket} /> : <div></div>}
+                            {ticket > 0 ? <ActionHistory ticket={ticket} /> : <div></div>}
                         </div>
                     </div>
                 </ScrollArea>

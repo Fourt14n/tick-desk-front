@@ -8,20 +8,21 @@ import type { ResponseAction } from "@/types/ResponseAction/ResponseAction";
 import { useQuery } from "@tanstack/react-query";
 
 type ActionHistoryInfos = {
-    ticket: number
+    ticket: number,
 }
 
 export default function ActionHistory({ ticket }: ActionHistoryInfos) {
     const { user } = UserInfo();
     const hasPermission = usePermission({ minPermission: PermissionsRoles.SUPORT });
-
+    
     const { data: acoesChamado } = useQuery<ResponseAction[]>({
-        queryKey: ["acoesChamado", ticket, hasPermission],
+        queryKey: ["acoesChamado", ticket],
         refetchOnWindowFocus: false,
-        staleTime: 1000 * 60 * 1, // Refaz a busca dos tickets a cada 1 minuto
+        refetchInterval: 1000 * 60 * 1, // Refaz a busca dos tickets a cada 1 minuto
         queryFn: () => setActionsFiltered()
     })
-
+    console.log("Renderizou o Action History", acoesChamado)
+    
     async function SelectAllActions() {
         return await api.get(`api/actions/call/${ticket}`)
             .then(res => res.data)
@@ -40,10 +41,11 @@ export default function ActionHistory({ ticket }: ActionHistoryInfos) {
             actions = await SelectAllActions();
         else
             actions = await SelectActionByUser();
-
+        
+        console.log("Veio pegar o bagulho", actions)
         return actions;
     }
-
+    
     return (
         <div className="pt-4 h-full">
             <div className="flex flex-col justify-center row-span-1">
