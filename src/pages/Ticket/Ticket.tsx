@@ -3,7 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { showError, showSucces } from "@/hooks/useToast";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { ArrowLeft, ArrowRight, Paperclip } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader, Paperclip } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import "@/index.css";
@@ -80,17 +80,17 @@ export default function Ticket() {
     // Tô usando esse useMemo porque definindo o value direto ele acaba criando loop infinito
     const formValues = useMemo(() => {
         return ({
-        title: call?.title || "",
-        callId: ticket,
-        description: "",
-        previsaoSolucao: TrataDataBackEnd(call?.previsaoSolucao) || returnDate("MEDIA"),
-        teamId: call?.team.id.toString() || user?.teamId.toString() || "",
-        urgency: call?.urgency || "MEDIA",
-        userId: user?.id || user?.id || 0,
-        userResponsavelId: call?.userResponsavel.id.toString() || user?.id.toString() || "",
-        status: call?.status ?? true,
-        statusAction: "PUBLIC",
-    })
+            title: call?.title || "",
+            callId: ticket,
+            description: "",
+            previsaoSolucao: TrataDataBackEnd(call?.previsaoSolucao) || returnDate("MEDIA"),
+            teamId: call?.team.id.toString() || user?.teamId.toString() || "",
+            urgency: call?.urgency || "MEDIA",
+            userId: user?.id || user?.id || 0,
+            userResponsavelId: call?.userResponsavel.id.toString() || user?.id.toString() || "",
+            status: call?.status ?? true,
+            statusAction: "PUBLIC",
+        })
     }, [call]);
 
     const { register, handleSubmit, watch, setValue, control, formState: { isSubmitting } } = useForm<TicketAction>({
@@ -143,35 +143,64 @@ export default function Ticket() {
             .catch(erro => showError(erro.response.data.error))
     }
 
+    // A ideia aqui é fazer o envio de uma lista de arquivos
+    // Um a um de forma assíncrona e mesmo caso um dos arquivos falhe, ele continua o restante
+    async function InsertFilesAsync(data: TicketAction, actionId: number) {
+        if (data.arquivos?.length) {
+            for (let i = 0; i < data.arquivos.length; i++) {
+                try {
+                    let arquivo = data.arquivos.item(i);
+                    if (arquivo) {
+                        let formData = new FormData();
+                        formData.append("file", arquivo);
+                        api.post(`api/files/upload`, formData, {
+                            headers: {
+                                "Content-Type": "multipart/form-data"
+                            },
+                            params: {
+                                actionId: actionId
+                            }
+                        })
+                            .then(res => res.data)
+                            .catch((erro) => showError(`Erro ao enviar o arquivo ${arquivo?.name}: ${erro}`))
+                    }
+                } catch (error) {
+                    console.log(error);
+                    continue;
+                }
+            }
+        }
+    }
+
     const UpdateTicket = async (field: string, value?: any) => {
         if (!call) return; // Só atualiza se já tiver carregado
-        if(value){
+        if (value) {
             try {
                 await api.put(`api/calls/${ticket}`, {
                     [field]: value
                 });
-                queryClient.invalidateQueries({queryKey: ["call"]}) // Pra refazer a chamada do chamado
+                queryClient.invalidateQueries({ queryKey: ["call"] }) // Pra refazer a chamada do chamado
             } catch (erro) {
                 showError(`Erro ao atualizar: ${erro}`);
             }
         }
     };
 
-    async function CloseTicket(){
+    async function CloseTicket() {
         const response = await api.delete(`api/calls/${ticket}`);
-        if(response.status === 204){
+        if (response.status === 204) {
             showSucces("Chamado finalizado com sucesso!");
-            queryClient.invalidateQueries({queryKey: ["call"]});
+            queryClient.invalidateQueries({ queryKey: ["call"] });
         }
         else
             showError(response.data.error);
     }
-    async function ReOpenTicket(){
+    async function ReOpenTicket() {
         const response = await api.put(`api/calls/reopen/${ticket}`);
-        if(response.status === 200){
+        if (response.status === 200) {
             showSucces("Chamado reaberto com sucesso!");
             // Invalido a query pra ele puxar os valores de novo porque tem mais alteraçãos além do status
-            queryClient.invalidateQueries({queryKey: ["call"]});
+            queryClient.invalidateQueries({ queryKey: ["call"] });
         }
         else
             showError(response.data.error);
@@ -193,20 +222,23 @@ export default function Ticket() {
 
     async function handleInserting(data: TicketAction) {
         if (data.callId > 0) {
-            await InsertAction(data, data.callId); // Caso já exista o chamado eu vou adicionar só a ação
+            const actionCreated = await InsertAction(data, data.callId); // Caso já exista o chamado eu vou adicionar só a ação
+            await InsertFilesAsync(data, actionCreated.id)
             showSucces("Ação criada com sucesso!");
         }
         else {
             const ticketCreated = await InsertTicket(data); // Primeiramente eu crio o ticket
-            await InsertAction(data, ticketCreated.id); // Pra então conseguir adicionar a ação no ticket
+            const actionCreated = await InsertAction(data, ticketCreated.id); // Pra então conseguir adicionar a ação no ticket
+            await InsertFilesAsync(data, actionCreated.id)
             showSucces("Ticket criado com sucesso!")
             navigate(`/Ticket/${ticketCreated.id}`);
         }
-        
+
         // Invalida a query das ações para refazer automaticamente
         queryClient.invalidateQueries({ queryKey: ["acoesChamado"] });
 
         setValue("description", "");
+        setValue("arquivos", undefined);
     }
 
     function handleSendAction(data: TicketAction) {
@@ -221,9 +253,8 @@ export default function Ticket() {
         } else
             handleInserting(data);
     }
-    
-    // Lógica de arquivos que vamos precisar dar uma olhada depois
-    // const {ref, ...registerProps} = register("arquivos")
+
+    const { ref, ...registerProps } = register("arquivos")
 
     return (
         <div className="grid grid-rows-7 w-full bg-(--bg-default) grid-cols-[1fr_25px] md:grid-cols-[1fr_2rem]">
@@ -290,7 +321,7 @@ export default function Ticket() {
                                             )}
                                         />
                                         <div>
-                                            {/* <Input ref={(e) => {ref(e); fileInputRef.current = e}} {...registerProps} type="file" multiple accept=".jpg, .png, .zip, .rar, .pdf, .docx, .xls, .xlxs" style={{ display: "none" }} /> */}
+                                            <Input ref={(e) => { ref(e); fileInputRef.current = e }} {...registerProps} type="file" multiple accept=".jpg, .png, .zip, .rar, .pdf, .docx, .xls, .xlxs" style={{ display: "none" }} />
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
                                                     <Paperclip size={20} color={"var(--grey)"} className="cursor-pointer" onClick={handleIconClick} />
@@ -305,12 +336,14 @@ export default function Ticket() {
                                     {/* Botão à direita */}
                                     {watch("status") === true && (
                                         <Button
-                                        type="submit"
-                                        disabled={isSubmitting}
-                                        onClick={() => handleSubmit(handleSendAction, onError)}
-                                        className="px-4 max-[360px]:px-2 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer">
-                                        Enviar
-                                    </Button>
+                                            type="submit"
+                                            disabled={isSubmitting}
+                                            onClick={() => handleSubmit(handleSendAction, onError)}
+                                            className="px-4 max-[360px]:px-2 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer">
+                                            {
+                                                isSubmitting ? <Loader /> : "Enviar"
+                                            }
+                                        </Button>
                                     )}
                                 </div>
                             </form>
@@ -391,8 +424,8 @@ export default function Ticket() {
                                         <Input {...register("idUsuarioFechamento")} className="bg-white" type="text" disabled></Input>
                                     </div>
 
-                                    {(ticket > 0 && watch("status") === true) && <Button onClick={CloseTicket} disabled={isSubmitting} className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">Finalizar Ticket</Button>}
-                                    {(ticket > 0 && watch("status") === false) && <Button onClick={ReOpenTicket} disabled={isSubmitting} className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">Reabrir Ticket</Button>}
+                                    {(ticket > 0 && watch("status") === true) && <Button onClick={CloseTicket} disabled={isSubmitting} className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">{isSubmitting ? <Loader /> : "Finalizar Ticket"}</Button>}
+                                    {(ticket > 0 && watch("status") === false) && <Button onClick={ReOpenTicket} disabled={isSubmitting} className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">{isSubmitting ? <Loader /> : "Reabrir Ticket"}</Button>}
                                 </div>
                             </ScrollArea>
                         </div>
