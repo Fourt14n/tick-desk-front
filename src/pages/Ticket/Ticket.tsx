@@ -4,7 +4,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { showError, showSucces } from "@/hooks/useToast";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { ArrowLeft, ArrowRight, Paperclip } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import "@/index.css";
 import useConfirmation from "@/hooks/useConfirmation";
@@ -29,7 +29,6 @@ import type { ResponseUser } from "@/types/ResponseUser/ResponseUser";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { ResponseCall } from "@/types/ResponseCall/ResponseCall";
 import { TrataDataBackEnd } from "@/utils/utils";
-import type { ResponseAction } from "@/types/ResponseAction/ResponseAction";
 
 
 function handleSelectedChange(event: React.MouseEvent<HTMLLabelElement, MouseEvent>, parentElement: string) {
@@ -55,7 +54,7 @@ export default function Ticket() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const { user } = UserInfo();
 
-    const { data: call, refetch } = useQuery<ResponseCall>({
+    const { data: call } = useQuery<ResponseCall>({
         queryKey: ["call", id],
         refetchOnWindowFocus: false,
         staleTime: 1000 * 60 * 4,
@@ -80,7 +79,6 @@ export default function Ticket() {
 
     // Tô usando esse useMemo porque definindo o value direto ele acaba criando loop infinito
     const formValues = useMemo(() => {
-        console.log(call)
         return ({
         title: call?.title || "",
         callId: ticket,
@@ -152,12 +150,32 @@ export default function Ticket() {
                 await api.put(`api/calls/${ticket}`, {
                     [field]: value
                 });
-                await refetch();
+                queryClient.invalidateQueries({queryKey: ["call"]}) // Pra refazer a chamada do chamado
             } catch (erro) {
                 showError(`Erro ao atualizar: ${erro}`);
             }
         }
     };
+
+    async function CloseTicket(){
+        const response = await api.delete(`api/calls/${ticket}`);
+        if(response.status === 204){
+            showSucces("Chamado finalizado com sucesso!");
+            queryClient.invalidateQueries({queryKey: ["call"]});
+        }
+        else
+            showError(response.data.error);
+    }
+    async function ReOpenTicket(){
+        const response = await api.put(`api/calls/reopen/${ticket}`);
+        if(response.status === 200){
+            showSucces("Chamado reaberto com sucesso!");
+            // Invalido a query pra ele puxar os valores de novo porque tem mais alteraçãos além do status
+            queryClient.invalidateQueries({queryKey: ["call"]});
+        }
+        else
+            showError(response.data.error);
+    }
 
     function handleIconClick() {
         fileInputRef.current?.click();
@@ -285,13 +303,15 @@ export default function Ticket() {
                                     </div>
 
                                     {/* Botão à direita */}
-                                    <Button
+                                    {watch("status") === true && (
+                                        <Button
                                         type="submit"
                                         disabled={isSubmitting}
                                         onClick={() => handleSubmit(handleSendAction, onError)}
                                         className="px-4 max-[360px]:px-2 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer">
                                         Enviar
                                     </Button>
+                                    )}
                                 </div>
                             </form>
                         </div>
@@ -364,14 +384,15 @@ export default function Ticket() {
                                     <DatePicker dados={{ label: "Previsão de Solução", disabledPastDays: true, control: control, name: "previsaoSolucao", date: formValues.previsaoSolucao, autoSaveFunc: UpdateTicket }} />
                                     <div className="flex flex-col gap-1.5 cursor-not-allowed">
                                         <Label>Fechamento do Chamado</Label>
-                                        <Input className="bg-white" type="text" disabled></Input>
+                                        <Input {...register("dataHoraFechamento")} className="bg-white" type="text" disabled></Input>
                                     </div>
                                     <div className="flex flex-col gap-1.5 cursor-not-allowed">
                                         <Label>Usuário do Fechamento</Label>
-                                        <Input className="bg-white" type="text" disabled></Input>
+                                        <Input {...register("idUsuarioFechamento")} className="bg-white" type="text" disabled></Input>
                                     </div>
 
-                                    {ticket > 0 && <Button disabled={isSubmitting} className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">Finalizar Ticket</Button>}
+                                    {(ticket > 0 && watch("status") === true) && <Button onClick={CloseTicket} disabled={isSubmitting} className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">Finalizar Ticket</Button>}
+                                    {(ticket > 0 && watch("status") === false) && <Button onClick={ReOpenTicket} disabled={isSubmitting} className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">Reabrir Ticket</Button>}
                                 </div>
                             </ScrollArea>
                         </div>
