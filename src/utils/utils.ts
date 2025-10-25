@@ -9,3 +9,12 @@ export function formatarData(data : Date, temHora = false) {
         return dtString;
     }
 }
+
+export function TrataDataBackEnd(data: Date | undefined){
+    if(data){
+        var dtString = data.toString();
+        dtString = dtString.replace(/(\.\d{3})\d+/, '$1'); // Regex do GPT pra tratar os milisegundos quebrados
+        data = new Date(dtString);
+        return data;
+    }
+}

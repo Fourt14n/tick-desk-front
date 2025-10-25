@@ -1,19 +1,22 @@
 import { Files } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import type { ResponseAction } from "@/types/ResponseAction/ResponseAction";
+import { EStatusAction, type ResponseAction } from "@/types/ResponseAction/ResponseAction";
 
 interface AcaoReturn {
     acao: ResponseAction;
 }
 
 export default function History({acao}: AcaoReturn) {
+    console.log(acao)
+    console.log(acao.statusAction)
+    console.log(acao.statusAction === EStatusAction.PUBLIC)
     return (
         <div className="flex flex-col w-full gap-1">
             <div>
                 <p className="font-bold">{acao.user.name}</p>
             </div>
 
-            <div className={`${true ? "bg-white" : "bg-(--weakGreen)"} w-full p-2 rounded-2xl flex flex-col gap-2`}>
+            <div className={`${acao.statusAction === EStatusAction.PUBLIC ? "bg-white" : "bg-(--weakGreen)"} w-full p-2 rounded-2xl flex flex-col gap-2`}>
                 <div className=" break-all">
                     {acao.description}
                 </div>

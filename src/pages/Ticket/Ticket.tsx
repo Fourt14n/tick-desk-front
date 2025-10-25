@@ -28,6 +28,8 @@ import { addDays } from "date-fns";
 import type { ResponseUser } from "@/types/ResponseUser/ResponseUser";
 import { useQuery } from "@tanstack/react-query";
 import type { ResponseCall } from "@/types/ResponseCall/ResponseCall";
+import { TrataDataBackEnd } from "@/utils/utils";
+import type { ResponseAction } from "@/types/ResponseAction/ResponseAction";
 
 
 function handleSelectedChange(event: React.MouseEvent<HTMLLabelElement, MouseEvent>, parentElement: string) {
@@ -46,6 +48,7 @@ export type TicketAction = z.infer<typeof TicketThenAction>;
 export default function Ticket() {
     const navigate = useNavigate();
     let { id = '' } = useParams();
+    const [historyKey, setHistoryKey] = useState(0); // Vou usar isso aqui pra conseguir ficar re-renderizando o que eu quiser
     const ticket = Number.isInteger(parseInt(id)) ? parseInt(id) : 0; // Pra conseguir fazer operações baseada em number eu converto aqui
     const fileInputRef = useRef<HTMLInputElement>(null);
     const confirmDialog = useConfirmation();
@@ -59,6 +62,7 @@ export default function Ticket() {
         queryFn: () => SelectCallById(),
         enabled: ticket > 0 // Só faço a chamada se o ticket for maior que 0
     })
+
 
     const { data: users } = useQuery<DropDownValues[]>({
         queryKey: ["usersByEnterprise", id],
@@ -81,7 +85,7 @@ export default function Ticket() {
         title: call?.title || "",
         callId: ticket,
         description: "",
-        previsaoSolucao: call?.previsaoSolucao || returnDate("MEDIA"),
+        previsaoSolucao: TrataDataBackEnd(call?.previsaoSolucao) || returnDate("MEDIA"),
         teamId: call?.team.id.toString() || user?.teamId.toString() || "",
         urgency: call?.urgency || "MEDIA",
         userId: user?.id || user?.id || 0,
@@ -172,6 +176,7 @@ export default function Ticket() {
     async function handleInserting(data: TicketAction) {
         if (data.callId > 0) {
             await InsertAction(data, data.callId); // Caso já exista o chamado eu vou adicionar só a ação
+            showSucces("Ação criada com sucesso!");
         }
         else {
             const ticketCreated = await InsertTicket(data); // Primeiramente eu crio o ticket
@@ -179,6 +184,9 @@ export default function Ticket() {
             showSucces("Ticket criado com sucesso!")
             navigate(`/Ticket/${ticketCreated.id}`);
         }
+        // Aqui eu aumento o valor desse estado pra re-renderizar o Action History
+        setHistoryKey(prev => prev++);
+        setValue("description", "");
     }
 
     function handleSendAction(data: TicketAction) {
@@ -210,7 +218,7 @@ export default function Ticket() {
 
                         <div className="flex flex-col gap-2">
                             <Label htmlFor="title">Título do Ticket</Label>
-                            <Input {...register("title")} type="text" placeholder="Título do ticket" maxLength={255} className="bg-white w-full" />
+                            <Input {...register("title")} onBlur={(e) => UpdateTicket("title", e.target.value)} type="text" placeholder="Título do ticket" maxLength={255} className="bg-white w-full" />
                         </div>
 
                         {/* Textarea container */}
@@ -235,9 +243,9 @@ export default function Ticket() {
                                             render={({ field }) => (
                                                 <RadioGroup
                                                     value={field.value}
-                                                    onValueChange={() => {
-                                                        field.onChange()
-                                                        setValue("statusAction", field.value)
+                                                    onValueChange={(value) => {
+                                                        field.onChange(value)
+                                                        setValue("statusAction", value)
                                                     }}
                                                     defaultValue="PUBLIC"
                                                     id="privacyOptContainer"
@@ -287,7 +295,7 @@ export default function Ticket() {
                         </div>
 
                         <div className="w-full">
-                            {ticket > 0 ? <ActionHistory ticket={ticket} /> : <div></div>}
+                            {ticket > 0 ? <ActionHistory key={historyKey} ticket={ticket} /> : <div></div>}
                         </div>
                     </div>
                 </ScrollArea>
