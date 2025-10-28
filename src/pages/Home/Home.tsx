@@ -1,6 +1,7 @@
 import HomeCard, { type TicketGroup } from "@/components/HomeCard/HomeCard";
 import { Clock } from "@/components/HomeClock/HomeClock";
 import { Skeleton } from "@/components/ui/skeleton";
+import useConfirmation from "@/hooks/useConfirmation";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { api } from "@/lib/axios";
 import { capitalizeFirstWord } from "@/lib/utils";
@@ -30,7 +31,7 @@ export default function Home() {
             usePermission({ minPermission: PermissionsRoles.SUPORT }) && GetEnterpiseTickets()
         ])
 
-        if(typeof resultadoEquipe !== typeof true)
+        if (typeof resultadoEquipe !== typeof true)
             setEquipes([resultadoUsuario, resultadoEquipe as TicketGroup, resultadoEmpresa as TicketGroup]);
         else
             setEquipes([resultadoUsuario]);
@@ -109,6 +110,10 @@ export default function Home() {
     useEffect(() => {
         (async () => {
             await PopularHome();
+
+            if (sessionStorage.getItem("FirstAccess_TickDesk") === "true") {
+                
+            }
         })();
     }, []);
 
