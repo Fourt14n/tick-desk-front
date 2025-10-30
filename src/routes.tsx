@@ -16,18 +16,18 @@ export default function Router() {
         <Routes>
             <Route index element={<Login />} path="/Login" />
             <Route element={<RecoveryPassword />} path="/RecuperacaoSenha" />
-            <Route element={<PrivateRoute children={<Layout/>} />}>
+            <Route element={<PrivateRoute children={<Layout />} />}>
                 <Route path="/">
                     <Route path="Home/" index element={<Home />} />
                     <Route path="Ticket/:id" element={<Ticket />} />
                     <Route path="Listagem/:tipo" element={<Listagem />} />
-                <Route path="User/Create" element={<CreateUser action={EAction.CREATE} />} />
-                <Route path="User/:id" element={<CreateUser action={EAction.UPDATE} />} />
-                <Route path="Teams/Create" element={<Team action={EAction.CREATE} /> } />
-                <Route path="Teams/:id" element={<Team action={EAction.UPDATE} /> } />
+                    <Route path="User/Create" element={<CreateUser action={EAction.CREATE} />} />
+                    <Route path="User/:id" element={<CreateUser action={EAction.UPDATE} />} />
+                    <Route path="Teams/Create" element={<Team action={EAction.CREATE} />} />
+                    <Route path="Teams/:id" element={<Team action={EAction.UPDATE} />} />
                 </Route>
             </Route>
-            
+
             <Route path="*" index element={<NotFound />} />
         </Routes>
     )

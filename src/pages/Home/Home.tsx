@@ -1,12 +1,16 @@
 import HomeCard, { type TicketGroup } from "@/components/HomeCard/HomeCard";
 import { Clock } from "@/components/HomeClock/HomeClock";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import UpdatePassword from "@/components/UpdatePassword/UpdatePassword";
+import useFormModal from "@/hooks/useFormModal";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { api } from "@/lib/axios";
 import { capitalizeFirstWord } from "@/lib/utils";
 import { UserInfo } from "@/store/UserInfosStore";
 import { isPast, isToday } from "date-fns";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type JSX } from "react";
 
 enum GroupType {
     User,
@@ -16,12 +20,15 @@ enum GroupType {
 }
 
 export default function Home() {
+    const updatePasswordRef = useRef<{ submit: () => void }>(null);
     const [equipes, setEquipes] = useState<TicketGroup[]>([]);
     // Isso aqui já é capricho
     // Penso em criar um Skeleton pra ficar bonitinho enquanto carrega
     // Mas é frescura isso aqui do loading
     const [loading, setLoading] = useState(true);
     const { user } = UserInfo();
+    const useModal = useFormModal();
+
 
     async function PopularHome() {
         const [resultadoUsuario, resultadoEquipe, resultadoEmpresa] = await Promise.all([
@@ -30,7 +37,7 @@ export default function Home() {
             usePermission({ minPermission: PermissionsRoles.SUPORT }) && GetEnterpiseTickets()
         ])
 
-        if(typeof resultadoEquipe !== typeof true)
+        if (typeof resultadoEquipe !== typeof true)
             setEquipes([resultadoUsuario, resultadoEquipe as TicketGroup, resultadoEmpresa as TicketGroup]);
         else
             setEquipes([resultadoUsuario]);
@@ -109,6 +116,19 @@ export default function Home() {
     useEffect(() => {
         (async () => {
             await PopularHome();
+
+            if (sessionStorage.getItem("FirstAccess_TickDesk") == "true") {
+                useModal.open({
+                    title: "Troque sua senha",
+                    description: "A senha gerada no seu primeiro acesso precisa ser alterada",
+                    body: (
+                        <>{<UpdatePassword close={useModal.close} />}</>
+                    ),
+                    onConfirm: () => {
+                        document.getElementById("btnEnviarTeste")?.click();
+                    },
+                })
+            }
         })();
     }, []);
 
@@ -137,7 +157,7 @@ export default function Home() {
                     </div>
                 </>
             }
-
+            {useModal.DialogComponent}
         </div>
     )
 }

@@ -5,12 +5,13 @@ import useUser from "./useUser";
 
 interface TokenAnswer {
     access_token: string,
-    expires_in: number
+    expires_in: number,
+    message: string
 }
 
 async function Authenticate({ email, password }: LoginCredentials) {
     // Objeto padrão nulo
-    var result: TokenAnswer = { access_token: "", expires_in: 0 };
+    var result: TokenAnswer = { access_token: "", expires_in: 0, message: "" };
     try {
         await api.post("/api/user/login", {
             email,
@@ -53,6 +54,7 @@ export default async function useAuth({ email, password }: LoginCredentials, rem
     // Lógica que vai fazer uma requisição pra conseguir puxar e validar o token
     var tokenResposta = await Authenticate({ email, password });
     sessionStorage.setItem("Token_TickDesk", tokenResposta.access_token);
+    sessionStorage.setItem("FirstAccess_TickDesk", tokenResposta.message !== "Login realizado com sucesso." ? "true" : "false");
 
     if (rememberMe)
         localStorage.setItem("Token_TickDesk", tokenResposta.access_token);
