@@ -60,6 +60,7 @@ export default function useFormModal() {
             {config.cancelText}
           </button>
           <button 
+          onClick={config.onConfirm}
           type="button"
             className={`px-4 py-2 rounded text-[#135C04] cursor-pointer ${
               config.variant === 'destructive' 
