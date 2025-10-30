@@ -16,6 +16,7 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
 
     function DisconnectUser() {
         sessionStorage.removeItem("Token_TickDesk");
+        sessionStorage.removeItem("FirstAccess_TickDesk");
         clearUser();
         navigate("/Login");
     }

@@ -117,7 +117,7 @@ export default function Home() {
         (async () => {
             await PopularHome();
 
-            if (sessionStorage.getItem("FirstAccess_TickDesk") !== "true") {
+            if (sessionStorage.getItem("FirstAccess_TickDesk") == "true") {
                 useModal.open({
                     title: "Troque sua senha",
                     description: "A senha gerada no seu primeiro acesso precisa ser alterada",

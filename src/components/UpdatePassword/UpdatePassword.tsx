@@ -28,7 +28,7 @@ export default function UpdatePassword({close} : Props){
         api.put(`api/user/update-password/${user?.id}`, data)
         .then(() => {
             showSucces("Senha alterada com sucesso!");
-            sessionStorage.removeItem("FirstAccess_TickDesk");
+            sessionStorage.setItem("FirstAccess_TickDesk", "false");
             close();
         })
         .catch(erro => showError(erro.response.data.error))
