@@ -55,7 +55,7 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
                         }
                         {
                             usePermission({minPermission: PermissionsRoles.ADMIN}) &&
-                            <Link to="/CreateBusiness" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                            <Link to="/Listagem/Business" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
                                 <Building/>
                             </Link>
                         }

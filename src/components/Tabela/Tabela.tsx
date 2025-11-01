@@ -22,7 +22,6 @@ import { Button } from "../ui/button"
 import React from "react"
 import { Input } from "../ui/input"
 import { Link, useNavigate } from "react-router"
-import type { Ticket } from "@/tableObjects/TicketsTable"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -91,6 +90,14 @@ export function DataTable<TData, TValue>({
                         </Button>
                     </Link>
                 }
+                {
+                    caminho.includes("Business") &&
+                    <Link to="/Business/Create">
+                        <Button className="bg-(--weakGreen) lg:w-42 text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">
+                            Novo
+                        </Button>
+                    </Link>
+                }
             </div>
 
             {/* Container da tabela com scroll */}
@@ -120,11 +127,7 @@ export function DataTable<TData, TValue>({
                                 <TableRow
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
-                                    onClick={() => {
-                                        var caminhoEspecifico = `${caminho}${(row.original as Ticket).id}`;
-                                        navigate(caminhoEspecifico)
-                                    }}
-                                    className="cursor-pointer hover:bg-muted/50 transition-colors"
+                                    className="hover:bg-muted/50 transition-colors"
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>

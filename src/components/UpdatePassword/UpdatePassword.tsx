@@ -39,11 +39,11 @@ export default function UpdatePassword({close} : Props){
             <div className="flex flex-col gap-5">
                 <div className="flex flex-col gap-3">
                     <Label htmlFor="txtOldPassword">Senha antiga</Label>
-                    <Input disabled={isSubmitting} {...register("oldPassword")} />
+                    <Input type="password" disabled={isSubmitting} {...register("oldPassword")} />
                 </div>
                 <div className="flex flex-col gap-3">
                     <Label htmlFor="txtNewPassword">Nova senha</Label>
-                    <Input disabled={isSubmitting} {...register("newPassword")}/>
+                    <Input type="password" disabled={isSubmitting} {...register("newPassword")}/>
                 </div>
             </div>
             <button id="btnEnviarTeste" style={{display: "none"}} type="submit">Teste</button>

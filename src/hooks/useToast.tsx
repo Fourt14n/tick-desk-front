@@ -17,3 +17,6 @@ export function showLoading(message: any, promisse: Promise<any>){
         error: (data) => data
     })
 }   
+export function showAlert(message: any){
+    toast.warning(message);
+}   

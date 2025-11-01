@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Trash2 } from "lucide-react";
+import { ArrowUpDown, Edit, Trash2 } from "lucide-react";
+import { Link } from "react-router";
 
 export interface Team {
     id: string,
@@ -8,6 +9,15 @@ export interface Team {
 }
 
 export const TeamColumns: ColumnDef<Team>[] = [
+   {
+    accessorKey: "edit",
+    header: "#",
+    cell: ({row}) => {
+      return (
+        <Link to={`/Teams/${row.original.id}`}><Edit size={22} className="cursor-pointer" /></Link> 
+      )
+    }
+  },
   {
     accessorKey: "id",
     header: "Número da equipe"
@@ -30,7 +40,7 @@ export const TeamColumns: ColumnDef<Team>[] = [
     header: " ",
     cell: () => {
       return(
-        <Trash2 onClick={() => console.log("Teste")} color="red"/>
+        <Trash2 className="cursor-pointer" onClick={() => console.log("Teste")} color="red"/>
       )
     }
   }

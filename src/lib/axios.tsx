@@ -1,5 +1,8 @@
 import axios from "axios";
 
+const CNPJA_API_KEY = import.meta.env.VITE_CNPJA_KEY;
+
+
 export const api = axios.create({
     baseURL: "http://localhost:8080/",
     headers: {
@@ -15,3 +18,11 @@ api.interceptors.request.use((config) => {
     
     return config;
 });
+
+export const consultaCNPJ = axios.create({
+    baseURL: "https://api.cnpja.com/",
+    headers: {
+        "Content-Type": "application/json",
+        "Authorization": CNPJA_API_KEY
+    }
+})

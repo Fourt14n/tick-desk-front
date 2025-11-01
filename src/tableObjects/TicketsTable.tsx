@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Edit } from "lucide-react";
+import { Link } from "react-router";
 
 export interface Ticket {
     id: string,
@@ -11,6 +12,15 @@ export interface Ticket {
 }
 
 export const TicketColumns: ColumnDef<Ticket>[] = [
+   {
+    accessorKey: "edit",
+    header: "#",
+    cell: ({row}) => {
+      return (
+        <Link to={`/Ticket/${row.original.id}`}><Edit size={22} className="cursor-pointer" /></Link> 
+      )
+    }
+  },
   {
     accessorKey: "id",
     header: ({ column }) => {
