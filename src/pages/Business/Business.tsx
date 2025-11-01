@@ -12,7 +12,6 @@ import { showAlert, showError, showSucces } from "@/hooks/useToast";
 import { api, consultaCNPJ } from "@/lib/axios";
 import { TeamColumns, type Team } from "@/tableObjects/TeamsTable";
 import { UsersColumns, type User } from "@/tableObjects/UsersTable";
-import { type Action } from "@/types/EAction/EAction";
 import type { ResponseCNPJA } from "@/types/ResponseCNPJA/ResponseCNPJA";
 import type { ResponseTeams } from "@/types/ResponseTeams/ResponseTeams";
 import { cnpjMask } from "@/utils/cnpjMask";
@@ -38,7 +37,7 @@ enum TipoRegistro {
     USUARIO
 }
 
-export default function Business({ action }: Action) {
+export default function Business() {
     const [step, setStep] = useState(0);
     const [teams, setTeams] = useState<Team[]>([]);
     const [users, setUsers] = useState<User[]>([]);
@@ -223,7 +222,7 @@ export default function Business({ action }: Action) {
                         </div>
                     </div>
                     <div className="flex w-full h-full justify-center">
-                        <Stepper activeStep={step} className="w-11/12" >
+                        <Stepper activeStep={step} className="w-11/12" linear >
 
 
                             {/* ABA DE CADASTRO DA EMPRESA */}

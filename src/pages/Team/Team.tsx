@@ -33,7 +33,7 @@ export default function Team({ action }: Action) {
         columns: UsersColumns,
         getCoreRowModel: getCoreRowModel(),
         initialState: {
-            columnVisibility: { id: false }
+            columnVisibility: { exclude: false, edit: false }
         }
 
     })

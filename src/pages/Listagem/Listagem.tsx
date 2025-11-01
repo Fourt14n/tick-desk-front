@@ -28,7 +28,7 @@ export default function Listagem() {
 
         switch (tipo) {
             case "Users": {
-                endpoint = "api/user/get";
+                endpoint = `api/enterprise/${user?.enterpriseId}/users`;
                 getData<User[]>(endpoint)
                     .then(result => {
                         // Lógica pra não mostrar usuários ADMIN pra quem não for ADMIN

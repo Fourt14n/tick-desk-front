@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
-import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Trash2 } from "lucide-react";
+import { ArrowUpDown, Edit, Trash2 } from "lucide-react";
+import { Link } from "react-router";
 
 export interface User {
     id: string,
@@ -13,6 +13,15 @@ export interface User {
 }
 
 export const UsersColumns: ColumnDef<User>[] = [
+  {
+    accessorKey: "edit",
+    header: "#",
+    cell: ({row}) => {
+      return (
+        <Link to={`/User/${row.original.id}`}><Edit size={22} className="cursor-pointer" /></Link> 
+      )
+    }
+  },
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -50,11 +59,11 @@ export const UsersColumns: ColumnDef<User>[] = [
       return valorAlterado;
     }
   },{
-    accessorKey: "id",
-    header: " ",
+    accessorKey: "exclude",
+    header: "#",
     cell: () => {
       return(
-        <Trash2 onClick={() => console.log("Teste")} color="red"/>
+        <Trash2 className="cursor-pointer" onClick={() => console.log("Teste")} color="red"/>
       )
     }
   }
