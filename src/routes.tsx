@@ -10,6 +10,7 @@ import CreateUser from "./pages/User/User";
 import { EAction } from "./types/EAction/EAction";
 import Team from "./pages/Team/Team";
 import RecoveryPassword from "./pages/RecoveryPassword/RecoveryPassword";
+import Business from "./pages/Business/Business";
 
 export default function Router() {
     return (
@@ -25,6 +26,8 @@ export default function Router() {
                     <Route path="User/:id" element={<CreateUser action={EAction.UPDATE} />} />
                     <Route path="Teams/Create" element={<Team action={EAction.CREATE} />} />
                     <Route path="Teams/:id" element={<Team action={EAction.UPDATE} />} />
+                    <Route path="Business/Create" element={<Business action={EAction.CREATE} />} />
+                    <Route path="Business/:id" element={<Business action={EAction.UPDATE} />} />
                 </Route>
             </Route>
 

@@ -15,3 +15,10 @@ api.interceptors.request.use((config) => {
     
     return config;
 });
+
+export const consultaCNPJ = axios.create({
+    baseURL: "https://open.cnpja.com/office/",
+    headers: {
+        "Content-Type": "application/json"
+    }
+})
