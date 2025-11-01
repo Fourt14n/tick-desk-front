@@ -6,6 +6,26 @@
   background-color: var(--weakGreen); /* Example: Yellow background */
   color: var(--text-strongGreen); /* Example: Dark text color */
 }
+.p-stepper-panels{
+  width: 100%;
+  padding: 0px;
+  @apply pt-3
+}
+
+li.p-stepper-header, li.p-stepper-header-right{
+  min-width: 10px;
+}
+
+@media (max-width: 850px) {
+  .p-stepper-header:not([data-p-active="true"]), .p-stepper-separator {
+    display: none;
+  }
+}
+
+.p.stepper-header{
+  text-align: center;
+}
+
 
 .ticketQtdContainer {
   @apply flex items-center justify-between p-4 bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-shadow cursor-pointer;

@@ -7,7 +7,7 @@ import UpdatePassword from "@/components/UpdatePassword/UpdatePassword";
 import useFormModal from "@/hooks/useFormModal";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { api } from "@/lib/axios";
-import { capitalizeFirstWord } from "@/lib/utils";
+import { capitalizeFirstWord } from "@/utils/utils";
 import { UserInfo } from "@/store/UserInfosStore";
 import { isPast, isToday } from "date-fns";
 import { useEffect, useRef, useState, type JSX } from "react";

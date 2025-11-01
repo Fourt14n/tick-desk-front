@@ -18,3 +18,17 @@ export function TrataDataBackEnd(data: Date | undefined){
         return data;
     }
 }
+
+export function capitalizeFirstWord(str: string): string {
+  if (!str) {
+    return str;
+  }
+  const words = str.split(' ');
+  if (words.length === 0) {
+    return str;
+  }
+  const firstWord = words[0];
+  const capitalizedFirstWord = firstWord.charAt(0).toUpperCase() + firstWord.slice(1);
+  words[0] = capitalizedFirstWord; 
+  return words.join(' ');
+}
