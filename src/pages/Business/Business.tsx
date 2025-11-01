@@ -12,8 +12,20 @@ import { useRef, useState } from "react";
 export default function Business({ action }: Action) {
     const [step, setStep] = useState(0);
 
-    function ConsultaCNPJ(cnpj : string){
-        
+    const [dados, setDados] = useState({
+        corporateName: '',
+        fantasyName: '',
+        cnpj: '',
+        email: '',
+        phone: ''
+    });
+
+    const handleChange = (campo: string, valor: string) => {
+        setDados(prev => ({ ...prev, [campo]: valor }));
+    };
+
+    function ConsultaCNPJ(cnpj: string) {
+
     }
 
     return (
@@ -29,9 +41,13 @@ export default function Business({ action }: Action) {
                     <div className="flex w-full h-full justify-center">
                         <Stepper activeStep={step} className="w-4/5" linear>
                             <StepperPanel key={"BusinessCreating"} header="Cadastro da empresa">
+                                <div className="flex flex-col gap-2">
+                                    <Label htmlFor="">Razão social</Label>
+                                    <Input type="text" maxLength={200} />
+                                </div>
                                 <div className="flex flex-col lg:w-1/2 gap-2">
                                     <Label htmlFor="">E-mail</Label>
-                                    <Input type="email" />
+                                    <Input onChange={(e) => handleChange("email", e.target.value) } type="email" />
                                 </div>
                                 <div className="flex py-4 gap-2 justify-end w-full">
                                     <Button className="bg-(--weakGreen) w-full lg:w-42 text-[#135C04] hover:bg-[#3eff0090] cursor-pointer" type="button" onClick={() => setStep(step + 1)}>Avançar</Button>
