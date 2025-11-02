@@ -20,7 +20,6 @@ enum GroupType {
 }
 
 export default function Home() {
-    const updatePasswordRef = useRef<{ submit: () => void }>(null);
     const [equipes, setEquipes] = useState<TicketGroup[]>([]);
     // Isso aqui já é capricho
     // Penso em criar um Skeleton pra ficar bonitinho enquanto carrega
@@ -38,9 +37,10 @@ export default function Home() {
         ])
 
         if (typeof resultadoEquipe !== typeof true)
-            setEquipes([resultadoUsuario, resultadoEquipe as TicketGroup, resultadoEmpresa as TicketGroup]);
+            await setEquipes([resultadoUsuario, resultadoEquipe as TicketGroup, resultadoEmpresa as TicketGroup]);
         else
-            setEquipes([resultadoUsuario]);
+            await setEquipes([resultadoUsuario]);
+        console.log(equipes)
         setLoading(false);
     }
 
@@ -73,9 +73,9 @@ export default function Home() {
             case GroupType.Error: {
                 // Caso não encontre ele vai vir aqui buscar o nome
                 if (secundaryKind === GroupType.Team)
-                    name = user?.enterpriseName || "Time não encontrado";
+                    name = user?.teamName || "Time não encontrado";
                 else if (secundaryKind === GroupType.Enterprise)
-                    name = user?.teamName || "Empresa não encontrada";
+                    name = user?.enterpriseName || "Empresa não encontrada";
                 else
                     name = "Meus Tickets";
                 break;
