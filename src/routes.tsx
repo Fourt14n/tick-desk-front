@@ -10,6 +10,7 @@ import CreateUser from "./pages/User/User";
 import { EAction } from "./types/EAction/EAction";
 import Team from "./pages/Team/Team";
 import RecoveryPassword from "./pages/RecoveryPassword/RecoveryPassword";
+import BusinessCreate from "./pages/BusinessCreate/BusinessCreate";
 import Business from "./pages/Business/Business";
 
 export default function Router() {
@@ -26,7 +27,8 @@ export default function Router() {
                     <Route path="User/:id" element={<CreateUser action={EAction.UPDATE} />} />
                     <Route path="Teams/Create" element={<Team action={EAction.CREATE} />} />
                     <Route path="Teams/:id" element={<Team action={EAction.UPDATE} />} />
-                    <Route path="Business/Create" element={<Business/>} />
+                    {/* Pelo fluxo de criação de empresa ser específico, vou diferenciar criação de edição por tela */}
+                    <Route path="Business/Create" element={<BusinessCreate/>} />
                     <Route path="Business/:id" element={<Business />} />
                 </Route>
             </Route>
