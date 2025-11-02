@@ -1,6 +1,7 @@
 import { DataTable } from "@/components/Tabela/Tabela";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import useConfirmation from "@/hooks/useConfirmation";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { showError } from "@/hooks/useToast";
 import { api } from "@/lib/axios";
@@ -21,69 +22,85 @@ export default function Listagem() {
     const [loading, setLoading] = useState(true);
     const { user } = UserInfo();
     const navigate = useNavigate();
+    const confirmDelete = useConfirmation();
+
+    function GetUsers() {
+        const endpoint = `api/enterprise/${user?.enterpriseId}/users`;
+        getData<User[]>(endpoint)
+            .then(result => {
+                // Lógica pra não mostrar usuários ADMIN pra quem não for ADMIN
+                !usePermission({ minPermission: PermissionsRoles.ADMIN })
+                    ? setDataUsers(result.filter(user => user.role !== "ADMIN"))
+                    : setDataUsers(result);
+                setLoading(false);
+            })
+            .catch(erro => {
+                showError(erro);
+                setLoading(false);
+            });
+    }
+
+    function GetTeams() {
+        const endpoint = `api/enterprise/${user?.enterpriseId}/teams`;
+        getData<Team[]>(endpoint)
+            .then(result => {
+                setTeams(result);
+                setLoading(false);
+            })
+            .catch(erro => {
+                showError(erro);
+                setLoading(false);
+            });
+    }
+
+    function GetTickets() {
+        const endpoint = "api/calls/";
+        getData<Ticket[]>(endpoint)
+            .then(result => {
+                setDataTickets(result);
+                setLoading(false);
+            })
+            .catch(erro => {
+                showError(erro);
+                setLoading(false);
+            });
+    }
+
+    function GetEnterprises() {
+        const endpoint = `api/enterprise/get`;
+        getData<Business[]>(endpoint)
+            .then(result => {
+                setBusiness(result);
+                setLoading(false);
+            })
+            .catch(erro => {
+                showError(erro);
+                setLoading(false);
+            });
+    }
 
     useEffect(() => {
         setLoading(true);
-        let endpoint = "";
 
         switch (tipo) {
             case "Users": {
-                endpoint = `api/enterprise/${user?.enterpriseId}/users`;
-                getData<User[]>(endpoint)
-                    .then(result => {
-                        // Lógica pra não mostrar usuários ADMIN pra quem não for ADMIN
-                        !usePermission({ minPermission: PermissionsRoles.ADMIN })
-                            ? setDataUsers(result.filter(user => user.role !== "ADMIN"))
-                            : setDataUsers(result);
-                        setLoading(false);
-                    })
-                    .catch(erro => {
-                        showError(erro);
-                        setLoading(false);
-                    });
+                GetUsers();
                 break;
             }
             case "Tickets": {
-                endpoint = "api/calls/";
-                getData<Ticket[]>(endpoint)
-                    .then(result => {
-                        setDataTickets(result);
-                        setLoading(false);
-                    })
-                    .catch(erro => {
-                        showError(erro);
-                        setLoading(false);
-                    });
+                GetTickets();
                 break;
             };
             case "Teams": {
-                endpoint = `api/enterprise/${user?.enterpriseId}/teams`;
-                getData<Team[]>(endpoint)
-                    .then(result => {
-                        setTeams(result);
-                        setLoading(false);
-                    })
-                    .catch(erro => {
-                        showError(erro);
-                        setLoading(false);
-                    });
+                GetTeams();
                 break;
             };
             case "Business": {
                 // Por se tratar de uma tela sensível eu vou fazer essa validação
                 if (usePermission({ minPermission: PermissionsRoles.ADMIN })) {
-                    endpoint = `api/enterprise/get`;
-                    getData<Business[]>(endpoint)
-                        .then(result => {
-                            setBusiness(result);
-                            setLoading(false);
-                        })
-                        .catch(erro => {
-                            showError(erro);
-                            setLoading(false);
-                        });
+                    GetEnterprises();
                     break;
-                }else{
+                } else {
                     showError("Permissão negada para visualização dessa tela!");
                     navigate("/Home");
                 }
@@ -115,6 +132,17 @@ export default function Listagem() {
                         placeholder="Busque por nome do usuário"
                         caminho="/User/"
                         colunaPesquisa="name"
+                        exclusaoFunc={(id: string) => {
+                            confirmDelete.open({
+                                title: "Confirma exclusão?",
+                                description: "Você tem certeza que deseja excluir esse usuário?",
+                                onConfirm: async() => {
+                                    await api.delete(`api/user/delete/${id}`)
+                                    .then(() => GetUsers())
+                                    .catch(erro => showError(erro.response.data.error))
+                                }
+                            })
+                        }}
                     />
                 );
             case "Tickets":
@@ -135,6 +163,17 @@ export default function Listagem() {
                         placeholder="Busque por nome da equipe"
                         caminho="/Teams/"
                         colunaPesquisa="name"
+                        exclusaoFunc={(id: string) => {
+                            confirmDelete.open({
+                                title: "Confirma exclusão?",
+                                description: "Você tem certeza que deseja excluir essa equipe?",
+                                onConfirm: async() => {
+                                    await api.delete(`api/team/delete/${id}`)
+                                    .then(() => GetTeams())
+                                    .catch(erro => showError(erro.response.data.error))
+                                }
+                            })
+                        }}
                     />
                 );
             case "Business":
@@ -145,6 +184,17 @@ export default function Listagem() {
                         placeholder="Busque por nome da empresa"
                         caminho="/Business/"
                         colunaPesquisa="fantasyName"
+                        exclusaoFunc={(id: string) => {
+                            confirmDelete.open({
+                                title: "Confirma exclusão?",
+                                description: "Você tem certeza que deseja excluir essa empresa?",
+                                onConfirm: async() => {
+                                    await api.delete(`api/enterprise/delete/${id}`)
+                                    .then(() => GetEnterprises())
+                                    .catch(erro => showError(erro.response.data.error))
+                                }
+                            })
+                        }}
                     />
                 );
             default:
@@ -178,6 +228,7 @@ export default function Listagem() {
                     }
                 </div>
             </ScrollArea>
+            {confirmDelete.DialogComponent}
         </div>
     )
 }

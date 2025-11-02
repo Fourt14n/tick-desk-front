@@ -61,9 +61,10 @@ export const UsersColumns: ColumnDef<User>[] = [
   },{
     accessorKey: "exclude",
     header: "#",
-    cell: () => {
+    cell: ({row, table}) => {
+      var meta = table.options.meta as { Exclusao?: (id : string) => void }
       return(
-        <Trash2 className="cursor-pointer" onClick={() => console.log("Teste")} color="red"/>
+        <Trash2 className="cursor-pointer" onClick={() => meta?.Exclusao?.(row.original.id)} color="red"/>
       )
     }
   }

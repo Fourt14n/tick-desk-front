@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Trash2 } from "lucide-react";
+import { ArrowUpDown, Edit, Trash2 } from "lucide-react";
+import { Link } from "react-router";
 
 export interface Business {
     id: string,
@@ -8,6 +9,15 @@ export interface Business {
 }
 
 export const BusinessColumns: ColumnDef<Business>[] = [
+  {
+    accessorKey: "edit",
+    header: "#",
+    cell: ({row}) => {
+      return (
+        <Link to={`/Business/${row.original.id}`}><Edit size={22} className="cursor-pointer" /></Link> 
+      )
+    }
+  },
   {
     accessorKey: "id",
     header: "ID da Empresa"
@@ -32,9 +42,10 @@ export const BusinessColumns: ColumnDef<Business>[] = [
   },
   {
     header: " ",
-    cell: () => {
+    cell: ({row, table}) => {
+      var meta = table.options.meta as { Exclusao?: (id : string) => void }
       return(
-        <Trash2 onClick={() => console.log("Teste")} color="red"/>
+        <Trash2 className="cursor-pointer" onClick={() => meta?.Exclusao?.(row.original.id)} color="red"/>
       )
     }
   }

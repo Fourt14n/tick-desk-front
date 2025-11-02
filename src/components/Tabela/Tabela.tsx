@@ -29,6 +29,7 @@ interface DataTableProps<TData, TValue> {
     placeholder: string,
     caminho: string,
     colunaPesquisa: string,
+    exclusaoFunc?: (id: string) => void
 }
 
 // Aqui é um código puxado dos componentes do ShadCN
@@ -40,7 +41,8 @@ export function DataTable<TData, TValue>({
     data,
     placeholder,
     caminho,
-    colunaPesquisa
+    colunaPesquisa,
+    exclusaoFunc
 }: DataTableProps<TData, TValue>) {
     const navigate = useNavigate();
     const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -58,6 +60,12 @@ export function DataTable<TData, TValue>({
         state: {
             sorting,
             columnFilters
+        },
+        meta: {
+            Exclusao: (id: string) => {
+                if(exclusaoFunc)
+                    exclusaoFunc(id);
+            }
         }
     });
     
