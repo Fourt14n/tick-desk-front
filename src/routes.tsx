@@ -12,12 +12,14 @@ import Team from "./pages/Team/Team";
 import RecoveryPassword from "./pages/RecoveryPassword/RecoveryPassword";
 import BusinessCreate from "./pages/BusinessCreate/BusinessCreate";
 import Business from "./pages/Business/Business";
+import ChangePassword from "./pages/RecoveryPassword/ChangePassword";
 
 export default function Router() {
     return (
         <Routes>
             <Route index element={<Login />} path="/Login" />
             <Route element={<RecoveryPassword />} path="/RecuperacaoSenha" />
+            <Route element={<ChangePassword />} path="/AlteracaoSenha" />
             <Route element={<PrivateRoute children={<Layout />} />}>
                 <Route path="/">
                     <Route path="Home/" index element={<Home />} />
