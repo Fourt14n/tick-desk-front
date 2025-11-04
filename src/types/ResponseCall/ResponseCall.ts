@@ -11,6 +11,9 @@ export type ResponseCall = {
     previsaoSolucao: Date,
     team: ResponseTeams,
     userExternoId: number,
+    requisitanteId: number,
     userResponsavel: ResponseUser
     dataAbertura: Date
+    dataHoraFechamento: Date,
+    usuarioFechamento: ResponseUser
 }

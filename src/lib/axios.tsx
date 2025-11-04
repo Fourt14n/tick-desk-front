@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const CNPJA_API_KEY = import.meta.env.VITE_CNPJA_KEY;
+console.log(CNPJA_API_KEY)
 
 
 export const api = axios.create({

@@ -18,6 +18,11 @@ export const ticketValidation = z.object({
             message: "Selecione um usuário responsável"
         }),
 
+    requisitanteId: z.string("Selecione um requisitante!")
+    .refine((valor) => valor !== "0", {
+            message: "Selecione um requisitante"
+        }),
+
     urgency: z.string("Selecione uma urgência!")
     .nonoptional("A urgência é obrigatória!"),
 
@@ -29,10 +34,4 @@ export const ticketValidation = z.object({
 
     status: z.boolean("O status do chamado precisa ser booleano")
     ,
-
-    dataHoraFechamento: z.date("Tipo inválido da data e hora de fechamento!")
-    .optional(),
-
-    idUsuarioFechamento: z.uuid("Tipo inválido do usuário de fechamento!")
-    .optional()
 })

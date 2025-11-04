@@ -4,6 +4,7 @@ import { EStatusAction, type ResponseAction } from "@/types/ResponseAction/Respo
 import useFileList from "@/hooks/useFileList";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/axios";
+import { formatarData } from "@/utils/utils";
 
 interface AcaoReturn {
     acao: ResponseAction;
@@ -49,7 +50,7 @@ export default function History({acao}: AcaoReturn) {
                         </Tooltip>
                     </div>
                     <div className="flex justify-end">
-                        <p className="text-(--grey)">{acao.data.toString()}</p>
+                        <p className="text-(--grey)">{formatarData(acao.data, true)}</p>
                     </div>
                 </div>
             </div>
