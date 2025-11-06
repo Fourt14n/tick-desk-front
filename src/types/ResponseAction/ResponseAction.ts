@@ -12,5 +12,13 @@ description: string,
 data: Date,
 user: ResponseUser,
 call: ResponseCall
-statusAction: EStatusAction
+statusAction: EStatusAction,
+files: ResponseFiles[]
+}
+
+export type ResponseFiles = {
+    id: number,
+    name: string,
+    path: string, 
+    type: string
 }

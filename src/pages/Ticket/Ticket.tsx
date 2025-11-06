@@ -179,7 +179,7 @@ export default function Ticket() {
         if (value && call.status) {
             try {
                 await api.put(`api/calls/${ticket}`, {
-                    [field]: value
+                    [field]: value.toString()
                 });
                 queryClient.invalidateQueries({ queryKey: ["call"] }) // Pra refazer a chamada do chamado
             } catch (erro) {
@@ -209,7 +209,10 @@ export default function Ticket() {
     }
 
     function handleIconClick() {
-        if(Boolean(call?.status) || ticket > 0)
+        console.log(Boolean(call?.status))
+        console.log(ticket > 0)
+        console.log(Boolean(call?.status) || ticket > 0)
+        if(Boolean(call?.status) || ticket === 0)
             fileInputRef.current?.click();
     }
 

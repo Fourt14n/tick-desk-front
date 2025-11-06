@@ -6,7 +6,11 @@ export default function useFileList() {
   const [isOpen, setIsOpen] = useState(false);
   const [config, setConfig] = useState({
     title: '',
-    description: <p></p>,
+    description: (
+      <div>
+        <p>Sem arquivos para listar.</p>
+      </div>
+    ),
     variant: 'default' as 'default' | 'destructive'
   });
 
