@@ -63,6 +63,9 @@ export const ticketActionValidation = z.object({
         }, {
             message: 'Formato de arquivo não suportado. Formatos aceitos: .jpg, .png, .zip, .rar, .pdf, .docx, .xls, .xlsx',
         })
+        .refine((file) => file.length <= 10, {
+            message: 'Só é permitido enviar até 10 arquivos de uma vez!',
+        })
         .optional(),
 
     statusAction: z.string("A ação deve ser pública ou interna!")

@@ -7,11 +7,12 @@ import { ScrollArea } from "../ui/scroll-area";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { AutoComplete } from "../Autocomplete/Autocomplete";
 import { UserInfo } from "@/store/UserInfosStore";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 
 export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
-    const {tabs} = useTabs();
-    const {clearUser} = UserInfo();
+    const { tabs } = useTabs();
+    const { clearUser } = UserInfo();
     const navigate = useNavigate();
 
     function DisconnectUser() {
@@ -26,38 +27,85 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
             <div className="flex">
                 <div className="w-12 h-dvh bg-[#9AFFC0] flex flex-col gap-4 justify-between items-center">
                     <div className="flex flex-col w-full">
-                        <Link to="/Home" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
-                            <Home />
-                        </Link>
+                        <Tooltip delayDuration={0} disableHoverableContent={true}>
+                            <TooltipTrigger asChild>
+                                <Link to="/Home" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                                    <Home />
+                                </Link>
+                            </TooltipTrigger>
+                            <TooltipContent side={"right"}>
+                                Home
+                            </TooltipContent>
+                        </Tooltip>
                         {
-                            usePermission({ minPermission: PermissionsRoles.SUPORT }) &&
-                            <Link to="/Listagem/Tickets" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
-                                <WalletCards />
-                            </Link>
+                            usePermission({ minPermission: PermissionsRoles.SUPORT }) && (
+                                <Tooltip delayDuration={0} disableHoverableContent={true}>
+                                    <TooltipTrigger asChild>
+                                        <Link to="/Listagem/Tickets" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                                            <WalletCards />
+                                        </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent side={"right"}>
+                                        Tickets
+                                    </TooltipContent>
+                                </Tooltip>
+                            )
+
+                        }
+                        {
+                            usePermission({ minPermission: PermissionsRoles.GERENT }) && (
+                                <Tooltip delayDuration={0} disableHoverableContent={true}>
+                                    <TooltipTrigger asChild>
+                                        <Link to="/Listagem/Users" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                                            <Users />
+                                        </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent side={"right"}>
+                                        Usuários
+                                    </TooltipContent>
+                                </Tooltip>
+                            )
+
                         }
                         {
                             usePermission({ minPermission: PermissionsRoles.GERENT }) &&
-                            <Link to="/Listagem/Users" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
-                                <Users />
-                            </Link>
+                            (
+                                <Tooltip delayDuration={0} disableHoverableContent={true}>
+                                    <TooltipTrigger asChild>
+                                        <Link to="/Listagem/Teams" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                                            <Network />
+                                        </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent side={"right"}>
+                                        Equipes
+                                    </TooltipContent>
+                                </Tooltip>
+                            )
+
                         }
-                        {
-                            usePermission({ minPermission: PermissionsRoles.GERENT }) &&
-                            <Link to="/Listagem/Teams" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
-                                <Network />
-                            </Link>
-                        }
-                        {
+                        {/* FOI VETADA A TELA DE RELATÓRIOS POR NÃO TERMOS TEMPO DE CONCLUIR */}
+                        {/* {
                             usePermission({minPermission: PermissionsRoles.GERENT}) &&
                             <Link to="/Dashboards/" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
                                 <ChartNoAxesCombined />
                             </Link>
-                        }
+                        } */}
                         {
-                            usePermission({minPermission: PermissionsRoles.ADMIN}) &&
-                            <Link to="/Listagem/Business" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
-                                <Building/>
-                            </Link>
+                            usePermission({ minPermission: PermissionsRoles.ADMIN }) &&
+                            (
+                                <Tooltip delayDuration={0} disableHoverableContent={true}>
+                                    <TooltipTrigger asChild>
+                                        <Link to="/Listagem/Business" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                                            <Building />
+                                        </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent side={"right"}>
+                                        Empresas
+                                    </TooltipContent>
+                                </Tooltip>
+                            )
+
+
                         }
                     </div>
                     <div className="flex flex-col w-full">
@@ -88,7 +136,7 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
                             </div>
 
                             <div className="relative w-3/4 md:w-2/5 mr-2 lg:w-1/3 xl:w-2/6">
-                            <AutoComplete/>
+                                <AutoComplete />
                                 <Search size={20} className="absolute top-2 right-2 cursor-pointer" />
                             </div>
                         </div>

@@ -127,6 +127,10 @@ export default function BusinessCreate() {
         } catch (erro: any) {
             console.log("Erro", erro)
             switch (erro?.response.status) {
+                case 400: {
+                    showError("CNPJ inválido!");
+                    break;
+                }
                 case 404: {
                     showError("Empresa não encontrada");
                     break;

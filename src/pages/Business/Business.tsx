@@ -32,7 +32,7 @@ export default function Business() {
     })
 
     function EditBusiness(data: BusinessEdit) {
-        return api.post(`api/enterprise/update/${id}`, data)
+        return api.put(`api/enterprise/update/${id}`, data)
             .then(() => {
                 showSucces("Empresa atualizada com sucesso!");
                 navigate("/Listagem/Business");
@@ -41,13 +41,13 @@ export default function Business() {
     }
 
     function SelectBusinessById() : Promise<Business>{
-        return api.get(`api/enterprise/get/${id}`)
+        return api.get(`api/enterprise/${id}`)
         .then(res => {
             // Faço o reset pra conseguir pegar sempre o value do formState
             reset({
                 email: res.data.email,
                 fantasyName: res.data.fantasyName,
-                phone: res.data.phone
+                phone: phoneMask(res.data.phone)
             })
             return res.data;
         })

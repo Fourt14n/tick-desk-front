@@ -24,6 +24,7 @@ export interface DropdownProperties {
   control: Control<any>, // Passa o control ao invés do register
   name: string, // Nome do campo no formulário
   defaultValue?: any
+  disabled?: boolean
 }
 
 export interface DropDownValues {
@@ -40,6 +41,7 @@ export function Dropdown({ dados }: Data) {
         control={dados.control}
         render={({ field }) => (
           <Select {...dados.control.register(dados.name)}
+          disabled={dados.disabled}
             key={field.value}
             onValueChange={(value) => {
               field.onChange(value)

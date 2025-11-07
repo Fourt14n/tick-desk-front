@@ -122,7 +122,7 @@ export default function Login() {
                                     <Label htmlFor="rememberPassword" className="lg:text-sm">Lembrar de mim</Label>
                                 </div>
                             </div>
-                            <span className="text-xs lg:text-sm text-center">É novo aqui? Cote a melhor opção para a sua empresa <Link className="text-[#23D400]" to={"https://google.com"} >Aqui</Link></span>
+                            <span className="text-xs lg:text-sm text-center">É novo aqui? Cote a melhor opção para a sua empresa <Link className="text-[#23D400]" target="blank" to={"https://landing-page-kappa-drab.vercel.app"} >Aqui</Link></span>
                         </form>
                     </CardContent>
                 </Card>

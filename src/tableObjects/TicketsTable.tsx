@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Edit } from "lucide-react";
@@ -8,7 +9,7 @@ export interface Ticket {
     callNumber: number,
     title: string,
     previsaoSolucao: Date,
-    urgencia: number
+    urgency: string
 }
 
 export const TicketColumns: ColumnDef<Ticket>[] = [
@@ -47,7 +48,14 @@ export const TicketColumns: ColumnDef<Ticket>[] = [
     }
   },
   {
-    accessorKey: "urgencia",
+    accessorKey: "urgency",
     header: "Urgência",
+    cell: ({row}) => {
+      switch(row.original.urgency){
+        case "ALTA": return <Badge className="w-full xl:w-2/3" variant={"ALTA"}>{row.original.urgency}</Badge>;
+        case "MEDIA": return <Badge className="w-full xl:w-2/3" variant={"MEDIA"}>{row.original.urgency}</Badge>;
+        case "BAIXA": return <Badge className="w-full xl:w-2/3" variant={"BAIXA"}>{row.original.urgency}</Badge>;
+      }
+    }
   },
 ]

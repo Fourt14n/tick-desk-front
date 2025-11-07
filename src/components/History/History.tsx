@@ -4,25 +4,18 @@ import { EStatusAction, type ResponseAction } from "@/types/ResponseAction/Respo
 import useFileList from "@/hooks/useFileList";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/axios";
+import { formatarData } from "@/utils/utils";
+import FilesView from "../FilesView/FilesView";
+import { Dialog } from "primereact/dialog";
+import { useState } from "react";
 
 interface AcaoReturn {
     acao: ResponseAction;
 }
 
-export default function History({acao}: AcaoReturn) {
+export default function History({ acao }: AcaoReturn) {
     const fileList = useFileList();
-
-    // const {data: arquivo} = useQuery({
-    //     queryKey: ["arquivosAction"],
-    //     staleTime: Infinity,
-    //     refetchOnWindowFocus: false,
-    //     queryFn: 
-    // })
-
-    // function GetFilesFromAction(){
-    //     api.get(`api/files/filesList`)
-    // }
-
+    const [visible, setVisible] = useState(false);
     return (
         <div className="flex flex-col w-full gap-1">
             <div>
@@ -38,9 +31,12 @@ export default function History({acao}: AcaoReturn) {
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Files onClick={() => {
-                                    fileList.open({
-                                        title: "Arquivos enviados",
-                                    })
+                                    // fileList.open({
+                                    //     title: "Arquivos enviados",
+                                    //     description: <FilesView arquivos={acao.files}/>
+
+                                    // })
+                                    setVisible(true);
                                 }} size={20} cursor={"pointer"} />
                             </TooltipTrigger>
                             <TooltipContent>
@@ -48,8 +44,11 @@ export default function History({acao}: AcaoReturn) {
                             </TooltipContent>
                         </Tooltip>
                     </div>
+                    <Dialog draggable={false} header={`Arquivos enviados (${acao.files.length})`} visible={visible} style={{ width: '40vw' }} breakpoints={{'1280px': '75vw', '720px': '85vw'}} onHide={() => { if (!visible) return; setVisible(false); }}>
+                        <FilesView arquivos={acao.files}/>
+                    </Dialog>
                     <div className="flex justify-end">
-                        <p className="text-(--grey)">{acao.data.toString()}</p>
+                        <p className="text-(--grey)">{formatarData(acao.data, true)}</p>
                     </div>
                 </div>
             </div>
