@@ -30,17 +30,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { ResponseCall } from "@/types/ResponseCall/ResponseCall";
 import { formatarData, TrataDataBackEnd } from "@/utils/utils";
 
-
-function handleSelectedChange(event: React.MouseEvent<HTMLLabelElement, MouseEvent>, parentElement: string) {
-    // Selecino o elemento anterior e removo a classe de selecionado
-    var prevOption = document.querySelector(`#${parentElement} .selected`);
-    prevOption?.classList.remove("selected");
-
-    // Seleciono o elemento clicado e adiciono a classe de selecionado
-    var actualOption = event.target as HTMLButtonElement;
-    actualOption.classList.add("selected");
-}
-
 const TicketThenAction = ticketValidation.and(ticketActionValidation);
 export type TicketAction = z.infer<typeof TicketThenAction>;
 
@@ -212,8 +201,22 @@ export default function Ticket() {
         console.log(Boolean(call?.status))
         console.log(ticket > 0)
         console.log(Boolean(call?.status) || ticket > 0)
-        if(Boolean(call?.status) || ticket === 0)
+        if (Boolean(call?.status) || ticket === 0)
             fileInputRef.current?.click();
+    }
+
+    function handleSelectedChange(event: React.MouseEvent<HTMLLabelElement, MouseEvent>, parentElement: string) {
+        if (Boolean(call?.status) || ticket === 0) {
+            // Selecino o elemento anterior e removo a classe de selecionado
+            var prevOption = document.querySelector(`#${parentElement} .selected`);
+            console.log("prevOption", prevOption);
+            prevOption?.classList.remove("selected");
+
+            // Seleciono o elemento clicado e adiciono a classe de selecionado
+            var actualOption = event.target as HTMLButtonElement;
+            console.log("actualOption", actualOption)
+            actualOption.classList.add("selected");
+        }
     }
 
     function returnDate(urgencia: string) {
@@ -262,6 +265,10 @@ export default function Ticket() {
 
     const { ref, ...registerProps } = register("arquivos")
 
+    console.log(Boolean(call?.status) || ticket === 0)
+    console.log(ticket === 0)
+    console.log(Boolean(call?.status))
+
     return (
         <div className="grid grid-rows-7 w-full bg-(--bg-default) grid-cols-[1fr_25px] md:grid-cols-[1fr_2rem]">
             <div className="row-span-7 h-full p-3 w-full">
@@ -301,7 +308,7 @@ export default function Ticket() {
                                                 <RadioGroup
                                                     value={field.value}
                                                     onValueChange={(value) => {
-                                                        if(Boolean(call?.status) || ticket === 0){
+                                                        if (Boolean(call?.status) || ticket === 0) {
                                                             field.onChange(value)
                                                             setValue("statusAction", value)
                                                         }
@@ -314,7 +321,7 @@ export default function Ticket() {
                                                         id="publico"
                                                         className="sr-only peer"
                                                     />
-                                                    <Label htmlFor="publico" onClick={(event) => Boolean(call?.status) || ticket === 0 && handleSelectedChange(event, "privacyOptContainer")} className="px-3 max-[360px]:px-1 py-1.5 text-xs md:text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors cursor-pointer selected">
+                                                    <Label htmlFor="publico" onClick={(event) => handleSelectedChange(event, "privacyOptContainer")} className="px-3 max-[360px]:px-1 py-1.5 text-xs md:text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors cursor-pointer selected">
                                                         Público
                                                     </Label>
                                                     <RadioGroupItem
@@ -322,7 +329,7 @@ export default function Ticket() {
                                                         id="interno"
                                                         className="sr-only peer"
                                                     />
-                                                    <Label htmlFor="interno" onClick={(event) => Boolean(call?.status) || ticket === 0 && handleSelectedChange(event, "privacyOptContainer")} className="px-3 max-[360px]:px-1 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) border border-gray-300 rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer">
+                                                    <Label htmlFor="interno" onClick={(event) => handleSelectedChange(event, "privacyOptContainer")} className="px-3 max-[360px]:px-1 py-1.5 text-xs md:text-sm text-[#135C04] bg-(--weakGreen) border border-gray-300 rounded-md hover:bg-(--mediumGreen) transition-colors cursor-pointer">
                                                         Interno
                                                     </Label>
                                                 </RadioGroup>
@@ -381,7 +388,7 @@ export default function Ticket() {
                                 <div className="flex flex-col w-full p-2 gap-4">
                                     <Dropdown dados={{ keyDropdown: "userResponsavel", values: users, label: "Usuário Responsável", control: control, name: "userResponsavelId", autoSaveFunc: Boolean(call?.status) ? UpdateTicket : undefined, disabled: !(Boolean(call?.status) || ticket === 0) }} />
                                     <Dropdown dados={{ keyDropdown: "requisitante", values: users, label: "Requisitante", control: control, name: "requisitanteId", autoSaveFunc: Boolean(call?.status) ? UpdateTicket : undefined, disabled: !(Boolean(call?.status) || ticket === 0) }} />
-                                    <Dropdown dados={{ keyDropdown: "equipeResponsavel", values: teams, label: "Equipe Responsável", control: control, name: "teamId", autoSaveFunc: Boolean(call?.status)? UpdateTicket : undefined, disabled: !(Boolean(call?.status) || ticket === 0) }} />
+                                    <Dropdown dados={{ keyDropdown: "equipeResponsavel", values: teams, label: "Equipe Responsável", control: control, name: "teamId", autoSaveFunc: Boolean(call?.status) ? UpdateTicket : undefined, disabled: !(Boolean(call?.status) || ticket === 0) }} />
                                     <div id="urgencyOpts" className="flex flex-col gap-2">
                                         <Label htmlFor="urgencies">Urgência</Label>
                                         <Controller
@@ -389,14 +396,14 @@ export default function Ticket() {
                                             name="urgency"
                                             render={({ field }) => (
                                                 <RadioGroup value={field.value} onValueChange={(value) => {
-                                                    if(Boolean(call?.status) || ticket === 0){
+                                                    if (Boolean(call?.status) || ticket === 0) {
                                                         field.onChange(value);
                                                         setValue("urgency", value)
                                                         setValue("previsaoSolucao", returnDate(value))
                                                         UpdateTicket("urgency", value);
                                                     }
                                                 }} id="urgencies" className="flex justify-evenly">
-                                                    <Label htmlFor="baixa" className={`md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 rounded-md bg-(--weakGreen) hover:bg-(--mediumGreen) transition-colors ${Boolean(call?.status) || ticket === 0 && "cursor-pointer"} ${watch("urgency") === "BAIXA" && "selected"}`}>
+                                                    <Label htmlFor="baixa" className={`md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 rounded-md bg-(--weakGreen) hover:bg-(--mediumGreen) transition-colors ${Boolean(call?.status) || ticket === 0 ? "cursor-pointer" : ""} ${watch("urgency") === "BAIXA" && "selected"}`}>
                                                         Baixa
                                                     </Label>
                                                     <RadioGroupItem
@@ -404,7 +411,7 @@ export default function Ticket() {
                                                         id="baixa"
                                                         className="sr-only peer"
                                                     />
-                                                    <Label htmlFor="media" className={`md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#f6ff0092] rounded-md hover:bg-[#f6ff00dc] transition-colors ${Boolean(call?.status) || ticket === 0 && "cursor-pointer"} ${watch("urgency") === "MEDIA" && "selected"}`}>
+                                                    <Label htmlFor="media" className={`md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#f6ff0092] rounded-md hover:bg-[#f6ff00dc] transition-colors ${Boolean(call?.status) || ticket === 0 ? "cursor-pointer" : ""} ${watch("urgency") === "MEDIA" && "selected"}`}>
                                                         Média
                                                     </Label>
                                                     <RadioGroupItem
@@ -412,7 +419,7 @@ export default function Ticket() {
                                                         id="media"
                                                         className="sr-only peer"
                                                     />
-                                                    <Label htmlFor="alta" className={`md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#ff080094] rounded-md hover:bg-[#ff0800b1] transition-colors ${Boolean(call?.status) || ticket === 0 && "cursor-pointer"} ${watch("urgency") === "ALTA" && "selected"}`}>
+                                                    <Label htmlFor="alta" className={`md:px-6 px-5 py-1.5 text-xs md:text-sm text-gray-600 bg-[#ff080094] rounded-md hover:bg-[#ff0800b1] transition-colors ${Boolean(call?.status) || ticket === 0 ? "cursor-pointer" : ""} ${watch("urgency") === "ALTA" && "selected"}`}>
                                                         Alta
                                                     </Label>
                                                     <RadioGroupItem
@@ -429,11 +436,11 @@ export default function Ticket() {
                                     <DatePicker dados={{ label: "Previsão de Solução", disabledPastDays: true, control: control, name: "previsaoSolucao", date: formValues.previsaoSolucao, autoSaveFunc: call?.status ? UpdateTicket : undefined, disabledButton: !(Boolean(call?.status) || ticket === 0) }} />
                                     <div className="flex flex-col gap-1.5 cursor-not-allowed">
                                         <Label>Fechamento do Chamado</Label>
-                                        <Input value={call?.dataHoraFechamento ? formatarData(call?.dataHoraFechamento!, true) : "" } className="bg-white" type="text" disabled/>
+                                        <Input value={call?.dataHoraFechamento ? formatarData(call?.dataHoraFechamento!, true) : ""} className="bg-white" type="text" disabled />
                                     </div>
                                     <div className="flex flex-col gap-1.5 cursor-not-allowed">
                                         <Label>Usuário do Fechamento</Label>
-                                        <Input className="bg-white" type="text" disabled value={call?.usuarioFechamento?.name || ""}/>
+                                        <Input className="bg-white" type="text" disabled value={call?.usuarioFechamento?.name || ""} />
                                     </div>
 
                                     {(ticket > 0 && watch("status") === true) && <Button onClick={CloseTicket} disabled={isSubmitting} className="bg-(--weakGreen) text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">{isSubmitting ? <Loader /> : "Finalizar Ticket"}</Button>}
