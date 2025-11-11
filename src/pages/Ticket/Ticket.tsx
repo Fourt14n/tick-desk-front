@@ -88,7 +88,7 @@ export default function Ticket() {
             teamId: call?.team.id.toString() || user?.teamId.toString() || "",
             urgency: call?.urgency || "MEDIA",
             userId: user?.id || user?.id || 0,
-            userResponsavelId: call?.userResponsavel.id.toString() || user?.id.toString() || "",
+            userResponsavelId: call?.userResponsavel?.id.toString() || user?.id.toString() || "",
             status: call?.status ?? true,
             statusAction: "PUBLIC",
             requisitanteId: call?.requisitanteId.toString() || user?.id.toString() || "",
