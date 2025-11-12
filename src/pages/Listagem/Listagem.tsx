@@ -19,7 +19,6 @@ export default function Listagem() {
     const [dataTickets, setDataTickets] = useState<Ticket[]>([]);
     const [teams, setTeams] = useState<Team[]>([]);
     const [business, setBusiness] = useState<Team[]>([]);
-    const [loading, setLoading] = useState(true);
     const { user } = UserInfo();
     const navigate = useNavigate();
     const confirmDelete = useConfirmation();
@@ -32,11 +31,9 @@ export default function Listagem() {
                 !usePermission({ minPermission: PermissionsRoles.ADMIN })
                     ? setDataUsers(result.filter(user => user.role !== "ADMIN"))
                     : setDataUsers(result);
-                setLoading(false);
             })
             .catch(erro => {
                 showError(erro);
-                setLoading(false);
             });
     }
 
@@ -45,11 +42,11 @@ export default function Listagem() {
         getData<Team[]>(endpoint)
             .then(result => {
                 setTeams(result);
-                setLoading(false);
+                
             })
             .catch(erro => {
                 showError(erro);
-                setLoading(false);
+                
             });
     }
 
@@ -58,11 +55,11 @@ export default function Listagem() {
         getData<Ticket[]>(endpoint)
             .then(result => {
                 setDataTickets(result);
-                setLoading(false);
+                
             })
             .catch(erro => {
                 showError(erro);
-                setLoading(false);
+                
             });
     }
 
@@ -71,17 +68,15 @@ export default function Listagem() {
         getData<Business[]>(endpoint)
             .then(result => {
                 setBusiness(result);
-                setLoading(false);
+                
             })
             .catch(erro => {
                 showError(erro);
-                setLoading(false);
+                
             });
     }
 
     useEffect(() => {
-        setLoading(true);
-
         switch (tipo) {
             case "Users": {
                 GetUsers();

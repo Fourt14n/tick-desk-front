@@ -1,4 +1,4 @@
-import { Building, ChartNoAxesCombined, Home, LogOut, Network, Plus, Search, Users, WalletCards } from "lucide-react";
+import { Building,  Home, LogOut, Network, Plus, Search, Users, WalletCards } from "lucide-react";
 import { type JSX } from "react"
 import { useTabs } from "@/store/TabsStore";
 import HeaderCardTab from "../HeaderCardTab/HeaderCardTab";

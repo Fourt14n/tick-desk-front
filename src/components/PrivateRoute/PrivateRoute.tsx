@@ -1,5 +1,4 @@
 import { validateAuth } from "@/hooks/useAuth";
-import Login from "@/pages/Login/Login";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 

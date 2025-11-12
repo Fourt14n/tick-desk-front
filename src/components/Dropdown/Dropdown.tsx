@@ -7,9 +7,6 @@ import {
 } from "@/components/ui/select"
 import { Label } from "../ui/label"
 import { Controller, type Control } from "react-hook-form"
-import { useEffect } from "react"
-import { useQuery } from "@tanstack/react-query"
-import type { TicketAction } from "@/pages/Ticket/Ticket"
 
 interface Data {
   dados: DropdownProperties

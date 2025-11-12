@@ -44,7 +44,6 @@ export function DataTable<TData, TValue>({
     colunaPesquisa,
     exclusaoFunc
 }: DataTableProps<TData, TValue>) {
-    const navigate = useNavigate();
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 

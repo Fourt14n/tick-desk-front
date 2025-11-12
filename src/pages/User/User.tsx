@@ -7,7 +7,6 @@ import { Separator } from "@/components/ui/separator";
 import { onError } from "@/hooks/onError";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { showError, showSucces } from "@/hooks/useToast";
-import useUser from "@/hooks/useUser";
 import { api } from "@/lib/axios";
 import { UserInfo } from "@/store/UserInfosStore";
 import { EAction, type Action } from "@/types/EAction/EAction";
@@ -37,7 +36,7 @@ export default function User({ action }: Action) {
     });
     function RegisterUser(user: UserRegister) {
         api.post("api/user/register", user)
-            .then(res => {
+            .then(() => {
                 showSucces("Usuário criado com sucesso!");
                 setTimeout(() => navigate("/Listagem/Users"), 3000); // Redireciona para a tela de listagem de usuários
             })
@@ -47,7 +46,7 @@ export default function User({ action }: Action) {
     }
     function UpdateUser(user: UserRegister) {
         api.put(`api/user/update/${id}`, user)
-            .then(res => {
+            .then(() => {
                 showSucces("Usuário atualizado com sucesso!");
                 setTimeout(() => navigate("/Listagem/Users"), 3000); // Redireciona para a tela de listagem de usuários
             })

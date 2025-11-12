@@ -20,7 +20,7 @@ type Business = z.infer<typeof businessValidation>;
 
 export default function Business() {
     const { id = "" } = useParams();
-    const { register, reset, watch, handleSubmit, formState: { isSubmitting } } = useForm({
+    const { register, reset, watch, handleSubmit} = useForm({
         resolver: zodResolver(businessEditValidation)
     })
     const navigate = useNavigate();

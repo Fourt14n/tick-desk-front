@@ -1,6 +1,6 @@
 import { AlertDialogHeader } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useRef, useState, type JSX } from "react";
+import { useState, type JSX } from "react";
 
 export default function useFormModal() {
   const [isOpen, setIsOpen] = useState(false);

@@ -1,7 +1,5 @@
 import HomeCard, { type TicketGroup } from "@/components/HomeCard/HomeCard";
 import { Clock } from "@/components/HomeClock/HomeClock";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import UpdatePassword from "@/components/UpdatePassword/UpdatePassword";
 import useFormModal from "@/hooks/useFormModal";
@@ -10,7 +8,7 @@ import { api } from "@/lib/axios";
 import { capitalizeFirstWord } from "@/utils/utils";
 import { UserInfo } from "@/store/UserInfosStore";
 import { isPast, isToday } from "date-fns";
-import { useEffect, useRef, useState, type JSX } from "react";
+import { useEffect, useState} from "react";
 
 enum GroupType {
     User,
