@@ -15,5 +15,6 @@ export type ResponseCall = {
     userResponsavel: ResponseUser
     dataAbertura: Date
     dataHoraFechamento: Date,
-    usuarioFechamento: ResponseUser
+    usuarioFechamento: ResponseUser,
+    isExterno: boolean
 }

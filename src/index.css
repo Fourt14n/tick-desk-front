@@ -31,10 +31,6 @@ li.p-stepper-header, li.p-stepper-header-right{
   @apply flex items-center justify-between p-4 bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-xl transition-shadow cursor-pointer;
 }
 
-.max-h-120 {
-  @apply calc(var(--spacing) * 120)
-}
-
 .selected{
   @apply border-1 border-black;
 }

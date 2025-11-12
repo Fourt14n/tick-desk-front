@@ -29,6 +29,8 @@ import type { ResponseUser } from "@/types/ResponseUser/ResponseUser";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { ResponseCall } from "@/types/ResponseCall/ResponseCall";
 import { formatarData, TrataDataBackEnd } from "@/utils/utils";
+import type { ResponseRequisitante } from "@/types/ResponseRequisitante/ResponseRequisitante";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const TicketThenAction = ticketValidation.and(ticketActionValidation);
 export type TicketAction = z.infer<typeof TicketThenAction>;
@@ -52,11 +54,19 @@ export default function Ticket() {
     })
 
 
+
     const { data: users } = useQuery<DropDownValues[]>({
         queryKey: ["usersByEnterprise", id],
         refetchOnWindowFocus: false,
         staleTime: 1000 * 60 * 5, // 5 minutos, 1000 milisegundos * 60 pra dar 1 minuto e * 5 pra dar 5 minutos
         queryFn: () => SelectUsersByEnterprise()
+    })
+
+    const { data: requisitante } = useQuery<ResponseRequisitante>({
+        queryKey: ["requisitante", call],
+        refetchOnWindowFocus: false,
+        staleTime: 1000 * 60 * 2, // 2 minutos, 1000 milisegundos * 60 pra dar 1 minuto e * 2 pra dar 2 minutos
+        queryFn: () => SelectRequisitanteById()
     })
 
     const { data: teams } = useQuery<DropDownValues[]>({
@@ -106,8 +116,13 @@ export default function Ticket() {
     }
 
     async function SelectCallById(): Promise<ResponseCall> {
-        const response = await api.get(`api/calls/${ticket}`)
-        return response.data
+        const response = await api.get(`api/calls/${ticket}`);
+        return response.data;
+    }
+
+    async function SelectRequisitanteById(): Promise<ResponseRequisitante> {
+        const response = await api.get(`api/requisitante/${call?.requisitanteId}`);
+        return response.data;
     }
 
     // Por eu juntar as duas entidades dentro da mesma validação nessa tela
@@ -387,7 +402,29 @@ export default function Ticket() {
                             <ScrollArea className="bg-(--bg-divs) pb-3">
                                 <div className="flex flex-col w-full p-2 gap-4">
                                     <Dropdown dados={{ keyDropdown: "userResponsavel", values: users, label: "Usuário Responsável", control: control, name: "userResponsavelId", autoSaveFunc: Boolean(call?.status) ? UpdateTicket : undefined, disabled: !(Boolean(call?.status) || ticket === 0) }} />
-                                    <Dropdown dados={{ keyDropdown: "requisitante", values: users, label: "Requisitante", control: control, name: "requisitanteId", autoSaveFunc: Boolean(call?.status) ? UpdateTicket : undefined, disabled: !(Boolean(call?.status) || ticket === 0) }} />
+                                    {
+                                        call?.isExterno ?
+                                            (
+                                                <div>
+                                                    <Label htmlFor="requisitante">Requisitante</Label>
+                                                    <Select {...register("requisitanteId")} value={requisitante?.id.toString()} disabled>
+                                                        <SelectTrigger
+                                                            className={`cursor-pointer bg-white w-full`}
+                                                        >
+                                                            <SelectValue placeholder="Selecione" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value={requisitante?.id.toString()!}>
+                                                                {requisitante?.nome}
+                                                            </SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                            )
+                                            :
+                                            <Dropdown dados={{ keyDropdown: "requisitante", values: users, label: "Requisitante", control: control, name: "requisitanteId", autoSaveFunc: Boolean(call?.status) ? UpdateTicket : undefined, disabled: !(Boolean(call?.status) || ticket === 0) }} />
+
+                                    }
                                     <Dropdown dados={{ keyDropdown: "equipeResponsavel", values: teams, label: "Equipe Responsável", control: control, name: "teamId", autoSaveFunc: Boolean(call?.status) ? UpdateTicket : undefined, disabled: !(Boolean(call?.status) || ticket === 0) }} />
                                     <div id="urgencyOpts" className="flex flex-col gap-2">
                                         <Label htmlFor="urgencies">Urgência</Label>
