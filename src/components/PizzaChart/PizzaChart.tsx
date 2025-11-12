@@ -22,50 +22,40 @@ import type { PieSectorDataItem } from "recharts/types/polar/Pie"
 export const description = "A donut chart with an active sector"
 
 const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 90, fill: "var(--color-other)" },
+  { urgency: "ALTA", chamados: 275, fill: "red" },
+  { urgency: "MEDIA", chamados: 200, fill: "yellow" },
+  { urgency: "BAIXA", chamados: 187, fill: "green" },
 ]
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
+  chamados: {
+    label: "Chamados",
   },
-  chrome: {
-    label: "Chrome",
+  ALTA: {
+    label: "Alta urgência: ",
     color: "var(--chart-1)",
   },
-  safari: {
-    label: "Safari",
-    color: "var(--chart-2)",
+  MEDIA: {
+    label: "Media urgência: ",
+    color: "var(--chart-1)",
   },
-  firefox: {
-    label: "Firefox",
-    color: "var(--chart-3)",
-  },
-  edge: {
-    label: "Edge",
-    color: "var(--chart-4)",
-  },
-  other: {
-    label: "Other",
-    color: "var(--chart-5)",
-  },
+  BAIXA: {
+    label: "Baixa urgência:",
+    color: "var(--chart-1)",
+  }
 } satisfies ChartConfig
 
 export function ChartPieDonutActive() {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Donut Active</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>Chamados por urgência</CardTitle>
+        <CardDescription>Último mês</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
+          className="mx-auto max-h-120 aspect-square"
         >
           <PieChart>
             <ChartTooltip
@@ -74,13 +64,13 @@ export function ChartPieDonutActive() {
             />
             <Pie
               data={chartData}
-              dataKey="visitors"
-              nameKey="browser"
+              dataKey="chamados"
+              nameKey="urgency"
               innerRadius={60}
               strokeWidth={5}
               activeIndex={0}
               activeShape={({
-                outerRadius = 0,
+                outerRadius = 2,
                 ...props
               }: PieSectorDataItem) => (
                 <Sector {...props} outerRadius={outerRadius + 10} />

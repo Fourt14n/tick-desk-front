@@ -21,19 +21,17 @@ import {
 export const description = "A bar chart with a label"
 
 const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
+  { equipe: "Desenvolvimento", chamados: 186 },
+  { equipe: "Marketing", chamados: 305 },
+  { equipe: "Suporte N1", chamados: 237 },
+  { equipe: "Suporte N2", chamados: 73 },
 ]
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  chamados: {
+    label: "Chamados atribuídos: ",
     color: "var(--chart-1)",
-  },
+  }
 } satisfies ChartConfig
 
 export function ChartBarLabel() {
@@ -43,8 +41,8 @@ export function ChartBarLabel() {
         <CardTitle>Chamados por equipe</CardTitle>
         <CardDescription>Ultimo mês</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig}>
+      <CardContent className="flex flex-col">
+        <ChartContainer className="max-h-120 aspect-square" config={chartConfig}>
           <BarChart
             accessibilityLayer
             data={chartData}
@@ -54,7 +52,7 @@ export function ChartBarLabel() {
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="month"
+              dataKey="equipe"
               tickLine={false}
               tickMargin={10}
               axisLine={false}
@@ -62,9 +60,9 @@ export function ChartBarLabel() {
             />
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent hideLabel />}
+              content={<ChartTooltipContent label={"equipe"} />}
             />
-            <Bar dataKey="desktop" fill="var(--color-desktop)" radius={8}>
+            <Bar dataKey="chamados" fill="#2345" radius={8}>
               <LabelList
                 position="top"
                 offset={12}

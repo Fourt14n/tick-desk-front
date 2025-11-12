@@ -210,6 +210,8 @@ export default function Listagem() {
                 return "Tickets"
             case "Teams":
                 return "Equipes"
+            case "Business":
+                return "Empresas"
         }
     }
 
