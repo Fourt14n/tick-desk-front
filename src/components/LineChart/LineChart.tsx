@@ -4,7 +4,6 @@ import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from "recharts"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -14,6 +13,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart"
+import type { CallsByTeam } from "@/types/CountCallsByTeam/CountCallsByTeam"
 
 export const description = "A bar chart with a label"
 
@@ -31,25 +31,29 @@ const chartConfig = {
   }
 } satisfies ChartConfig
 
-export function ChartBarLabel() {
+type RequestTeams = {
+  times: Array<CallsByTeam>
+}
+
+export function ChartBarLabel({times} : RequestTeams) {
+  console.log("times", times)
   return (
     <Card className="h-full">
       <CardHeader>
         <CardTitle>Chamados por equipe</CardTitle>
-        <CardDescription>Ultimo mês</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col">
         <ChartContainer className="max-h-120 aspect-square" config={chartConfig}>
           <BarChart
             accessibilityLayer
-            data={chartData}
+            data={times}
             margin={{
               top: 20,
             }}
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="equipe"
+              dataKey="teamName"
               tickLine={false}
               tickMargin={10}
               axisLine={false}
@@ -57,9 +61,9 @@ export function ChartBarLabel() {
             />
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent label={"equipe"} />}
+              content={<ChartTooltipContent label={"teamName"} />}
             />
-            <Bar dataKey="chamados" fill="#2345" radius={8}>
+            <Bar dataKey="totalChamados" fill="#2345" radius={8}>
               <LabelList
                 position="top"
                 offset={12}

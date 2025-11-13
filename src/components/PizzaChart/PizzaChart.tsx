@@ -5,7 +5,6 @@ import { Pie, PieChart, Sector } from "recharts"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -48,7 +47,6 @@ export function ChartPieDonutActive() {
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
         <CardTitle>Chamados por urgência</CardTitle>
-        <CardDescription>Último mês</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
