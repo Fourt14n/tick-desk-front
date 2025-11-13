@@ -1,5 +1,5 @@
 export type CountCallsByTeam = {
-    time: CallsByTeam[]
+    times: CallsByTeam[]
 }
 
 export type CallsByTeam ={
