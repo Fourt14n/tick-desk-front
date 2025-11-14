@@ -17,13 +17,6 @@ import type { CallsByTeam } from "@/types/CountCallsByTeam/CountCallsByTeam"
 
 export const description = "A bar chart with a label"
 
-const chartData = [
-  { equipe: "Desenvolvimento", chamados: 186 },
-  { equipe: "Marketing", chamados: 305 },
-  { equipe: "Suporte N1", chamados: 237 },
-  { equipe: "Suporte N2", chamados: 73 },
-]
-
 const chartConfig = {
   chamados: {
     label: "Chamados atribuídos: ",

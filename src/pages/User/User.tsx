@@ -38,7 +38,7 @@ export default function User({ action }: Action) {
         api.post("api/user/register", user)
             .then(() => {
                 showSucces("Usuário criado com sucesso!");
-                setTimeout(() => navigate("/Listagem/Users"), 3000); // Redireciona para a tela de listagem de usuários
+                navigate("/Listagem/Users"); // Redireciona para a tela de listagem de usuários
             })
             .catch(erro => {
                 showError(erro.response.data.error)
@@ -48,7 +48,7 @@ export default function User({ action }: Action) {
         api.put(`api/user/update/${id}`, user)
             .then(() => {
                 showSucces("Usuário atualizado com sucesso!");
-                setTimeout(() => navigate("/Listagem/Users"), 3000); // Redireciona para a tela de listagem de usuários
+                navigate("/Listagem/Users"); // Redireciona para a tela de listagem de usuários
             })
             .catch(erro => {
                 showError(erro.response.data.error)
