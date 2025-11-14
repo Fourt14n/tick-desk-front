@@ -14,7 +14,6 @@ import BusinessCreate from "./pages/BusinessCreate/BusinessCreate";
 import Business from "./pages/Business/Business";
 import ChangePassword from "./pages/RecoveryPassword/ChangePassword";
 import Dashboard from "./pages/Dashboard/Dashboard";
-import FixedLayout from "./components/FixedLayout/FixedLayout";
 
 export default function Router() {
     return (

@@ -5,6 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { onError } from "@/hooks/onError";
+import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { showError, showSucces } from "@/hooks/useToast";
 import { api } from "@/lib/axios";
 import { UserInfo } from "@/store/UserInfosStore";
@@ -155,7 +156,7 @@ export default function Team({ action }: Action) {
                         </div>
                     </div>
                     <div className="flex w-full justify-end gap-2 flex-col py-2 lg:flex-row">
-                        <Button disabled={isSubmitting} type="submit" className="bg-(--weakGreen) w-full lg:w-42 text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">{action === EAction.CREATE ? "Cadastrar" : "Atualizar"}</Button>
+                        {!usePermission({minPermission: PermissionsRoles.SUPORT}) && <Button disabled={isSubmitting} type="submit" className="bg-(--weakGreen) w-full lg:w-42 text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">{action === EAction.CREATE ? "Cadastrar" : "Atualizar"}</Button>}
                         <Link to="/Listagem/Teams">
                             <Button variant={"destructive"} type="submit" className="w-full lg:w-42 cursor-pointer">Voltar</Button>
                         </Link>
