@@ -17,28 +17,28 @@
       "destination": "/Home"
     },
     {
-      "source": "/Ticket/*",
-      "destination": "/Ticket/*"
+      "source": "/Ticket/:id",
+      "destination": "/Ticket/:id"
     },
     {
-      "source": "/Listagem/*",
-      "destination": "/Listagem/*"
+      "source": "/Listagem/:id",
+      "destination": "/Listagem/:id"
     },
     {
       "source": "/User/Create",
       "destination": "/User/Create"
     },
     {
-      "source": "/User/*",
-      "destination": "/User/*"
+      "source": "/User/:id",
+      "destination": "/User/:id"
     },
     {
       "source": "/Teams/Create",
       "destination": "/Teams/Create"
     },
     {
-      "source": "/Team/*",
-      "destination": "/Teams/*"
+      "source": "/Team/:id",
+      "destination": "/Teams/:id"
     },
     {
       "source": "/Dashboard",
@@ -49,8 +49,8 @@
       "destination": "/Business/Create"
     },
     {
-      "source": "/Business/*",
-      "destination": "/Business/*"
+      "source": "/Business/:id",
+      "destination": "/Business/:id"
     },
     {
       "source": "/*",
