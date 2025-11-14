@@ -226,7 +226,7 @@ export default function BusinessCreate() {
                         </div>
                     </div>
                     <div className="flex w-full h-full justify-center">
-                        <Stepper activeStep={step} className="w-11/12" linear >
+                        <Stepper activeStep={step} className="w-11/12" >
 
 
                             {/* ABA DE CADASTRO DA EMPRESA */}

@@ -21,7 +21,7 @@ import {
 import { Button } from "../ui/button"
 import React from "react"
 import { Input } from "../ui/input"
-import { Link, useNavigate } from "react-router"
+import { Link } from "react-router"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -44,7 +44,6 @@ export function DataTable<TData, TValue>({
     colunaPesquisa,
     exclusaoFunc
 }: DataTableProps<TData, TValue>) {
-    const navigate = useNavigate();
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 

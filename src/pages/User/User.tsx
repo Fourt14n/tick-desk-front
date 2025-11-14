@@ -7,7 +7,6 @@ import { Separator } from "@/components/ui/separator";
 import { onError } from "@/hooks/onError";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { showError, showSucces } from "@/hooks/useToast";
-import useUser from "@/hooks/useUser";
 import { api } from "@/lib/axios";
 import { UserInfo } from "@/store/UserInfosStore";
 import { EAction, type Action } from "@/types/EAction/EAction";
@@ -35,21 +34,21 @@ export default function User({ action }: Action) {
             role: "CLIENT"
         }
     });
-    function RegisterUser(user: UserRegister) {
-        api.post("api/user/register", user)
-            .then(res => {
+    async function RegisterUser(user: UserRegister) {
+        await api.post("api/user/register", user)
+            .then(() => {
                 showSucces("Usuário criado com sucesso!");
-                setTimeout(() => navigate("/Listagem/Users"), 3000); // Redireciona para a tela de listagem de usuários
+                navigate("/Listagem/Users"); // Redireciona para a tela de listagem de usuários
             })
             .catch(erro => {
                 showError(erro.response.data.error)
             })
     }
-    function UpdateUser(user: UserRegister) {
-        api.put(`api/user/update/${id}`, user)
-            .then(res => {
+    async function UpdateUser(user: UserRegister) {
+        await api.put(`api/user/update/${id}`, user)
+            .then(() => {
                 showSucces("Usuário atualizado com sucesso!");
-                setTimeout(() => navigate("/Listagem/Users"), 3000); // Redireciona para a tela de listagem de usuários
+                navigate("/Listagem/Users"); // Redireciona para a tela de listagem de usuários
             })
             .catch(erro => {
                 showError(erro.response.data.error)
@@ -82,13 +81,13 @@ export default function User({ action }: Action) {
             })
     }
 
-    function OnSubmit(data: UserRegister) {
+    async function OnSubmit(data: UserRegister) {
         if (isValid) {
             console.log(data)
             if (action === EAction.UPDATE)
-                UpdateUser(data);
+                await UpdateUser(data);
             else
-                RegisterUser(data);
+                await RegisterUser(data);
         }
     }
 
@@ -164,7 +163,12 @@ export default function User({ action }: Action) {
                             {action === EAction.CREATE ? "Cadastrar" : "Atualizar"}
                         </Button>
                         <Link to="/Listagem/Users">
-                            <Button variant={"destructive"} type="submit" className="w-full lg:w-42 cursor-pointer">Voltar</Button>
+                            <Button disabled={isSubmitting} variant={"destructive"} type="submit" className="w-full lg:w-42 cursor-pointer">
+                                {
+                                    isSubmitting && <Loader />
+                                }
+                                Voltar
+                            </Button>
                         </Link>
                     </div>
 

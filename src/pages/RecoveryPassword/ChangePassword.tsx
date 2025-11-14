@@ -15,8 +15,8 @@ type ResetPassword = z.infer<typeof forgotPassword>;
 
 export default function ChangePassword() {
     const navigate = useNavigate();
-    const [queryParams, setQueryParams] = useSearchParams();
-    const { register, handleSubmit, setValue, formState: { isValid, isSubmitting } } = useForm({
+    const [queryParams] = useSearchParams();
+    const { register, handleSubmit, setValue, formState: { isSubmitting } } = useForm({
         resolver: zodResolver(forgotPassword)
     })
 

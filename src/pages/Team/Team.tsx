@@ -67,16 +67,16 @@ export default function Team({ action }: Action) {
 
     function CreateTeam(team: Team) {
         api.post("api/team/create", team)
-            .then(res => {
+            .then(() => {
                 showSucces("Equipe criada com sucesso!");
-                setTimeout(() => navigate("/Listagem/Teams"), 3000);
+                navigate("/Listagem/Teams");
             }).catch(erro => showError(erro.response.data.error))
     }
     function UpdateTeam(team: Team) {
         api.put(`api/team/update/${id}`, team)
-            .then(res => {
+            .then(() => {
                 showSucces("Equipe atualizada com sucesso!");
-                setTimeout(() => navigate("/Listagem/Teams"), 3000);
+                navigate("/Listagem/Teams");
             }).catch(erro => showError(erro.response.data.error))
     }
 

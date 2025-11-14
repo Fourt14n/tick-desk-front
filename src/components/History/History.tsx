@@ -2,8 +2,6 @@ import { Files } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { EStatusAction, type ResponseAction } from "@/types/ResponseAction/ResponseAction";
 import useFileList from "@/hooks/useFileList";
-import { useQuery } from "@tanstack/react-query";
-import { api } from "@/lib/axios";
 import { formatarData } from "@/utils/utils";
 import FilesView from "../FilesView/FilesView";
 import { Dialog } from "primereact/dialog";
