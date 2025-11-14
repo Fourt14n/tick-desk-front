@@ -22,7 +22,6 @@ export default function Router() {
             <Route index element={<Login />} path="/Login" />
             <Route element={<RecoveryPassword />} path="/RecuperacaoSenha" />
             <Route element={<ChangePassword />} path="/AlteracaoSenha" />
-            <Route element={<FixedLayout TelaAtual={<Dashboard/>}/>} path="/Dashboard" />
             <Route element={<PrivateRoute children={<Layout />} />}>
                 <Route path="/">
                     <Route path="Home/" index element={<Home />} />
@@ -32,6 +31,7 @@ export default function Router() {
                     <Route path="User/:id" element={<CreateUser action={EAction.UPDATE} />} />
                     <Route path="Teams/Create" element={<Team action={EAction.CREATE} />} />
                     <Route path="Teams/:id" element={<Team action={EAction.UPDATE} />} />
+                    <Route path="/Dashboard" element={<Dashboard/>} />
                     {/* Pelo fluxo de criação de empresa ser específico, vou diferenciar criação de edição por tela */}
                     <Route path="Business/Create" element={<BusinessCreate/>} />
                     <Route path="Business/:id" element={<Business />} />

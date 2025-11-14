@@ -1,4 +1,4 @@
-import { Building,  Home, LogOut, Network, Plus, Search, Users, WalletCards } from "lucide-react";
+import { Building,  ChartNoAxesCombined,  Home, LogOut, Network, Plus, Search, Users, WalletCards } from "lucide-react";
 import { type JSX } from "react"
 import { useTabs } from "@/store/TabsStore";
 import HeaderCardTab from "../HeaderCardTab/HeaderCardTab";
@@ -83,13 +83,12 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
                             )
 
                         }
-                        {/* FOI VETADA A TELA DE RELATÓRIOS POR NÃO TERMOS TEMPO DE CONCLUIR */}
-                        {/* {
+                        {
                             usePermission({minPermission: PermissionsRoles.GERENT}) &&
-                            <Link to="/Dashboards/" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                            <Link to="/Dashboard" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
                                 <ChartNoAxesCombined />
                             </Link>
-                        } */}
+                        }
                         {
                             usePermission({ minPermission: PermissionsRoles.ADMIN }) &&
                             (
