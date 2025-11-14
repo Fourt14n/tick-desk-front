@@ -163,7 +163,12 @@ export default function User({ action }: Action) {
                             {action === EAction.CREATE ? "Cadastrar" : "Atualizar"}
                         </Button>
                         <Link to="/Listagem/Users">
-                            <Button variant={"destructive"} type="submit" className="w-full lg:w-42 cursor-pointer">Voltar</Button>
+                            <Button disabled={isSubmitting} variant={"destructive"} type="submit" className="w-full lg:w-42 cursor-pointer">
+                                {
+                                    isSubmitting && <Loader />
+                                }
+                                Voltar
+                            </Button>
                         </Link>
                     </div>
 
