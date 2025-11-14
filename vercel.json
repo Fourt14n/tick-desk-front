@@ -1,74 +1,8 @@
 {
     "rewrites": [
-        {
-            "$schema": "https://openapi.vercel.sh/vercel.json",
-            "source": "/Login",
-            "destination": "/Login"
-        },
-        {
-            "$schema": "https://openapi.vercel.sh/vercel.json",
-            "source": "/RecuperacaoSenha",
-            "destination": "/RecuperacaoSenha"
-        },
-        {
-            "$schema": "https://openapi.vercel.sh/vercel.json",
-            "source": "/AlteracaoSenha",
-            "destination": "/AlteracaoSenha"
-        },
-        {
-            "$schema": "https://openapi.vercel.sh/vercel.json",
-            "source": "/Home",
-            "destination": "/Home"
-        },
-        {
-            "$schema": "https://openapi.vercel.sh/vercel.json",
-            "source": "/Ticket/:id",
-            "destination": "/Ticket/:id"
-        },
-        {
-            "$schema": "https://openapi.vercel.sh/vercel.json",
-            "source": "/Listagem/:id",
-            "destination": "/Listagem/:id"
-        },
-        {
-            "$schema": "https://openapi.vercel.sh/vercel.json",
-            "source": "/User/Create",
-            "destination": "/User/Create"
-        },
-        {
-            "$schema": "https://openapi.vercel.sh/vercel.json",
-            "source": "/User/:id",
-            "destination": "/User/:id"
-        },
-        {
-            "$schema": "https://openapi.vercel.sh/vercel.json",
-            "source": "/Teams/Create",
-            "destination": "/Teams/Create"
-        },
-        {
-            "$schema": "https://openapi.vercel.sh/vercel.json",
-            "source": "/Team/:id",
-            "destination": "/Teams/:id"
-        },
-        {
-            "$schema": "https://openapi.vercel.sh/vercel.json",
-            "source": "/Dashboard",
-            "destination": "/Dashboard"
-        },
-        {
-            "$schema": "https://openapi.vercel.sh/vercel.json",
-            "source": "/Business/Create",
-            "destination": "/Business/Create"
-        },
-        {
-            "$schema": "https://openapi.vercel.sh/vercel.json",
-            "source": "/Business/:id",
-            "destination": "/Business/:id"
-        },
-        {
-            "$schema": "https://openapi.vercel.sh/vercel.json",
-            "source": "/*",
-            "destination": "/*"
-        }
-    ]
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
