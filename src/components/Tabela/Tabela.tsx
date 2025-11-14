@@ -22,6 +22,7 @@ import { Button } from "../ui/button"
 import React from "react"
 import { Input } from "../ui/input"
 import { Link } from "react-router"
+import usePermission, { PermissionsRoles } from "@/hooks/usePermission"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -60,6 +61,9 @@ export function DataTable<TData, TValue>({
             sorting,
             columnFilters
         },
+        initialState: {
+            columnVisibility: { exclude: usePermission({minPermission: PermissionsRoles.GERENT}) , edit: true }
+        },
         meta: {
             Exclusao: (id: string) => {
                 if(exclusaoFunc)
@@ -82,7 +86,7 @@ export function DataTable<TData, TValue>({
                 />
 
                 {
-                    caminho.includes("User") &&
+                    (caminho.includes("User") && usePermission({minPermission: PermissionsRoles.GERENT})) &&
                     <Link to="/User/Create">
                         <Button className="bg-(--weakGreen) lg:w-42 text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">
                             Novo
@@ -90,7 +94,7 @@ export function DataTable<TData, TValue>({
                     </Link>
                 }
                 {
-                    caminho.includes("Teams") &&
+                    (caminho.includes("Teams") && usePermission({minPermission: PermissionsRoles.GERENT})) &&
                     <Link to="/Teams/Create">
                         <Button className="bg-(--weakGreen) lg:w-42 text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">
                             Novo

@@ -38,6 +38,7 @@ export const TeamColumns: ColumnDef<Team>[] = [
   },
   {
     header: " ",
+    accessorKey: "exclude",
     cell: ({row, table}) => {
       var meta = table.options.meta as { Exclusao?: (id : string) => void }
       return(

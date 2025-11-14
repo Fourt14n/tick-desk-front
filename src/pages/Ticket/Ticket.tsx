@@ -4,7 +4,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { showError, showSucces } from "@/hooks/useToast";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { ArrowLeft, ArrowRight, Loader, Paperclip } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import "@/index.css";
 import useConfirmation from "@/hooks/useConfirmation";
@@ -31,6 +31,7 @@ import type { ResponseCall } from "@/types/ResponseCall/ResponseCall";
 import { formatarData, TrataDataBackEnd } from "@/utils/utils";
 import type { ResponseRequisitante } from "@/types/ResponseRequisitante/ResponseRequisitante";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useTabs } from "@/store/TabsStore";
 
 const TicketThenAction = ticketValidation.and(ticketActionValidation);
 export type TicketAction = z.infer<typeof TicketThenAction>;
@@ -44,6 +45,7 @@ export default function Ticket() {
     const confirmDialog = useConfirmation();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const { user } = UserInfo();
+    const tabs = useTabs();
 
     const { data: call } = useQuery<ResponseCall>({
         queryKey: ["call", id],
@@ -280,9 +282,9 @@ export default function Ticket() {
 
     const { ref, ...registerProps } = register("arquivos")
 
-    console.log(Boolean(call?.status) || ticket === 0)
-    console.log(ticket === 0)
-    console.log(Boolean(call?.status))
+    useEffect(function(){
+        tabs.addTab(`/Ticket/${id}`);
+    }, [id])
 
     return (
         <div className="grid grid-rows-7 w-full bg-(--bg-default) grid-cols-[1fr_25px] md:grid-cols-[1fr_2rem]">

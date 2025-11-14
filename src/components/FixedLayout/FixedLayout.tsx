@@ -1,4 +1,4 @@
-import { Building,  Home, LogOut, Network, Plus, Search, Users, WalletCards } from "lucide-react";
+import { Building, ChartNoAxesCombined, Home, LogOut, Network, Plus, Search, Users, WalletCards } from "lucide-react";
 import { type JSX } from "react"
 import { useTabs } from "@/store/TabsStore";
 import HeaderCardTab from "../HeaderCardTab/HeaderCardTab";
@@ -50,10 +50,9 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
                                     </TooltipContent>
                                 </Tooltip>
                             )
-
                         }
                         {
-                            usePermission({ minPermission: PermissionsRoles.GERENT }) && (
+                            usePermission({ minPermission: PermissionsRoles.SUPORT }) && (
                                 <Tooltip delayDuration={0} disableHoverableContent={true}>
                                     <TooltipTrigger asChild>
                                         <Link to="/Listagem/Users" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
@@ -68,7 +67,7 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
 
                         }
                         {
-                            usePermission({ minPermission: PermissionsRoles.GERENT }) &&
+                            usePermission({ minPermission: PermissionsRoles.SUPORT }) &&
                             (
                                 <Tooltip delayDuration={0} disableHoverableContent={true}>
                                     <TooltipTrigger asChild>
@@ -83,13 +82,19 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
                             )
 
                         }
-                        {/* FOI VETADA A TELA DE RELATÓRIOS POR NÃO TERMOS TEMPO DE CONCLUIR */}
-                        {/* {
-                            usePermission({minPermission: PermissionsRoles.GERENT}) &&
-                            <Link to="/Dashboards/" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
-                                <ChartNoAxesCombined />
-                            </Link>
-                        } */}
+                        {
+                            usePermission({ minPermission: PermissionsRoles.GERENT }) &&
+                            <Tooltip delayDuration={0} disableHoverableContent={true}>
+                                <TooltipTrigger asChild>
+                                    <Link to="/Dashboard" className="flex justify-center items-center h-12 cursor-pointer hover:bg-white hover:rounded-full">
+                                        <ChartNoAxesCombined />
+                                    </Link>
+                                </TooltipTrigger>
+                                <TooltipContent side={"right"}>
+                                    DashBoard
+                                </TooltipContent>
+                            </Tooltip>
+                        }
                         {
                             usePermission({ minPermission: PermissionsRoles.ADMIN }) &&
                             (
