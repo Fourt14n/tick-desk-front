@@ -153,7 +153,7 @@ export default function User({ action }: Action) {
                         </div>
                     </div>
                     <div className="flex w-full justify-end gap-2 flex-col py-2 lg:flex-row">
-                        {!usePermission({ minPermission: PermissionsRoles.SUPORT }) && (
+                        {usePermission({ minPermission: PermissionsRoles.GERENT }) && (
                             <Button
                                 disabled={isSubmitting}
                                 type="submit"
