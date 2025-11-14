@@ -34,8 +34,8 @@ export default function User({ action }: Action) {
             role: "CLIENT"
         }
     });
-    function RegisterUser(user: UserRegister) {
-        api.post("api/user/register", user)
+    async function RegisterUser(user: UserRegister) {
+        await api.post("api/user/register", user)
             .then(() => {
                 showSucces("Usuário criado com sucesso!");
                 navigate("/Listagem/Users"); // Redireciona para a tela de listagem de usuários
@@ -44,8 +44,8 @@ export default function User({ action }: Action) {
                 showError(erro.response.data.error)
             })
     }
-    function UpdateUser(user: UserRegister) {
-        api.put(`api/user/update/${id}`, user)
+    async function UpdateUser(user: UserRegister) {
+        await api.put(`api/user/update/${id}`, user)
             .then(() => {
                 showSucces("Usuário atualizado com sucesso!");
                 navigate("/Listagem/Users"); // Redireciona para a tela de listagem de usuários
@@ -81,13 +81,13 @@ export default function User({ action }: Action) {
             })
     }
 
-    function OnSubmit(data: UserRegister) {
+    async function OnSubmit(data: UserRegister) {
         if (isValid) {
             console.log(data)
             if (action === EAction.UPDATE)
-                UpdateUser(data);
+                await UpdateUser(data);
             else
-                RegisterUser(data);
+                await RegisterUser(data);
         }
     }
 

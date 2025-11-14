@@ -15,19 +15,17 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 import type { PieSectorDataItem } from "recharts/types/polar/Pie"
+import type { CallsByUrgency } from "@/types/CountCallsByUrgency/CountCallsByUrgency"
 
 export const description = "A donut chart with an active sector"
 
-const chartData = [
-  { urgency: "ALTA", chamados: 275, fill: "red" },
-  { urgency: "MEDIA", chamados: 200, fill: "yellow" },
-  { urgency: "BAIXA", chamados: 187, fill: "green" },
-]
+type ChartDataObj = {
+  urgency: string,
+  chamados: number,
+  fill: string
+}
 
 const chartConfig = {
-  chamados: {
-    label: "Chamados",
-  },
   ALTA: {
     label: "Alta urgência: ",
     color: "var(--chart-1)",
@@ -42,7 +40,25 @@ const chartConfig = {
   }
 } satisfies ChartConfig
 
-export function ChartPieDonutActive() {
+type RequestUrgencies = {
+  urgencias: Array<CallsByUrgency>
+}
+
+export function ChartPieDonutActive({urgencias} : RequestUrgencies) {
+  let chartData : ChartDataObj[] = [];
+
+  urgencias.map(urgencia => {
+    var tipoUrgencia = urgencia.urgency;
+    var color = ""
+    switch(tipoUrgencia){
+      case "ALTA": color = "red"; break;
+      case "MEDIA": color = "yellow"; break;
+      case "BAIXA": color = "green"; break;
+    }
+
+    chartData.push({chamados: urgencia.totalChamados, fill: color, urgency: urgencia.urgency});
+  })
+
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">

@@ -106,7 +106,7 @@ export default function Dashboard() {
                                         <div className="w-full md:w-1/2">
                                         {
                                             dadosRelatorio?.dadosUrgencia.urgencias && (
-                                                <ChartPieDonutActive />
+                                                <ChartPieDonutActive urgencias={dadosRelatorio.dadosUrgencia.urgencias}/>
                                             )
                                         }
                                         </div>
