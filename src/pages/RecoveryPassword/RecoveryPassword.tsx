@@ -19,18 +19,18 @@ export default function RecoveryPassword() {
         resolver: zodResolver(sendMailRecoveryPassword)
     })
 
-    function SendMailRecovery(data : SendMailRecoveryPassword){
-        api.post("api/reset-password/forgot", data)
+    async function SendMailRecovery(data : SendMailRecoveryPassword){
+        await api.post("api/reset-password/forgot", data)
         .then(res => {
             showSucces(res.data)
-            setTimeout(() => navigate("/Login"), 3000);
+            navigate("/Login");
         })
         .catch(erro => showError(erro.response.data.error));
     }
 
-    function OnSubmit(data : SendMailRecoveryPassword){
+    async function OnSubmit(data : SendMailRecoveryPassword){
         if(isValid){
-            SendMailRecovery(data);
+            await SendMailRecovery(data);
         }
     }
 
