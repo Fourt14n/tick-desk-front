@@ -1,11 +1,10 @@
 import axios from "axios";
 
 const CNPJA_API_KEY = import.meta.env.VITE_CNPJA_KEY;
-console.log(CNPJA_API_KEY)
-
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const api = axios.create({
-    baseURL: "http://localhost:8080/",
+    baseURL: API_URL,
     headers: {
         "Content-Type": "application/json"
     }
