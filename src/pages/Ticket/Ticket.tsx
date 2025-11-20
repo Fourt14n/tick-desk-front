@@ -32,12 +32,14 @@ import { formatarData, TrataDataBackEnd } from "@/utils/utils";
 import type { ResponseRequisitante } from "@/types/ResponseRequisitante/ResponseRequisitante";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useTabs } from "@/store/TabsStore";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const TicketThenAction = ticketValidation.and(ticketActionValidation);
 export type TicketAction = z.infer<typeof TicketThenAction>;
 
 export default function Ticket() {
     const queryClient = useQueryClient();
+    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     let { id = '' } = useParams();
     const ticket = Number.isInteger(parseInt(id)) ? parseInt(id) : 0; // Pra conseguir fazer operações baseada em number eu converto aqui
@@ -50,7 +52,6 @@ export default function Ticket() {
     const { data: call } = useQuery<ResponseCall>({
         queryKey: ["call", id],
         refetchOnWindowFocus: false,
-        staleTime: 1000 * 60 * 4,
         queryFn: () => SelectCallById(),
         enabled: ticket > 0 // Só faço a chamada se o ticket for maior que 0
     })
@@ -119,6 +120,7 @@ export default function Ticket() {
 
     async function SelectCallById(): Promise<ResponseCall> {
         const response = await api.get(`api/calls/${ticket}`);
+        setIsLoading(false);
         return response.data;
     }
 
@@ -282,7 +284,7 @@ export default function Ticket() {
 
     const { ref, ...registerProps } = register("arquivos")
 
-    useEffect(function(){
+    useEffect(function () {
         tabs.addTab(`/Ticket/${id}`);
     }, [id])
 
@@ -299,7 +301,17 @@ export default function Ticket() {
 
                         <div className="flex flex-col gap-2">
                             <Label htmlFor="title">Título do Ticket</Label>
-                            <Input disabled={!(Boolean(call?.status) || ticket === 0)} {...register("title")} onBlur={(e) => UpdateTicket("title", e.target.value)} type="text" placeholder="Título do ticket" maxLength={255} className="bg-white w-full" />
+                            {
+                                isLoading && ticket > 0 ?
+                                    (
+                                        <div className="flex gap-1 flex-row w-full">
+                                            <Skeleton className="h-10 w-full bg-[#c1cac1]"></Skeleton>
+                                        </div>
+                                    )
+                                    :
+                                    <Input disabled={!(Boolean(call?.status) || ticket === 0)} {...register("title")} onBlur={(e) => UpdateTicket("title", e.target.value)} type="text" placeholder="Título do ticket" maxLength={255} className="bg-white w-full" />
+                            }
+
                         </div>
 
                         {/* Textarea container */}

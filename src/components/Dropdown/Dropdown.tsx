@@ -51,7 +51,7 @@ export function Dropdown({ dados }: Data) {
               id={dados.keyDropdown}
               className={`${dados.classes} cursor-pointer bg-white w-full`}
             >
-              <SelectValue placeholder="Selecione" />
+              <SelectValue placeholder="Selecione"/>
             </SelectTrigger>
             <SelectContent>
               {dados.values?.map((item) => (

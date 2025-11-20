@@ -6,6 +6,8 @@ import { UserInfo } from "@/store/UserInfosStore";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import type { ResponseAction } from "@/types/ResponseAction/ResponseAction";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { Skeleton } from "../ui/skeleton";
 
 type ActionHistoryInfos = {
     ticket: number,
@@ -13,6 +15,7 @@ type ActionHistoryInfos = {
 
 export default function ActionHistory({ ticket }: ActionHistoryInfos) {
     const { user } = UserInfo();
+    const [isLoading, setIsLoading] = useState(false);
     const hasPermission = usePermission({ minPermission: PermissionsRoles.SUPORT });
 
     const { data: acoesChamado } = useQuery<ResponseAction[]>({
@@ -23,12 +26,14 @@ export default function ActionHistory({ ticket }: ActionHistoryInfos) {
     })
 
     async function SelectAllActions() {
+        setIsLoading(true);
         return await api.get(`api/actions/call/${ticket}`)
             .then(res => res.data)
             .catch(erro => showError(erro.response.data.error))
     }
 
     async function SelectActionByUser() {
+        setIsLoading(true);
         return await api.get(`api/actions/user/${user?.id}`)
             .then(res => res.data)
             .catch(erro => showError(erro.response.data.error))
@@ -41,7 +46,7 @@ export default function ActionHistory({ ticket }: ActionHistoryInfos) {
         else
             actions = await SelectActionByUser();
 
-        console.log("Veio pegar o bagulho", actions)
+        setIsLoading(false);
         return actions;
     }
 
@@ -52,9 +57,20 @@ export default function ActionHistory({ ticket }: ActionHistoryInfos) {
                 <Separator className="bg-[#BAB9B9]" orientation="horizontal" />
             </div>
 
-            <div className="flex flex-col gap-4 pt-4">
-                {acoesChamado?.map(item => <History acao={item} />)}
-            </div>
+            {
+                isLoading ? (
+                    <div className="flex gap-5 p-2 flex-col w-full">
+                        <Skeleton className="h-20 w-full bg-[#c1cac1]"></Skeleton>
+                        <Skeleton className="h-20 w-full bg-[#c1cac1]"></Skeleton>
+                    </div>
+                )
+                    :
+                    (
+                        <div className="flex flex-col gap-4 pt-4">
+                            {acoesChamado?.map(item => <History acao={item} />)}
+                        </div>
+                    )
+            }
         </div>
     )
 }

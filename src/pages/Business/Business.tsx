@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { onError } from "@/hooks/onError";
 import { showError, showSucces } from "@/hooks/useToast";
 import { api } from "@/lib/axios";
@@ -11,6 +12,7 @@ import { phoneMask } from "@/utils/phoneMask";
 import { businessEditValidation, businessValidation } from "@/validations/business";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router";
 import type z from "zod";
@@ -20,7 +22,8 @@ type Business = z.infer<typeof businessValidation>;
 
 export default function Business() {
     const { id = "" } = useParams();
-    const { register, reset, watch, handleSubmit} = useForm({
+    const [isLoading, setIsLoading] = useState(true);
+    const { register, reset, watch, handleSubmit } = useForm({
         resolver: zodResolver(businessEditValidation)
     })
     const navigate = useNavigate();
@@ -40,18 +43,19 @@ export default function Business() {
             .catch(erro => showError(erro.response.data.error))
     }
 
-    function SelectBusinessById() : Promise<Business>{
+    function SelectBusinessById(): Promise<Business> {
         return api.get(`api/enterprise/${id}`)
-        .then(res => {
-            // Faço o reset pra conseguir pegar sempre o value do formState
-            reset({
-                email: res.data.email,
-                fantasyName: res.data.fantasyName,
-                phone: phoneMask(res.data.phone)
+            .then(res => {
+                // Faço o reset pra conseguir pegar sempre o value do formState
+                reset({
+                    email: res.data.email,
+                    fantasyName: res.data.fantasyName,
+                    phone: phoneMask(res.data.phone)
+                })
+                setIsLoading(false);
+                return res.data;
             })
-            return res.data;
-        })
-        .catch(erro => showError(erro.response.data.error))
+            .catch(erro => showError(erro.response.data.error))
     }
 
     return (
@@ -64,41 +68,62 @@ export default function Business() {
                             <Separator className="bg-[#BAB9B9]" orientation="horizontal" />
                         </div>
                     </div>
+
                     <div className="flex w-full h-full justify-center">
-                        <div className="flex flex-col gap-4 w-full p-5">
-                            <div className="flex flex-col gap-2">
-                                <Label className="font-bold" htmlFor="">CNPJ</Label>
-                                <Input
-                                    disabled
-                                    value={cnpjMask(business?.cnpj || '')}
-                                    className="bg-white"
-                                    type="text"
-                                    maxLength={18} />
+                        {isLoading ? (
+                            <div className="flex flex-col lg:justify-normal justify-center pt-10 gap-10 flex-1 h-full">
+                                <div className="flex gap-5 flex-col w-full">
+                                    <Skeleton className="h-10 w-full bg-[#c1cac1]"></Skeleton>
+                                    <Skeleton className="h-10 w-full bg-[#c1cac1]"></Skeleton>
+                                </div>
+                                <div className="flex gap-5 flex-row w-full">
+                                    <Skeleton className="h-10 w-full bg-[#c1cac1]"></Skeleton>
+                                </div>
+                                <div className="flex gap-5 flex-col w-full">
+                                    <Skeleton className="h-10 w-full bg-[#c1cac1]"></Skeleton>
+                                    <Skeleton className="h-10 w-full bg-[#c1cac1]"></Skeleton>
+                                </div>
                             </div>
-                            <div className="flex flex-col gap-2">
-                                <Label className="font-bold" htmlFor="">Razão social</Label>
-                                <Input value={business?.corporateName} disabled className="bg-white" type="text" maxLength={200} />
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <Label className="font-bold" htmlFor="">Nome fantasia</Label>
-                                <Input {...register("fantasyName")} className="bg-white" type="text" maxLength={200} />
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <Label className="font-bold" htmlFor="">E-mail</Label>
-                                <Input {...register("email")} className="bg-white" type="email" />
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <Label className="font-bold" htmlFor="">Telefone</Label>
-                                <Input value={phoneMask(watch("phone"))} {...register("phone")} className="bg-white" maxLength={15} type="text" />
-                            </div>
-                            <div className="flex py-4 gap-2 justify-end w-full">
-                                <Link to="/Listagem/Business">
-                                    <Button variant={"destructive"} type="submit" className="w-32 lg:w-42 cursor-pointer">Voltar</Button>
-                                </Link>
-                                <Button className="bg-(--weakGreen) w-32 lg:w-42 text-[#135C04] hover:bg-[#3eff0090] cursor-pointer" type="submit">Atualizar</Button>
-                            </div>
-                        </div>
+                        ) :
+                            (
+                                <div className="flex flex-col gap-4 w-full p-5">
+                                    <div className="flex flex-col gap-2">
+                                        <Label className="font-bold" htmlFor="">CNPJ</Label>
+                                        <Input
+                                            disabled
+                                            value={cnpjMask(business?.cnpj || '')}
+                                            className="bg-white"
+                                            type="text"
+                                            maxLength={18} />
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <Label className="font-bold" htmlFor="">Razão social</Label>
+                                        <Input value={business?.corporateName} disabled className="bg-white" type="text" maxLength={200} />
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <Label className="font-bold" htmlFor="">Nome fantasia</Label>
+                                        <Input {...register("fantasyName")} className="bg-white" type="text" maxLength={200} />
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <Label className="font-bold" htmlFor="">E-mail</Label>
+                                        <Input {...register("email")} className="bg-white" type="email" />
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <Label className="font-bold" htmlFor="">Telefone</Label>
+                                        <Input value={phoneMask(watch("phone"))} {...register("phone")} className="bg-white" maxLength={15} type="text" />
+                                    </div>
+                                    <div className="flex py-4 gap-2 justify-end w-full">
+                                        <Link to="/Listagem/Business">
+                                            <Button variant={"destructive"} type="submit" className="w-32 lg:w-42 cursor-pointer">Voltar</Button>
+                                        </Link>
+                                        <Button className="bg-(--weakGreen) w-32 lg:w-42 text-[#135C04] hover:bg-[#3eff0090] cursor-pointer" type="submit">Atualizar</Button>
+                                    </div>
+                                </div>
+                            )}
+
                     </div>
+
+
                 </div>
             </ScrollArea>
         </form>
