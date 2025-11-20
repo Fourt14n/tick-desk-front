@@ -2,6 +2,7 @@ import { ChartBarLabel } from "@/components/LineChart/LineChart";
 import { ChartPieDonutActive } from "@/components/PizzaChart/PizzaChart";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/lib/axios";
 import { UserInfo } from "@/store/UserInfosStore";
 import type { CountCallsByTeam } from "@/types/CountCallsByTeam/CountCallsByTeam";
@@ -44,78 +45,94 @@ export default function Dashboard() {
     return (
         <>
             {
-                isLoading ? (<div> Carregando...</div >) : (
-                    <div className="flex h-full w-full">
-                        <ScrollArea className="w-full h-full flex p-5">
-                            <div className="flex flex-col gap-5">
-                                <div className="flex flex-col w-full">
-                                    <div className="flex flex-col justify-center">
-                                        <p className="text-(--text-strongGreen) font-bold">Relatório</p>
-                                        <Separator className="bg-[#BAB9B9]" orientation="horizontal" />
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-col gap-5 w-full">
-                                    <div className="flex flex-col md:flex-row gap-5">
-                                        <div className="flex gap-5 border-1 p-5 flex-1 justify-center md:justify-between items-center rounded-2xl">
-                                            <div>
-                                                <div className="flex flex-col gap-3">
-                                                    <p className="font-light">Total de chamados</p>
-                                                    <p className="text-2xl font-bold">{dadosRelatorio?.dadosEmpresa.total}</p>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div className="p-3 bg-[#F5F5F5] rounded-3xl">
-                                                    <Ticket />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="flex gap-5 border-1 p-5 flex-1 justify-center md:justify-between items-center rounded-2xl">
-                                            <div>
-                                                <div className="flex flex-col gap-3">
-                                                    <p className="font-light">Total de pendentes</p>
-                                                    <p className="text-2xl font-bold">{dadosRelatorio?.dadosEmpresa.totalAbertos}</p>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div className="p-3 bg-[#F5F5F5] rounded-3xl">
-                                                    <Clock color="orange" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="flex gap-5 border-1 p-5 flex-1 justify-center md:justify-between items-center rounded-2xl">
-                                            <div>
-                                                <div className="flex flex-col gap-3">
-                                                    <p className="font-light">Total de resolvidos</p>
-                                                    <p className="text-2xl font-bold">{dadosRelatorio?.dadosEmpresa.totalFechados}</p>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div className="p-3 bg-[#F5F5F5] rounded-3xl">
-                                                    <Check color="green" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="flex flex-col gap-5 w-full md:flex-row">
-                                        <div className="w-full md:w-1/2">
-                                            {dadosRelatorio?.dadosTimes.times && (
-                                                <ChartBarLabel times={dadosRelatorio.dadosTimes.times} />
-                                            )}
-                                        </div>
-                                        <div className="w-full md:w-1/2">
-                                        {
-                                            dadosRelatorio?.dadosUrgencia.urgencias && (
-                                                <ChartPieDonutActive urgencias={dadosRelatorio.dadosUrgencia.urgencias}/>
-                                            )
-                                        }
-                                        </div>
-                                    </div>
+                <div className="flex h-full w-full">
+                    <ScrollArea className="w-full h-full flex p-5">
+                        <div className="flex flex-col gap-5">
+                            <div className="flex flex-col w-full">
+                                <div className="flex flex-col justify-center">
+                                    <p className="text-(--text-strongGreen) font-bold">Relatório</p>
+                                    <Separator className="bg-[#BAB9B9]" orientation="horizontal" />
                                 </div>
                             </div>
-                        </ScrollArea>
-                    </div>
-                )
+
+                            {isLoading ? (
+                                <div className="flex flex-col gap-10 flex-1 h-full">
+                                    <div className="flex gap-3 flex-col lg:flex-row flex-1 h-full">
+                                        <Skeleton className="h-30 lg:h-15 w-full lg:w-1/3 bg-[#c1cac1]"></Skeleton>
+                                        <Skeleton className="h-30 lg:h-15 w-full lg:w-1/3 bg-[#c1cac1]"></Skeleton>
+                                        <Skeleton className="h-30 lg:h-15 w-full lg:w-1/3 bg-[#c1cac1]"></Skeleton>
+                                    </div>
+                                    <div className="flex gap-3 w-full flex-col lg:flex-row flex-1 h-full">
+                                        <Skeleton className="h-[40rem] w-full lg:w-1/2 bg-[#c1cac1]"></Skeleton>
+                                        <Skeleton className="h-[40rem] w-full lg:w-1/2 bg-[#c1cac1]"></Skeleton>
+                                    </div>
+                                </div>
+                            ) :
+                                (
+
+                                    <div className="flex flex-col gap-5 w-full">
+                                        <div className="flex flex-col md:flex-row gap-5">
+                                            <div className="flex gap-5 border-1 p-5 flex-1 justify-center md:justify-between items-center rounded-2xl">
+                                                <div>
+                                                    <div className="flex flex-col gap-3">
+                                                        <p className="font-light">Total de chamados</p>
+                                                        <p className="text-2xl font-bold">{dadosRelatorio?.dadosEmpresa.total}</p>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div className="p-3 bg-[#F5F5F5] rounded-3xl">
+                                                        <Ticket />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-5 border-1 p-5 flex-1 justify-center md:justify-between items-center rounded-2xl">
+                                                <div>
+                                                    <div className="flex flex-col gap-3">
+                                                        <p className="font-light">Total de pendentes</p>
+                                                        <p className="text-2xl font-bold">{dadosRelatorio?.dadosEmpresa.totalAbertos}</p>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div className="p-3 bg-[#F5F5F5] rounded-3xl">
+                                                        <Clock color="orange" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-5 border-1 p-5 flex-1 justify-center md:justify-between items-center rounded-2xl">
+                                                <div>
+                                                    <div className="flex flex-col gap-3">
+                                                        <p className="font-light">Total de resolvidos</p>
+                                                        <p className="text-2xl font-bold">{dadosRelatorio?.dadosEmpresa.totalFechados}</p>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div className="p-3 bg-[#F5F5F5] rounded-3xl">
+                                                        <Check color="green" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col gap-5 w-full md:flex-row">
+                                            <div className="w-full md:w-1/2">
+                                                {dadosRelatorio?.dadosTimes.times && (
+                                                    <ChartBarLabel times={dadosRelatorio.dadosTimes.times} />
+                                                )}
+                                            </div>
+                                            <div className="w-full md:w-1/2">
+                                                {
+                                                    dadosRelatorio?.dadosUrgencia.urgencias && (
+                                                        <ChartPieDonutActive urgencias={dadosRelatorio.dadosUrgencia.urgencias} />
+                                                    )
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+
+                        </div>
+                    </ScrollArea>
+                </div>
             }
         </>
     )

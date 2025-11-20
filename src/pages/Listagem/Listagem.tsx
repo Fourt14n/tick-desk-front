@@ -1,6 +1,7 @@
 import { DataTable } from "@/components/Tabela/Tabela";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import useConfirmation from "@/hooks/useConfirmation";
 import usePermission, { PermissionsRoles } from "@/hooks/usePermission";
 import { showError } from "@/hooks/useToast";
@@ -19,6 +20,7 @@ export default function Listagem() {
     const [dataTickets, setDataTickets] = useState<Ticket[]>([]);
     const [teams, setTeams] = useState<Team[]>([]);
     const [business, setBusiness] = useState<Team[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const { user } = UserInfo();
     const navigate = useNavigate();
     const confirmDelete = useConfirmation();
@@ -51,7 +53,7 @@ export default function Listagem() {
     }
 
     function GetTickets() {
-        const endpoint = "api/calls/";
+        const endpoint = `api/calls/enterprise/${user?.enterpriseId}`;
         getData<Ticket[]>(endpoint)
             .then(result => {
                 setDataTickets(result);
@@ -77,6 +79,7 @@ export default function Listagem() {
     }
 
     useEffect(() => {
+        setIsLoading(true);
         switch (tipo) {
             case "Users": {
                 GetUsers();
@@ -102,7 +105,6 @@ export default function Listagem() {
 
             };
         }
-
     }, [tipo]);
 
 
@@ -113,7 +115,7 @@ export default function Listagem() {
                 showError(erro.response.data.error);
                 return [];
             });
-        console.log(resultado)
+            setIsLoading(false);
         return resultado;
     }
 
@@ -221,7 +223,16 @@ export default function Listagem() {
                 </div>
                 <div className="flex w-full overflow-hidden">
                     {
-                        renderDataTable()
+                    isLoading ? (
+                        <div className="flex flex-col gap-3 justify-center items-center flex-1 h-full">
+                            <Skeleton className="h-15 w-full bg-[#c1cac1]"></Skeleton>
+                            <Skeleton className="h-15 w-full bg-[#c1cac1]"></Skeleton>
+                            <Skeleton className="h-15 w-full bg-[#c1cac1]"></Skeleton>
+                            <Skeleton className="h-15 w-full bg-[#c1cac1]"></Skeleton>
+                            <Skeleton className="h-15 w-full bg-[#c1cac1]"></Skeleton>
+                        </div>
+                    )
+                    : renderDataTable()
                     }
                 </div>
             </ScrollArea>

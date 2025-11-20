@@ -6,7 +6,7 @@ import { Link } from "react-router";
 
 export interface Ticket {
     id: string,
-    callNumber: number,
+    numberCall: number,
     title: string,
     previsaoSolucao: Date,
     urgency: string
@@ -23,7 +23,7 @@ export const TicketColumns: ColumnDef<Ticket>[] = [
     }
   },
   {
-    accessorKey: "id",
+    accessorKey: "numberCall",
     header: ({ column }) => {
       return (
         <Button
