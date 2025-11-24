@@ -7,12 +7,13 @@ type Infos = {
 
 type TicketInfos = {
     title: string,
-    numberCall: string
+    numberCall: string,
+    id: number,
 }
 
 export default function Searching({ ticket, eraserFunc }: Infos) {
     return (
-        <Link to={`/Ticket/${ticket.numberCall}`} onClick={eraserFunc} className="flex flex-col border-1 border-black-50 gap-2 p-3 w-full">
+        <Link to={`/Ticket/${ticket.id}`} onClick={eraserFunc} className="flex flex-col border-1 border-black-50 gap-2 p-3 w-full">
             <div>
                 <strong>
                     {ticket.numberCall}

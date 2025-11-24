@@ -7,35 +7,9 @@ import { showError } from "@/hooks/useToast"
 
 type TicketResults = {
   numberCall: string,
-  title: string
+  title: string,
+  id: number
 }
-// const autoCompleteFake = [
-//   {
-//     callNumber: "123",
-//     title: "Erro com integração com a api do Banco Inter"
-//   },
-//   {
-//     callNumber: "124",
-//     title: "Melhoria nos relatórios de recebimento"
-//   },
-//   {
-//     callNumber: "125",
-//     title: "Lentidão no carregamento da tela de relatório de clientes Lentidão no carregamento daasdafasdfsdafdsfasdfsagdasd"
-//   },
-//   {
-//     callNumber: "125",
-//     title: "Lentidão no carregamento da tela de relatório de clientes Lentidão no carregamento daasdafasdfsdafdsfasdfsagdasd"
-//   },
-//   {
-//     callNumber: "125",
-//     title: "Lentidão no carregamento da tela de relatório de clientes Lentidão no carregamento daasdafasdfsdafdsfasdfsagdasd"
-//   },
-//   {
-//     callNumber: "125",
-//     title: "Lentidão no carregamento da tela de relatório de clientes Lentidão no carregamento daasdafasdfsdafdsfasdfsagdasd"
-//   },
-// ]
-
 
 export function AutoComplete() {
   const [search, setSearch] = useState<string>()
