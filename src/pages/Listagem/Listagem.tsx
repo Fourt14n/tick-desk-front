@@ -70,7 +70,7 @@ export default function Listagem() {
                     switch(group){
                         case "mine": result = result.filter(ticket => ticket?.userResponsavel?.id === user?.id);break;
                         case "team": result = result.filter(ticket => ticket?.userResponsavel?.team.id === user?.teamId);break;
-                        case "business": result = result.filter(ticket => ticket?.userResponsavel?.team.enterpriseDto.id === user?.enterpriseId);break;
+                        case "business": result = result.filter(ticket => ticket?.userResponsavel?.team.enterpriseDto.id === user?.enterpriseId || ticket?.userResponsavel === null);break;
                     }
                 }
 
