@@ -25,7 +25,7 @@ interface DatePickerProperties {
 }
 export default function DatePicker({ dados }: Data) {
     const [open, setOpen] = React.useState(false)
-    console.log(dados)
+    
     return (
         <div className="flex flex-col gap-1.5">
             <Label className="font-semibold">{dados.label}</Label>

@@ -107,7 +107,7 @@ export default function BusinessCreate() {
                 break;
             }
             case TipoRegistro.USUARIO: {
-                console.log("Veio trocar o valor", campo, valor)
+                
                 setDadosUsuario(prev => ({ ...prev, [campo]: valor }));
                 break;
             }
@@ -115,17 +115,17 @@ export default function BusinessCreate() {
     };
 
     async function ConsultaCNPJ() {
-        console.log("Veio consultar o CNPJ");
+        
         try {
             var cnpjConsulta = await consultaCNPJ.get<ResponseCNPJA>(`office/${dadosEmpresa.cnpj}`);
             let consulta = cnpjConsulta.data;
-            console.log("Consulta", consulta)
+            
             handleChange("email", consulta?.emails.at(0)?.address || '', TipoRegistro.EMPRESA)
             handleChange("corporateName", consulta?.company.name || '', TipoRegistro.EMPRESA)
             handleChange("fantasyName", consulta?.alias || '', TipoRegistro.EMPRESA)
             handleChange("phone", `${consulta?.phones.at(0)?.area}${consulta?.phones.at(0)?.number}` || '', TipoRegistro.EMPRESA)
         } catch (erro: any) {
-            console.log("Erro", erro)
+            
             switch (erro?.response.status) {
                 case 400: {
                     showError("CNPJ inválido!");
@@ -159,8 +159,8 @@ export default function BusinessCreate() {
         setIsSending(true);
         await api.post(`api/enterprise/create`, dadosEmpresa)
             .then(res => {
-                console.log(res.data);
-                console.log(res.data.id);
+                
+                
 
                 // Tem que atualizar tanto o valor do estado quanto o da equipe
                 setEmpresaCriada(res.data.id);

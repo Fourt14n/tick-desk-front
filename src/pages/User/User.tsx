@@ -60,7 +60,7 @@ export default function User({ action }: Action) {
     async function SelectUser() {
         api.get(`api/user/get/${id}`)
             .then(res => {
-                console.log(res.data)
+                
                 reset(res.data)
                 // Para o valor do time eu preciso fazer o set manual
                 // Porque o time vem dentro de aninhamentos de objetos
@@ -73,7 +73,7 @@ export default function User({ action }: Action) {
     async function SelectTeams() {
         api.get(`api/enterprise/${user?.enterpriseId}/teams`)
             .then(res => {
-                console.log(res.data)
+                
                 var equipes: DropDownValues[] = res.data.map((item: ResponseTeams) => {
                     return { value: item.id, label: item.name }
                 })
@@ -86,7 +86,7 @@ export default function User({ action }: Action) {
 
     async function OnSubmit(data: UserRegister) {
         if (isValid) {
-            console.log(data)
+            
             if (action === EAction.UPDATE)
                 await UpdateUser(data);
             else

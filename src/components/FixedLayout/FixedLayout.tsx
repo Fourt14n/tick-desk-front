@@ -131,7 +131,7 @@ export default function FixedLayout({ TelaAtual }: { TelaAtual: JSX.Element }) {
                                 <div className="flex overflow-x-auto overflow-y-hidden scrollbar-none">
                                     {
                                         tabs.map((tab) => {
-                                            console.log(tab);
+                                            
                                             return (
                                                 <HeaderCardTab tabUrl={tab} />
                                             )
