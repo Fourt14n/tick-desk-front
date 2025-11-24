@@ -61,7 +61,12 @@ export default function Listagem() {
                 var period = queryParams.get("period") || "";
                 var group = queryParams.get("group") || "";
 
+                console.log(period, "Período");
+                console.log(group, "Grupo");
+                console.log(result, "Resultado pré-filtragem");
+
                 if(group !== ""){
+                    console.log("Entrou na filtragem de Grupo");
                     switch(group){
                         case "mine": result = result.filter(ticket => ticket?.userResponsavel.id === user?.id);break;
                         case "team": result = result.filter(ticket => ticket?.userResponsavel.team.id === user?.teamId);break;
@@ -70,12 +75,14 @@ export default function Listagem() {
                 }
 
                 if(period !== ""){
+                    console.log("Entrou na filtragem de período");                    
                     switch(period){
                         case "expiresToday": result = result.filter(ticket => isToday(ticket?.previsaoSolucao));break;
                         case "openedToday": result = result.filter(ticket => isToday(ticket?.dataAbertura));break;
                         case "expired": result = result.filter(ticket => differenceInCalendarDays(ticket?.previsaoSolucao, new Date()) < 0);break;
                     }
                 }
+                console.log(result, "Resultado pós-filtragem");
 
                 setDataTickets(result);
                 
