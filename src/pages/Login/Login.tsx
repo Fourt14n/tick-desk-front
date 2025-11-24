@@ -26,15 +26,13 @@ export default function Login() {
         resolver: zodResolver(loginSchema)
     });
     const navigate = useNavigate();
-    const { user, setUser } = UserInfo();
+    const { setUser } = UserInfo();
 
     async function GetLoggedUserInfos(id: number) {
         return api.get(`api/user/get/${id}`)
             .then(res => {
                 const userInfos = res.data;
-                
-                
-                
+                            
                 setUser({
                     enterpriseId: userInfos.team.enterpriseDto.id,
                     teamId: userInfos.team.id,
