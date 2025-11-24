@@ -81,7 +81,7 @@ export default function Ticket() {
 
     // Tô usando esse useMemo porque definindo o value direto ele acaba criando loop infinito
     const formValues = useMemo(() => {
-        console.log(call?.urgency)
+        
         return ({
             title: call?.title || "",
             callId: ticket,
@@ -175,7 +175,7 @@ export default function Ticket() {
                             .catch((erro) => showError(`Erro ao enviar o arquivo ${arquivo?.name}: ${erro}`))
                     }
                 } catch (error) {
-                    console.log(error);
+                    
                     continue;
                 }
             }
@@ -217,9 +217,6 @@ export default function Ticket() {
     }
 
     function handleIconClick() {
-        console.log(Boolean(call?.status))
-        console.log(ticket > 0)
-        console.log(Boolean(call?.status) || ticket > 0)
         if (Boolean(call?.status) || ticket === 0)
             fileInputRef.current?.click();
     }
@@ -228,12 +225,12 @@ export default function Ticket() {
         if (Boolean(call?.status) || ticket === 0) {
             // Selecino o elemento anterior e removo a classe de selecionado
             var prevOption = document.querySelector(`#${parentElement} .selected`);
-            console.log("prevOption", prevOption);
+            
             prevOption?.classList.remove("selected");
 
             // Seleciono o elemento clicado e adiciono a classe de selecionado
             var actualOption = event.target as HTMLButtonElement;
-            console.log("actualOption", actualOption)
+            
             actualOption.classList.add("selected");
         }
     }

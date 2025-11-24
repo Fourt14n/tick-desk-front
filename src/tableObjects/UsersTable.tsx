@@ -49,7 +49,7 @@ export const UsersColumns: ColumnDef<User>[] = [
     header: "Tipo de Usuário",
     cell: ({ row }) => {
       const value = row.original.role;
-      console.log()
+      
       let valorAlterado = row.original.role;
       switch(value){
         case "CLIENT": valorAlterado = "Cliente"; break;

@@ -36,7 +36,7 @@ export default function FilesView({ arquivos }: Files) {
             .then(res => res.data)
             .catch(erro => showError(erro.response.data.error))
 
-        console.log(url)
+        
 
         // Cria URL temporária do blob
         var blobUrl = window.URL.createObjectURL(url);

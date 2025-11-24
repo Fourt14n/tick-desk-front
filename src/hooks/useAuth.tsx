@@ -26,7 +26,7 @@ async function Authenticate({ email, password }: LoginCredentials) {
                 Object.assign(result, res.data);
             })
             .catch(erro => {
-                console.log(erro.response.data.error)
+                
                 showError(erro.response.data.error);
             })
     } catch (error) {

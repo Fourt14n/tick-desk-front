@@ -60,23 +60,22 @@ export default function Listagem() {
             .then(result => {
                 var period = queryParams.get("period") || "";
                 var group = queryParams.get("group") || "";
-                
+
                 if(group !== ""){
                     switch(group){
-                        case "mine": result = result.filter(ticket => ticket.userResponsavel.id === user?.id);break;
-                        case "team": result = result.filter(ticket => ticket.userResponsavel.team.id === user?.teamId);break;
-                        case "business": result = result.filter(ticket => ticket.userResponsavel.team.enterpriseDto.id === user?.enterpriseId);break;
+                        case "mine": result = result.filter(ticket => ticket?.userResponsavel?.id === user?.id);break;
+                        case "team": result = result.filter(ticket => ticket?.userResponsavel?.team.id === user?.teamId);break;
+                        case "business": result = result.filter(ticket => ticket?.userResponsavel?.team.enterpriseDto.id === user?.enterpriseId || ticket?.userResponsavel === null);break;
                     }
                 }
 
-                if(period !== ""){
+                if(period !== ""){               
                     switch(period){
-                        case "expiresToday": result = result.filter(ticket => isToday(ticket.previsaoSolucao));break;
-                        case "openedToday": result = result.filter(ticket => isToday(ticket.dataAbertura));break;
-                        case "expired": result = result.filter(ticket => differenceInCalendarDays(ticket.previsaoSolucao, new Date()) < 0);break;
+                        case "expiresToday": result = result.filter(ticket => isToday(ticket?.previsaoSolucao));break;
+                        case "openedToday": result = result.filter(ticket => isToday(ticket?.dataAbertura));break;
+                        case "expired": result = result.filter(ticket => differenceInCalendarDays(ticket?.previsaoSolucao, new Date()) < 0);break;
                     }
                 }
-
                 setDataTickets(result);
                 
             })

@@ -29,7 +29,7 @@ type RequestTeams = {
 }
 
 export function ChartBarLabel({times} : RequestTeams) {
-  console.log("times", times)
+  
   return (
     <Card className="h-full">
       <CardHeader>

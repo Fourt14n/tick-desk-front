@@ -11,8 +11,8 @@ export default function PrivateRoute({children} : PrivateRouteType){
     const isAuthenticated = validateAuth();
     
     useEffect(() => {
-        console.log("Veio autenticar");
-        console.log(isAuthenticated);
+        
+        
         
         if(!isAuthenticated) {
             navigate("/Login");

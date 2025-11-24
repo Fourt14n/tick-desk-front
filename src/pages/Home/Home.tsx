@@ -38,7 +38,7 @@ export default function Home() {
             await setEquipes([resultadoUsuario, resultadoEquipe as TicketGroup, resultadoEmpresa as TicketGroup]);
         else
             await setEquipes([resultadoUsuario]);
-        console.log(equipes)
+        
         setLoading(false);
     }
 
@@ -91,7 +91,7 @@ export default function Home() {
         let abertosHoje = 0; // Tá faltando a data de cadastro no retorno dos chamados
 
         response?.forEach((chamado: any) => {
-            console.log("Entrou no foreach")
+            
             const previsao = new Date(chamado.previsaoSolucao);
             const abertura = new Date(chamado.dataAbertura);
 

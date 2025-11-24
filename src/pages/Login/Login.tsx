@@ -26,15 +26,13 @@ export default function Login() {
         resolver: zodResolver(loginSchema)
     });
     const navigate = useNavigate();
-    const { user, setUser } = UserInfo();
+    const { setUser } = UserInfo();
 
     async function GetLoggedUserInfos(id: number) {
         return api.get(`api/user/get/${id}`)
             .then(res => {
                 const userInfos = res.data;
-                console.log(user)
-                console.log(userInfos.team.enterpriseDto.id);
-                console.log(userInfos.team.id);
+                            
                 setUser({
                     enterpriseId: userInfos.team.enterpriseDto.id,
                     teamId: userInfos.team.id,
@@ -43,7 +41,7 @@ export default function Login() {
                     teamName: userInfos.team.name,
                     enterpriseName: userInfos.team.enterpriseDto.fantasyName
                 });
-                console.log(user)
+                
             }).catch(erro => {
                 showError("Erro ao tentar buscar o usuário logado: " + erro.response.data.error);
             })
