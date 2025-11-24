@@ -318,6 +318,7 @@ export default function Ticket() {
                                 <textarea
                                     {...register("description")}
                                     placeholder="Faça aqui e sua solicitação..."
+                                    maxLength={2500}
                                     className="w-full p-3 pb-15 border-none outline-none resize-none placeholder-gray-400 rounded-lg overflow-y-auto"
                                     style={{
                                         scrollbarWidth: 'thin',

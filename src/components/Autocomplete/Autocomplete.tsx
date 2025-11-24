@@ -39,7 +39,7 @@ export function AutoComplete() {
 
   return (
     <div className="relative">
-      <Input placeholder="Localize seu ticket" className="bg-white pr-8 w-full" value={search} onChange={(value) => {
+      <Input placeholder="Localize seu ticket" maxLength={255} className="bg-white pr-8 w-full" value={search} onChange={(value) => {
         setSearch(value.target.value)
 
         clearTimeout(timeoutRef.current);
