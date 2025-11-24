@@ -7,7 +7,8 @@ export interface TicketGroup {
     Total: Number,
     OpenedToday: Number,
     ExpiresToday: Number,
-    Expired: Number
+    Expired: Number,
+    GroupType: string
 }
 
 interface ReceivingData {
@@ -26,7 +27,7 @@ export default function HomeCard({group} : ReceivingData) {
             <CardContent className="px-3">
                 <div className="w-full max-w-full grid gap-2">
                     <div className="topCards grid grid-cols-2 justify-between gap-3">
-                        <Link to="/Listagem/Tickets" className="ticketQtdContainer h-full aspect-[2-1] lg:aspect-square">
+                        <Link to={`/Listagem/Tickets?group=${group.GroupType}`} className="ticketQtdContainer h-full aspect-[2-1] lg:aspect-square">
                             <div className="flex w-full gap-3 flex-col justify-center items-center">
                                 <p className="text-center">Total</p>
                                 <div className="quantityTextContainer bg-[#1eff004b]">
@@ -34,7 +35,7 @@ export default function HomeCard({group} : ReceivingData) {
                                 </div>
                             </div>
                         </Link>
-                        <Link to="/Listagem/Tickets" className="ticketQtdContainer h-full aspect-[2-1] lg:aspect-square">
+                        <Link to={`/Listagem/Tickets?period=openedToday&group=${group.GroupType}`} className="ticketQtdContainer h-full aspect-[2-1] lg:aspect-square">
                             <div className="flex w-full gap-3 flex-col justify-center items-center">
                                 <p className="text-center">Abertos hoje</p>
                                 <div className="quantityTextContainer bg-[#f6ff0065] text-center">
@@ -44,7 +45,7 @@ export default function HomeCard({group} : ReceivingData) {
                         </Link>
                     </div>
                     <div className="bottomCards flex flex-col gap-2">
-                        <Link to="/Listagem/Tickets" className="ticketQtdContainer">
+                        <Link to={`/Listagem/Tickets?period=expiresToday&group=${group.GroupType}`} className="ticketQtdContainer">
                             <div className="flex w-3/5 gap-3 justify-center items-center">
                                 <p className="w-full">Vencem hoje</p>
                             </div>
@@ -54,7 +55,7 @@ export default function HomeCard({group} : ReceivingData) {
                                 </div>
                             </div>
                         </Link>
-                        <Link to="/Listagem/Tickets" className="ticketQtdContainer">
+                        <Link to={`/Listagem/Tickets?period=expired&group=${group.GroupType}`} className="ticketQtdContainer">
                             <div className="flex w-3/5 gap-3 justify-center items-center">
                                 <p className="w-full">Vencidos</p>
                             </div>

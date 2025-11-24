@@ -11,8 +11,9 @@ import { BusinessColumns, type Business } from "@/tableObjects/BusinessTable";
 import { TeamColumns, type Team } from "@/tableObjects/TeamsTable";
 import { TicketColumns, type Ticket } from "@/tableObjects/TicketsTable";
 import { UsersColumns, type User } from "@/tableObjects/UsersTable";
+import { differenceInCalendarDays, isToday } from "date-fns";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 
 export default function Listagem() {
     let { tipo = '' } = useParams();
@@ -24,6 +25,7 @@ export default function Listagem() {
     const { user } = UserInfo();
     const navigate = useNavigate();
     const confirmDelete = useConfirmation();
+    const [queryParams] = useSearchParams();
 
     function GetUsers() {
         const endpoint = `api/enterprise/${user?.enterpriseId}/users`;
@@ -56,6 +58,25 @@ export default function Listagem() {
         const endpoint = `api/calls/enterprise/${user?.enterpriseId}`;
         getData<Ticket[]>(endpoint)
             .then(result => {
+                var period = queryParams.get("period") || "";
+                var group = queryParams.get("group") || "";
+                
+                if(group !== ""){
+                    switch(group){
+                        case "mine": result = result.filter(ticket => ticket.userResponsavel.id === user?.id);break;
+                        case "team": result = result.filter(ticket => ticket.userResponsavel.team.id === user?.teamId);break;
+                        case "business": result = result.filter(ticket => ticket.userResponsavel.team.enterpriseDto.id === user?.enterpriseId);break;
+                    }
+                }
+
+                if(period !== ""){
+                    switch(period){
+                        case "expiresToday": result = result.filter(ticket => isToday(ticket.previsaoSolucao));break;
+                        case "openedToday": result = result.filter(ticket => isToday(ticket.dataAbertura));break;
+                        case "expired": result = result.filter(ticket => differenceInCalendarDays(ticket.previsaoSolucao, new Date()) < 0);break;
+                    }
+                }
+
                 setDataTickets(result);
                 
             })
@@ -105,7 +126,7 @@ export default function Listagem() {
 
             };
         }
-    }, [tipo]);
+    }, [tipo, queryParams]);
 
 
     async function getData<T>(endpoint: string) {

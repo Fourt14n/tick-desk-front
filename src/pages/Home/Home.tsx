@@ -61,21 +61,26 @@ export default function Home() {
     }
 
     function FormataChamados(kind: GroupType, response?: any, secundaryKind?: GroupType): TicketGroup {
-        console.log(kind)
-        console.log(response)
+        let groupType = "";
         let name = "ERRO AO RECUPERAR NOME DA EQUIPE";
         switch (kind) {
-            case GroupType.User: name = "Meus Tickets"; break;
-            case GroupType.Team: name = response.at(0).team.name; break;
-            case GroupType.Enterprise: name = response.at(0).team.enterpriseDto.fantasyName; break;
+            case GroupType.User: name = "Meus Tickets"; groupType = "mine"; break;
+            case GroupType.Team: name = response.at(0).team.name; groupType = "team"; break;
+            case GroupType.Enterprise: name = response.at(0).team.enterpriseDto.fantasyName; groupType = "business"; break;
             case GroupType.Error: {
                 // Caso não encontre ele vai vir aqui buscar o nome
-                if (secundaryKind === GroupType.Team)
+                if (secundaryKind === GroupType.Team){
                     name = user?.teamName || "Time não encontrado";
-                else if (secundaryKind === GroupType.Enterprise)
+                    groupType = "team";
+                }
+                else if (secundaryKind === GroupType.Enterprise){
                     name = user?.enterpriseName || "Empresa não encontrada";
-                else
+                    groupType = "business";
+                }
+                else{
                     name = "Meus Tickets";
+                    groupType = "mine";
+                }
                 break;
             }
         }
@@ -106,7 +111,8 @@ export default function Home() {
             ExpiresToday: venceHoje,
             GroupName: name,
             OpenedToday: abertosHoje,
-            Total: total
+            Total: total,
+            GroupType: groupType
         }
 
     }

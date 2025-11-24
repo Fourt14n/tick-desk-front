@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import type { ResponseUser } from "@/types/ResponseUser/ResponseUser";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Edit } from "lucide-react";
 import { Link } from "react-router";
@@ -9,7 +10,9 @@ export interface Ticket {
     numberCall: number,
     title: string,
     previsaoSolucao: Date,
-    urgency: string
+    dataAbertura: Date,
+    urgency: string,
+    userResponsavel: ResponseUser
 }
 
 export const TicketColumns: ColumnDef<Ticket>[] = [
