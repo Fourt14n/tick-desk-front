@@ -68,9 +68,9 @@ export default function Listagem() {
                 if(group !== ""){
                     console.log("Entrou na filtragem de Grupo");
                     switch(group){
-                        case "mine": result = result.filter(ticket => ticket?.userResponsavel.id === user?.id);break;
-                        case "team": result = result.filter(ticket => ticket?.userResponsavel.team.id === user?.teamId);break;
-                        case "business": result = result.filter(ticket => ticket?.userResponsavel.team.enterpriseDto.id === user?.enterpriseId);break;
+                        case "mine": result = result.filter(ticket => ticket?.userResponsavel?.id === user?.id);break;
+                        case "team": result = result.filter(ticket => ticket?.userResponsavel?.team.id === user?.teamId);break;
+                        case "business": result = result.filter(ticket => ticket?.userResponsavel?.team.enterpriseDto.id === user?.enterpriseId);break;
                     }
                 }
 
