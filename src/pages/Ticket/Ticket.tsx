@@ -217,9 +217,6 @@ export default function Ticket() {
     }
 
     function handleIconClick() {
-        )
-        
-         || ticket > 0)
         if (Boolean(call?.status) || ticket === 0)
             fileInputRef.current?.click();
     }
