@@ -44,9 +44,9 @@ export function AutoComplete() {
 
         clearTimeout(timeoutRef.current);
 
-        if (value.target.value) {
+        if (value.target.value.trim()) {
           timeoutRef.current = setTimeout(() => {
-            api.get(`api/calls/search?query=${value.target.value}`)
+            api.get(`api/calls/search?query=${value.target.value.trim()}`)
               .then(res => setResults(res.data))
               .catch(erro => showError(erro.response.data.error))
           }, 1500)
