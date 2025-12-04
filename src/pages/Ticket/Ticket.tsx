@@ -81,7 +81,6 @@ export default function Ticket() {
 
     // Tô usando esse useMemo porque definindo o value direto ele acaba criando loop infinito
     const formValues = useMemo(() => {
-        
         return ({
             title: call?.title || "",
             callId: ticket,
@@ -95,7 +94,7 @@ export default function Ticket() {
             statusAction: "PUBLIC",
             requisitanteId: call?.requisitanteId.toString() || user?.id.toString() || "",
         })
-    }, [call?.requisitanteId, call?.urgency, call?.userResponsavel, call?.status, call?.id, call?.title]);
+    }, [call?.requisitanteId, call?.urgency, call?.userResponsavel, call?.status, call?.id, call?.title, call?.previsaoSolucao]);
 
     const { register, handleSubmit, watch, setValue, control, formState: { isSubmitting } } = useForm<TicketAction>({
         resolver: zodResolver(TicketThenAction),
