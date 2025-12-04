@@ -28,7 +28,7 @@ export default function History({ acao }: AcaoReturn) {
                     <div>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Files onClick={() => {
+                                <Files className="hidden" onClick={() => {
                                     // fileList.open({
                                     //     title: "Arquivos enviados",
                                     //     description: <FilesView arquivos={acao.files}/>

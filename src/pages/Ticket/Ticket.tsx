@@ -267,15 +267,15 @@ export default function Ticket() {
     }
 
     function handleSendAction(data: TicketAction) {
-        if (watch("description").toUpperCase().includes("ANEXO") && fileInputRef.current?.files?.length === 0) {
-            confirmDialog.open({
-                title: "Confirma envio sem anexo?",
-                description: "Você escreveu anexo na ação, mas não anexou nenhum arquivo, deseja enviar a ação assim mesmo?",
-                onConfirm: () => handleInserting(data),
-                cancelText: "Não",
-                confirmText: "Sim",
-            });
-        } else
+        // if (watch("description").toUpperCase().includes("ANEXO") && fileInputRef.current?.files?.length === 0) {
+        //     confirmDialog.open({
+        //         title: "Confirma envio sem anexo?",
+        //         description: "Você escreveu anexo na ação, mas não anexou nenhum arquivo, deseja enviar a ação assim mesmo?",
+        //         onConfirm: () => handleInserting(data),
+        //         cancelText: "Não",
+        //         confirmText: "Sim",
+        //     });
+        // } else
             handleInserting(data);
     }
 
@@ -366,7 +366,7 @@ export default function Ticket() {
                                             <Input ref={(e) => { ref(e); fileInputRef.current = e }} {...registerProps} type="file" multiple accept=".jpg, .png, .zip, .rar, .pdf, .docx, .xls, .xlxs" style={{ display: "none" }} />
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
-                                                    <Paperclip size={20} color={"var(--grey)"} className="cursor-pointer" onClick={handleIconClick} />
+                                                    <Paperclip visibility={0} size={20} color={"var(--grey)"} className="cursor-pointer hidden" onClick={handleIconClick} />
                                                 </TooltipTrigger>
                                                 <TooltipContent>
                                                     <p>Anexar arquivos</p>
