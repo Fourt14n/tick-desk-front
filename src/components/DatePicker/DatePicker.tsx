@@ -59,7 +59,7 @@ export default function DatePicker({ dados }: Data) {
                             field.onChange(date);
                             setOpen(false)
                             if(dados.autoSaveFunc && date)
-                                dados.autoSaveFunc(dados.name, `${date.toLocaleDateString("pt-BR")} 00:00:00`)
+                                dados.autoSaveFunc(dados.name, date.toISOString())
                         }}                        
                     />
                     )}
