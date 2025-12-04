@@ -185,7 +185,6 @@ export default function Ticket() {
     const UpdateTicket = async (field: string, value?: any) => {
         if (!call) return; // Só atualiza se já tiver carregado
 
-        value = field === "previsaoSolucao" ? value.toLocaleDateString("pt-BR")() : value;
         if (value && call.status) {
             try {
                 await api.put(`api/calls/${ticket}`, {
