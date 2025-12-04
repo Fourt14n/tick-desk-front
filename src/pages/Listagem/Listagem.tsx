@@ -63,9 +63,9 @@ export default function Listagem() {
 
                 if(group !== ""){
                     switch(group){
-                        case "mine": result = result.filter(ticket => ticket?.userResponsavel?.id === user?.id);break;
-                        case "team": result = result.filter(ticket => ticket?.userResponsavel?.team.id === user?.teamId);break;
-                        case "business": result = result.filter(ticket => ticket?.userResponsavel?.team.enterpriseDto.id === user?.enterpriseId || ticket?.userResponsavel === null);break;
+                        case "mine": result = result.filter(ticket => ticket?.team?.id === user?.id);break;
+                        case "team": result = result.filter(ticket => ticket?.team.id === user?.teamId);break;
+                        case "business": result = result.filter(ticket => ticket?.team.enterpriseDto.id === user?.enterpriseId);break;
                     }
                 }
 
