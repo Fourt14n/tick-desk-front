@@ -26,11 +26,7 @@ export const ticketValidation = z.object({
     urgency: z.string("Selecione uma urgência!")
     .nonoptional("A urgência é obrigatória!"),
 
-    // Tá sendo definido pelo back
-    previsaoSolucao: z.date("A previsão de solução precisa ser válida!").optional()
-    .refine((data) => data && data > new Date(), {
-        message: "A data de previsão de solução não pode ser menor que a data atual!",
-    }),
+    previsaoSolucao: z.date("A previsão de solução precisa ser válida!").optional(),
 
     status: z.boolean("O status do chamado precisa ser booleano")
     ,
