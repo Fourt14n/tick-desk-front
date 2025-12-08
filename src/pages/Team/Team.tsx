@@ -15,6 +15,7 @@ import { EAction, type Action } from "@/types/EAction/EAction";
 import { team } from "@/validations/team";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router";
@@ -28,7 +29,7 @@ export default function Team({ action }: Action) {
     const { user } = UserInfo();
     let { id = '' } = useParams();
     const navigate = useNavigate();
-    const { handleSubmit, register, reset, setValue, formState: { isValid, isSubmitting } } = useForm({
+    const { handleSubmit, register, reset, formState: { isSubmitting,  } } = useForm({
         resolver: zodResolver(team)
     });
     const table = useReactTable({
@@ -41,13 +42,11 @@ export default function Team({ action }: Action) {
 
     })
 
-    function OnSubmit(data: Team) {
-        if (isValid) {
+    async function OnSubmit(data: Team) {
             if (action === EAction.CREATE)
-                CreateTeam(data);
+                await CreateTeam(data);
             else if (action)
-                UpdateTeam(data);
-        }
+                await UpdateTeam(data);
     }
 
     function GetUsersByTeam() {
@@ -69,15 +68,15 @@ export default function Team({ action }: Action) {
             })
     }
 
-    function CreateTeam(team: Team) {
-        api.post("api/team/create", team)
+    async function CreateTeam(team: Team) {
+        await api.post("api/team/create", team)
             .then(() => {
                 showSucces("Equipe criada com sucesso!");
                 navigate("/Listagem/Teams");
             }).catch(erro => showError(erro.response.data.error))
     }
-    function UpdateTeam(team: Team) {
-        api.put(`api/team/update/${id}`, team)
+    async function UpdateTeam(team: Team) {
+        await api.put(`api/team/update/${id}`, team)
             .then(() => {
                 showSucces("Equipe atualizada com sucesso!");
                 navigate("/Listagem/Teams");
@@ -85,7 +84,6 @@ export default function Team({ action }: Action) {
     }
 
     useEffect(() => {
-        setValue("enterpriseId", user?.enterpriseId!);
         if (action === EAction.UPDATE) {
             GetUsersByTeam();
             GetTeamById();
@@ -128,6 +126,7 @@ export default function Team({ action }: Action) {
                                         <div className="flex flex-col w-full gap-2">
                                             <Label htmlFor="txtName">Nome da equipe</Label>
                                             <Input {...register("name")} maxLength={255} className="text-sm" placeholder="Nome da equipe" type="text" id="txtName" />
+                                            <Input className="hidden" {...register("enterpriseId")} value={user?.enterpriseId}/>
                                         </div>
                                         {
                                             action === EAction.UPDATE &&
@@ -180,9 +179,9 @@ export default function Team({ action }: Action) {
                                     </div>
                                 </div>
                                 <div className="flex w-full justify-end gap-2 flex-col py-2 lg:flex-row">
-                                    {usePermission({ minPermission: PermissionsRoles.GERENT }) && <Button disabled={isSubmitting} type="submit" className="bg-(--weakGreen) w-full lg:w-42 text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">{action === EAction.CREATE ? "Cadastrar" : "Atualizar"}</Button>}
+                                    {usePermission({ minPermission: PermissionsRoles.GERENT }) && <Button disabled={isSubmitting} type="submit" className="bg-(--weakGreen) w-full lg:w-42 text-[#135C04] hover:bg-[#3eff0090] cursor-pointer">{isSubmitting && <Loader/>}{action === EAction.CREATE ? "Cadastrar" : "Atualizar"}</Button>}
                                     <Link to="/Listagem/Teams">
-                                        <Button variant={"destructive"} type="submit" className="w-full lg:w-42 cursor-pointer">Voltar</Button>
+                                        <Button disabled={isSubmitting} variant={"destructive"} type="submit" className="w-full lg:w-42 cursor-pointer">{isSubmitting && <Loader/>}Voltar</Button>
                                     </Link>
                                 </div>
 

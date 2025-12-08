@@ -7,6 +7,6 @@ export const team = z.object({
     .nonempty("O nome não pode ser vazio!")
     .nonoptional("O nome é obrigatório!"),
 
-    enterpriseId: z.int32("O time precisa estar vinculado a uma empresa!")
+    enterpriseId: z.string("O time precisa estar vinculado a uma empresa!")
     .nonoptional("O time precisa estar vinculado a uma empresa!")
 })
