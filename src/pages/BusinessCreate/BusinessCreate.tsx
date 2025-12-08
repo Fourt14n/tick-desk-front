@@ -72,7 +72,7 @@ export default function BusinessCreate() {
         phone: ''
     });
     const [dadosEquipe, setDadosEquipe] = useState<TeamRegister>({
-        enterpriseId: empresaCriada,
+        enterpriseId: empresaCriada.toString(),
         name: ''
     })
     const [dadosUsuario, setDadosUsuario] = useState<UserRegister>({
@@ -181,7 +181,7 @@ export default function BusinessCreate() {
                     .catch(erro => showError(erro.response.data));
 
                 // Limpo campo
-                setDadosEquipe({ enterpriseId: empresaCriada, name: '' });
+                setDadosEquipe({ enterpriseId: empresaCriada.toString(), name: '' });
                 showSucces("Equipe criada com sucesso!");
             })
             .catch(erro => showError(erro.response.data.error))
