@@ -58,15 +58,6 @@ export const UsersColumns: ColumnDef<User>[] = [
       }
       return valorAlterado;
     }
-  },{
-    accessorKey: "exclude",
-    header: "#",
-    cell: ({row, table}) => {
-      var meta = table.options.meta as { Exclusao?: (id : string) => void }
-      return(
-        <Trash2 className="cursor-pointer" onClick={() => meta?.Exclusao?.(row.original.id)} color="red"/>
-      )
-    }
   }
   // {
   //   accessorKey: "DataHoraUltimaEntrada",
