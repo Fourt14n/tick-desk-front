@@ -130,8 +130,8 @@ export default function Ticket() {
 
     // Por eu juntar as duas entidades dentro da mesma validação nessa tela
     // Eu preciso montar seus objetos manualmente
-    function InsertTicket(data: TicketAction) {
-        return api.post(`api/calls`, {
+    async function InsertTicket(data: TicketAction) {
+        return await api.post(`api/calls`, {
             title: data.title,
             userResponsavelId: data.userResponsavelId,
             teamId: data.teamId,
@@ -142,8 +142,8 @@ export default function Ticket() {
             .catch(erro => showError(erro.response.data.error))
     }
 
-    function InsertAction(data: TicketAction, callId: number) {
-        return api.post("api/actions/", {
+    async function InsertAction(data: TicketAction, callId: number) {
+        return await api.post("api/actions/", {
             description: data.description,
             userId: data.userId,
             callId: callId,
