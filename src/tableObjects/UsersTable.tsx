@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Edit, Trash2 } from "lucide-react";
+import { ArrowUpDown, Edit} from "lucide-react";
 import { Link } from "react-router";
 
 export interface User {
