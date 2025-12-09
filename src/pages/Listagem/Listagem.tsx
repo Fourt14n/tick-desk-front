@@ -61,6 +61,8 @@ export default function Listagem() {
                 var period = queryParams.get("period") || "";
                 var group = queryParams.get("group") || "";
 
+                result = result.filter(ticket => ticket.status);
+
                 if(group !== ""){
                     console.log(result)
                     switch(group){

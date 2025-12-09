@@ -14,7 +14,8 @@ export interface Ticket {
     dataAbertura: Date,
     urgency: string,
     userResponsavel: ResponseUser,
-    team: ResponseTeams
+    team: ResponseTeams,
+    status: boolean,
 }
 
 export const TicketColumns: ColumnDef<Ticket>[] = [
